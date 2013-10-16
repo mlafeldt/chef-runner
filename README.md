@@ -14,7 +14,7 @@ Usage
 
         -h, --help             show help text
         -H, --host <name>      hostname for direct SSH access
-        -f, --format <format>  Chef output format to use
+        -F, --format <format>  Chef output format to use
 
 Vim
 ---
