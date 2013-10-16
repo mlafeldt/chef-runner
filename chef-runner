@@ -53,18 +53,12 @@ cookbook_name() {
     head -n1 "$file" | sed "s/^name/echo/" | sh
 }
 
-cookbook_path() {
-    for dir in "cookbooks" "vendor/cookbooks"; do
-        if test -d "$dir"; then
-            echo "$dir"
-            return
-        fi
-    done
-    abort "error: cookbook path not found"
-}
-
-update_cookbook() {
-    rsync --archive --delete --exclude="$COOKBOOK_PATH" * "$COOKBOOK_PATH/$COOKBOOK_NAME"
+install_cookbooks() {
+    if ! test -d "$COOKBOOK_PATH/$COOKBOOK_NAME"; then
+        berks install --path "$COOKBOOK_PATH"
+    else
+        rsync --archive --delete --exclude="$COOKBOOK_PATH" * "$COOKBOOK_PATH/$COOKBOOK_NAME"
+    fi
 }
 
 run_ssh() {
@@ -88,8 +82,8 @@ HOST=
 RUNLIST=
 FORMAT="minimal"
 COOKBOOK_NAME=${COOKBOOK_NAME:-$(cookbook_name)}
-COOKBOOK_PATH=${COOKBOOK_PATH:-$(cookbook_path)}
+COOKBOOK_PATH=${COOKBOOK_PATH:-"vendor/cookbooks"}
 
 parse_args "$@"
-update_cookbook
+install_cookbooks
 run_chef
