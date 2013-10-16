@@ -1,0 +1,68 @@
+#!/bin/sh
+#/ Usage: chef-runner [options] [--] [<recipe>...]
+#/
+#/     -h, --help             show help text
+#/     -H, --host <name>      hostname for direct SSH access
+#/     -f, --format <format>  Chef output format to use
+#
+# Written by Mathias Lafeldt <mathias.lafeldt@gmail.com>
+
+set -e
+
+HOST=
+FORMAT="minimal"
+COOKBOOK=$(head -n1 metadata.rb | sed 's/name/echo/' | sh)
+RUNLIST=
+
+parse_args() {
+    while test "$#" -ne 0; do
+        case "$1" in
+            -h|--help)
+                grep '^#/' <"$0" | cut -c4-; exit 0 ;;
+            -H|--host)
+                HOST=$2; shift 2 ;;
+            -F|--format)
+                FORMAT=$2; shift 2 ;;
+            --)
+                shift; break ;;
+            -|[!-]*)
+                break ;;
+            -*)
+                echo >&2 "error: invalid option '$1'"; exit 1 ;;
+        esac
+    done
+
+    if test $# -gt 0; then
+        while test $# -gt 0; do
+            recipe="$COOKBOOK::$(basename $1 .rb)"
+            if test -z "$RUNLIST"; then
+                RUNLIST="$recipe"
+            else
+                RUNLIST="$RUNLIST,$recipe"
+            fi
+            shift
+        done
+    else
+        RUNLIST="$COOKBOOK::default"
+    fi
+}
+
+run_ssh() {
+    if test -n "$HOST"; then
+        ssh "$HOST" "$@"
+    else
+        vagrant ssh -c "$@"
+    fi
+}
+
+run_chef() {
+    CONFIG="/tmp/vagrant-chef-1/solo.rb"
+    JSON="/tmp/vagrant-chef-1/dna.json"
+
+    run_ssh "sudo chef-solo --config=$CONFIG --json-attributes=$JSON \
+                            --override-runlist=$RUNLIST \
+                            --force-formatter --format=$FORMAT"
+}
+
+parse_args "$@"
+run_chef
