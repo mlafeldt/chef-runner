@@ -9,10 +9,26 @@
 
 set -e
 
-HOST=
-FORMAT="minimal"
-COOKBOOK=$(head -n1 metadata.rb | sed 's/name/echo/' | sh)
-RUNLIST=
+abort(){
+    echo >&2 "$*"
+    exit 1
+}
+
+cookbook_name() {
+    file="metadata.rb"
+    test -f "$file" || abort "error: $file not found"
+    head -n1 "$file" | sed "s/^name/echo/" | sh
+}
+
+cookbook_path() {
+    for dir in "cookbooks" "vendor/cookbooks"; do
+        if test -d "$dir"; then
+            echo "$dir"
+            return
+        fi
+    done
+    abort "error: cookbook path not found"
+}
 
 parse_args() {
     while test "$#" -ne 0; do
@@ -34,7 +50,7 @@ parse_args() {
 
     if test $# -gt 0; then
         while test $# -gt 0; do
-            recipe="$COOKBOOK::$(basename $1 .rb)"
+            recipe="$COOKBOOK_NAME::$(basename $1 .rb)"
             if test -z "$RUNLIST"; then
                 RUNLIST="$recipe"
             else
@@ -43,7 +59,7 @@ parse_args() {
             shift
         done
     else
-        RUNLIST="$COOKBOOK::default"
+        RUNLIST="$COOKBOOK_NAME::default"
     fi
 }
 
@@ -63,6 +79,12 @@ run_chef() {
                             --override-runlist=$RUNLIST \
                             --force-formatter --format=$FORMAT"
 }
+
+HOST=
+FORMAT="minimal"
+RUNLIST=
+COOKBOOK_NAME=${COOKBOOK_NAME:-$(cookbook_name)}
+COOKBOOK_PATH=${COOKBOOK_PATH:-$(cookbook_path)}
 
 parse_args "$@"
 run_chef
