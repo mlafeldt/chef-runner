@@ -34,13 +34,18 @@ parse_args() {
 
     if test $# -gt 0; then
         while test $# -gt 0; do
-            recipe="$COOKBOOK_NAME::$(basename $1 .rb)"
+            case "$1" in
+            *::*) recipe="$1" ;;
+            *.rb) recipe="$COOKBOOK_NAME::$(basename $1 .rb)" ;;
+            *)    recipe="$COOKBOOK_NAME::$1" ;;
+            esac
+            shift
+
             if test -z "$RUNLIST"; then
                 RUNLIST="$recipe"
             else
                 RUNLIST="$RUNLIST,$recipe"
             fi
-            shift
         done
     else
         RUNLIST="$COOKBOOK_NAME::default"
