@@ -92,8 +92,9 @@ run_chef() {
 
 HOST=
 FORMAT="minimal"
-COOKBOOK_NAME=${COOKBOOK_NAME:-$(cookbook_name)}
-COOKBOOK_PATH=${COOKBOOK_PATH:-"vendor/cookbooks"}
+
+: ${COOKBOOK_NAME:=$(cookbook_name)}
+: ${COOKBOOK_PATH:="vendor/cookbooks"}
 
 RUNLIST=$(parse_args "$@")
 install_cookbooks
