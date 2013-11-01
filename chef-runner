@@ -14,30 +14,6 @@ abort(){
     exit 1
 }
 
-get_runlist() {
-    if test $# -gt 0; then
-        runlist=
-        while test $# -gt 0; do
-            case "$1" in
-            *::*) recipe="$1" ;;
-            *.rb) recipe="$COOKBOOK_NAME::$(basename $1 .rb)" ;;
-            *)    recipe="$COOKBOOK_NAME::$1" ;;
-            esac
-            shift
-
-            if test -z "$runlist"; then
-                runlist="$recipe"
-            else
-                runlist="$runlist,$recipe"
-            fi
-        done
-    else
-        runlist="$COOKBOOK_NAME::default"
-    fi
-
-    echo "$runlist"
-}
-
 parse_args() {
     while test "$#" -ne 0; do
         case "$1" in
@@ -56,7 +32,24 @@ parse_args() {
         esac
     done
 
-    get_runlist "$@"
+    if test $# -gt 0; then
+        while test $# -gt 0; do
+            case "$1" in
+            *::*) recipe="$1" ;;
+            *.rb) recipe="$COOKBOOK_NAME::$(basename $1 .rb)" ;;
+            *)    recipe="$COOKBOOK_NAME::$1" ;;
+            esac
+            shift
+
+            if test -z "$RUNLIST"; then
+                RUNLIST="$recipe"
+            else
+                RUNLIST="$RUNLIST,$recipe"
+            fi
+        done
+    else
+        RUNLIST="$COOKBOOK_NAME::default"
+    fi
 }
 
 cookbook_name() {
@@ -91,11 +84,12 @@ run_chef() {
 }
 
 HOST=
+RUNLIST=
 FORMAT="minimal"
 
 : ${COOKBOOK_NAME:=$(cookbook_name)}
 : ${COOKBOOK_PATH:="vendor/cookbooks"}
 
-RUNLIST=$(parse_args "$@")
+parse_args "$@"
 install_cookbooks
 run_chef
