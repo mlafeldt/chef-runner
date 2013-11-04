@@ -12,12 +12,16 @@ Usage
 
     Usage: chef-runner [options] [--] [<recipe>...]
 
-        -h, --help             show help text
-        -H, --host <name>      hostname for direct SSH access
-        -F, --format <format>  Chef output format to use
+        -h, --help                   Show help text
+        -H, --host <name>            Set hostname for direct SSH access
 
-Vim
----
+    Options that will be passed to Chef Solo:
+
+        -F, --format <format>        Set output format (null, doc, minimal, min)
+        -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
+
+Vim Integration
+---------------
 
 Open recipe in Vim:
 
