@@ -2,12 +2,12 @@
 #/ Usage: chef-runner [options] [--] [<recipe>...]
 #/
 #/     -h, --help                   Show help text
-#/     -H, --host <name>            Set the hostname for direct SSH access
+#/     -H, --host <name>            Set hostname for direct SSH access
 #/
 #/ Options that will be passed to Chef Solo:
 #/
-#/     -F, --format <format>        Output format to use
-#/     -l, --log_level <level>      Set the log level (debug, info, warn, error, fatal)
+#/     -F, --format <format>        Set output format (null, doc, minimal, min)
+#/     -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
 #
 # Written by Mathias Lafeldt <mathias.lafeldt@gmail.com>
 
