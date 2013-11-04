@@ -55,7 +55,7 @@ run_chef() {
 main() {
     HOST=
     FORMAT="minimal"
-    LOG_LEVEL="info"
+    LOG_LEVEL="warn"
     RUNLIST=
 
     while test "$#" -ne 0; do
