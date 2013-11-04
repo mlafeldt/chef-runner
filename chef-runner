@@ -74,8 +74,8 @@ main() {
         esac
     done
 
-    : ${COOKBOOK_NAME:=$(cookbook_name)}
-    : ${COOKBOOK_PATH:=$(cookbook_path)}
+    COOKBOOK_NAME=$(cookbook_name)
+    COOKBOOK_PATH=$(cookbook_path)
 
     if test $# -gt 0; then
         while test $# -gt 0; do
