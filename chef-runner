@@ -24,7 +24,7 @@ cookbook_name() {
 cookbook_path() {
     file="Vagrantfile"
     test -f "$file" || abort "error: $file not found!"
-    path=$(grep cookbooks_path Vagrantfile | head -n1 | cut -d= -f2 | tr -d "\"' ")
+    path=$(grep cookbooks_path "$file" | head -n1 | cut -d= -f2 | tr -d "\"' ")
     echo ${path:-cookbooks}
 }
 
