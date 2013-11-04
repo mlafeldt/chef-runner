@@ -1,9 +1,13 @@
 #!/bin/sh
 #/ Usage: chef-runner [options] [--] [<recipe>...]
 #/
-#/     -h, --help             show help text
-#/     -H, --host <name>      hostname for direct SSH access
-#/     -F, --format <format>  Chef output format to use
+#/     -h, --help                   Show help text
+#/     -H, --host <name>            Set the hostname for direct SSH access
+#/
+#/ Options that will be passed to Chef Solo:
+#/
+#/     -F, --format <format>        Output format to use
+#/     -l, --log_level <level>      Set the log level (debug, info, warn, error, fatal)
 #
 # Written by Mathias Lafeldt <mathias.lafeldt@gmail.com>
 
@@ -44,12 +48,14 @@ run_chef() {
     run_ssh sudo chef-solo --config="$CONFIG" \
                            --json-attributes="$JSON" \
                            --override-runlist="$RUNLIST" \
-                           --format="$FORMAT"
+                           --format="$FORMAT" \
+                           --log_level="$LOG_LEVEL"
 }
 
 main() {
     HOST=
     FORMAT="minimal"
+    LOG_LEVEL="info"
     RUNLIST=
 
     while test "$#" -ne 0; do
@@ -60,6 +66,8 @@ main() {
                 HOST=$2; shift 2 ;;
             -F|--format)
                 FORMAT=$2; shift 2 ;;
+            -l|--log_level)
+                LOG_LEVEL=$2; shift 2 ;;
             --)
                 shift; break ;;
             -|[!-]*)
