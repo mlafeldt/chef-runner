@@ -11,6 +11,19 @@ set -e
 
 abort() { echo >&2 "$*"; exit 1; }
 
+cookbook_name() {
+    file="metadata.rb"
+    test -f "$file" || abort "error: $file not found!"
+    head -n1 "$file" | sed "s/^name/echo/" | sh
+}
+
+cookbook_path() {
+    file="Vagrantfile"
+    test -f "$file" || abort "error: $file not found!"
+    path=$(grep cookbooks_path Vagrantfile | head -n1 | cut -d= -f2 | tr -d "\"' ")
+    echo ${path:-cookbooks}
+}
+
 parse_args() {
     while test "$#" -ne 0; do
         case "$1" in
@@ -28,6 +41,9 @@ parse_args() {
                 abort "error: invalid option '$1'" ;;
         esac
     done
+
+    : ${COOKBOOK_NAME:=$(cookbook_name)}
+    : ${COOKBOOK_PATH:=$(cookbook_path)}
 
     if test $# -gt 0; then
         while test $# -gt 0; do
@@ -49,17 +65,12 @@ parse_args() {
     fi
 }
 
-cookbook_name() {
-    file="metadata.rb"
-    test -f "$file" || abort "error: $file not found"
-    head -n1 "$file" | sed "s/^name/echo/" | sh
-}
-
 install_cookbooks() {
     if ! test -d "$COOKBOOK_PATH/$COOKBOOK_NAME"; then
         berks install --path "$COOKBOOK_PATH"
     else
-        rsync --archive --delete --exclude="$COOKBOOK_PATH" * "$COOKBOOK_PATH/$COOKBOOK_NAME"
+        rsync --archive --delete --exclude="$COOKBOOK_PATH" * \
+            "$COOKBOOK_PATH/$COOKBOOK_NAME"
     fi
 }
 
@@ -86,9 +97,6 @@ run_chef() {
 HOST=
 RUNLIST=
 FORMAT="minimal"
-
-: ${COOKBOOK_NAME:=$(cookbook_name)}
-: ${COOKBOOK_PATH:="vendor/cookbooks"}
 
 parse_args "$@"
 install_cookbooks
