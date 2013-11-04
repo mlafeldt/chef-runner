@@ -70,7 +70,7 @@ run_ssh() {
     if test -n "$HOST"; then
         ssh "$HOST" "$@"
     else
-        vagrant ssh -c "$@"
+        vagrant ssh default -c "$*"
     fi
 }
 
@@ -78,9 +78,11 @@ run_chef() {
     CONFIG="/tmp/vagrant-chef-1/solo.rb"
     JSON="/tmp/vagrant-chef-1/dna.json"
 
-    run_ssh "sudo chef-solo --config=$CONFIG --json-attributes=$JSON \
-                            --override-runlist=$RUNLIST \
-                            --force-formatter --format=$FORMAT"
+    run_ssh sudo chef-solo --config="$CONFIG" \
+                           --json-attributes="$JSON" \
+                           --override-runlist="$RUNLIST" \
+                           --force-formatter \
+                           --format="$FORMAT"
 }
 
 HOST=
