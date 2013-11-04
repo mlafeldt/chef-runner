@@ -9,10 +9,7 @@
 
 set -e
 
-abort(){
-    echo >&2 "$*"
-    exit 1
-}
+abort() { echo >&2 "$*"; exit 1; }
 
 parse_args() {
     while test "$#" -ne 0; do
