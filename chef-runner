@@ -49,7 +49,6 @@ run_chef() {
     run_ssh sudo chef-solo --config="$CONFIG" \
                            --json-attributes="$JSON" \
                            --override-runlist="$RUNLIST" \
-                           --force-formatter \
                            --format="$FORMAT"
 }
 
