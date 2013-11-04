@@ -70,6 +70,7 @@ run_ssh() {
     if test -n "$HOST"; then
         ssh "$HOST" "$@"
     else
+        echo >&2 "warning: using slow 'vagrant ssh' command"
         vagrant ssh default -c "$*"
     fi
 }
