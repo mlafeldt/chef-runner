@@ -18,12 +18,14 @@ set -e
 
 abort() { echo >&2 "$*"; exit 1; }
 
+# Get cookbook name from metadata.rb.
 cookbook_name() {
     file="metadata.rb"
     test -f "$file" || abort "error: $file not found!"
     head -n1 "$file" | sed "s/^name/echo/" | sh
 }
 
+# Get path to cookbooks from Vagrantfile; fall back to "cookbooks" if not found.
 cookbook_path() {
     file="Vagrantfile"
     test -f "$file" || abort "error: $file not found!"
@@ -31,6 +33,8 @@ cookbook_path() {
     echo ${path:-cookbooks}
 }
 
+# Install cookbook dependencies with Berkshelf. If the cookbooks are already in
+# place, use lightning-fast rsync to update the current cookbook only.
 install_cookbooks() {
     if ! test -d "$COOKBOOK_PATH/$COOKBOOK_NAME"; then
         berks install --path "$COOKBOOK_PATH"
@@ -40,10 +44,15 @@ install_cookbooks() {
     fi
 }
 
+# Run commands via SSH.
 run_ssh() {
     test -n "$HOST" && ssh "$HOST" "$@" || vagrant ssh default -c "$*"
 }
 
+# Run Chef Solo inside a Vagrant VM. This code tries to be clever about
+# provisioning, doing everything it can to integrate well with Vagrant.
+# Provisiong should always work as long the VM is running and shared folders
+# are mounted, i.e. `vagrant up` is enough.
 provision() {
     vagrant_path="/tmp/vagrant-chef-1"
     config_file="$vagrant_path/solo.rb"
