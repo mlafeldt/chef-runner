@@ -8,6 +8,7 @@
 #/
 #/     -F, --format <format>        Set output format (null, doc, minimal, min)
 #/     -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
+#/     -j, --json-attributes <file> Load attributes from a JSON file
 #
 # Written by Mathias Lafeldt <mathias.lafeldt@gmail.com>
 
@@ -53,9 +54,17 @@ provision() {
     setup_config="test -f $config_file || echo 'cookbook_path [\"$cookbooks_path\"]' | sudo tee $config_file >/dev/null"
     setup_json="test -f $json_file || echo '{}' | sudo tee $json_file >/dev/null"
 
+    # If a custom JSON file was specified, change the path accordingly.
+    # XXX: This currently expects that the JSON file lives in /vagrant.
+    if test -n "$JSON_FILE"; then
+        json_file="/vagrant/$JSON_FILE"
+    fi
+
+    # Build up the Chef Solo command.
     run_chef_solo="sudo chef-solo --config=$config_file --json-attributes=$json_file \
                    --override-runlist=$RUNLIST --format=$FORMAT --log_level=$LOG_LEVEL"
 
+    # Finally, run all commands via SSH.
     run_ssh "$setup_config; $setup_json; $run_chef_solo"
 }
 
@@ -63,6 +72,7 @@ main() {
     HOST=
     FORMAT="minimal"
     LOG_LEVEL="warn"
+    JSON_FILE=
     RUNLIST=
 
     while test "$#" -ne 0; do
@@ -75,6 +85,10 @@ main() {
                 FORMAT=$2; shift 2 ;;
             -l|--log_level)
                 LOG_LEVEL=$2; shift 2 ;;
+            -j|--json-attributes)
+                JSON_FILE=$2
+                test -f "$JSON_FILE" || abort "error: $JSON_FILE not found!"
+                shift 2 ;;
             --)
                 shift; break ;;
             -|[!-]*)
