@@ -18,9 +18,9 @@ Usage
     Options that will be passed to Chef Solo:
 
         -F, --format <format>        Set output format (null, doc, minimal, min)
-                                     default: minimal
+                                     default: null
         -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
-                                     default: warn
+                                     default: info
         -j, --json-attributes <file> Load attributes from a JSON file
 
 Vim Integration
