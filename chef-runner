@@ -41,15 +41,22 @@ run_ssh() {
     test -n "$HOST" && ssh "$HOST" "$@" || vagrant ssh default -c "$*"
 }
 
-run_chef() {
-    CONFIG="/tmp/vagrant-chef-1/solo.rb"
-    JSON="/tmp/vagrant-chef-1/dna.json"
+provision() {
+    vagrant_path="/tmp/vagrant-chef-1"
+    config_file="$vagrant_path/solo.rb"
+    json_file="$vagrant_path/dna.json"
+    cookbooks_path="$vagrant_path/chef-solo-1/cookbooks"
 
-    run_ssh sudo chef-solo --config="$CONFIG" \
-                           --json-attributes="$JSON" \
-                           --override-runlist="$RUNLIST" \
-                           --format="$FORMAT" \
-                           --log_level="$LOG_LEVEL"
+    # Vagrant's Chef provisioner usually sets up both config and JSON files.
+    # However, if the provisioner has not been executed yet, we have to put our
+    # own minimal versions of those files in place before starting Chef.
+    setup_config="test -f $config_file || echo 'cookbook_path [\"$cookbooks_path\"]' | sudo tee $config_file >/dev/null"
+    setup_json="test -f $json_file || echo '{}' | sudo tee $json_file >/dev/null"
+
+    run_chef_solo="sudo chef-solo --config=$config_file --json-attributes=$json_file \
+                   --override-runlist=$RUNLIST --format=$FORMAT --log_level=$LOG_LEVEL"
+
+    run_ssh "$setup_config; $setup_json; $run_chef_solo"
 }
 
 main() {
@@ -100,7 +107,7 @@ main() {
     fi
 
     install_cookbooks
-    run_chef
+    provision
 }
 
 main "$@"
