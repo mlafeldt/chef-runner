@@ -46,7 +46,11 @@ install_cookbooks() {
 
 # Run commands via SSH.
 run_ssh() {
-    test -n "$HOST" && ssh "$HOST" "$@" || vagrant ssh default -c "$*"
+    if test -n "$HOST"; then
+        ssh "$HOST" "$@"
+    else
+        vagrant ssh default -c "$*"
+    fi
 }
 
 # Run Chef Solo inside a Vagrant VM. This code tries to be clever about
