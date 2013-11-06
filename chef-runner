@@ -66,9 +66,9 @@ provision() {
     # Vagrant's Chef provisioner usually sets up both config and JSON files.
     # However, if the provisioner has not been executed yet, we have to put our
     # own minimal versions of those files in place before starting Chef.
-    setup_dir="sudo mkdir -p $vagrant_path"
-    setup_config="test -f $config_file || echo 'cookbook_path [\"$cookbooks_path\"]' | sudo tee $config_file >/dev/null"
-    setup_json="test -f $json_file || echo '{}' | sudo tee $json_file >/dev/null"
+    setup_dir="mkdir -p $vagrant_path"
+    setup_config="test -f $config_file || echo 'cookbook_path [\"$cookbooks_path\"]' > $config_file"
+    setup_json="test -f $json_file || echo '{}' > $json_file"
 
     # If a custom JSON file was specified, change the path accordingly.
     # XXX: This currently expects that the JSON file lives in /vagrant.
