@@ -63,9 +63,6 @@ provision() {
     json_file="$vagrant_path/dna.json"
     cookbooks_path="$vagrant_path/chef-solo-1/cookbooks"
 
-    # Check that the cookbooks folder is mounted by Vagrant.
-    check_mount="mount | grep -q \"$cookbooks_path\" || { echo 'error: $cookbooks_path not mounted'; exit 1; }"
-
     # Vagrant's Chef provisioner usually sets up both config and JSON files.
     # However, if the provisioner has not been executed yet, we have to put our
     # own minimal versions of those files in place before starting Chef.
@@ -83,7 +80,7 @@ provision() {
                    --override-runlist=$RUNLIST --format=$FORMAT --log_level=$LOG_LEVEL"
 
     # Finally, run all commands via SSH.
-    run_ssh "$check_mount; $setup_config; $setup_json; $run_chef_solo"
+    run_ssh "$setup_config; $setup_json; $run_chef_solo"
 }
 
 main() {
