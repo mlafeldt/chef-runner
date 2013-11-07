@@ -14,6 +14,7 @@ Usage
 
         -h, --help                   Show help text
         -H, --host <name>            Set hostname for direct SSH access
+        -M, --machine <name>         Set name of Vagrant virtual machine
 
     Options that will be passed to Chef Solo:
 
