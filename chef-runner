@@ -80,7 +80,7 @@ provision() {
                    --override-runlist=$RUNLIST --format=$FORMAT --log_level=$LOG_LEVEL"
 
     # Finally, run all commands via SSH.
-    run_ssh "$setup_dir; $setup_config; $setup_json; $run_chef_solo"
+    run_ssh "$setup_dir && $setup_config && $setup_json && $run_chef_solo"
 }
 
 main() {
