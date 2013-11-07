@@ -71,7 +71,6 @@ provision() {
     setup_json="test -f $json_file || echo '{}' > $json_file"
 
     # If a custom JSON file was specified, change the path accordingly.
-    # XXX: This currently expects that the JSON file lives in /vagrant.
     if test -n "$JSON_FILE"; then
         json_file="/vagrant/$JSON_FILE"
     fi
