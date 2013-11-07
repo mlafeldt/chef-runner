@@ -140,7 +140,11 @@ main() {
             fi
         done
     else
-        RUNLIST="$COOKBOOK_NAME::default"
+        recipe="$COOKBOOK_NAME::default"
+        if ! test -f "recipes/default.rb"; then
+            abort "error: recipe $recipe not found!"
+        fi
+        RUNLIST="$recipe"
     fi
 
     install_cookbooks
