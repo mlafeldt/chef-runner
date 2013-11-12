@@ -24,6 +24,16 @@ Usage
                                      default: info
         -j, --json-attributes <file> Load attributes from a JSON file
 
+Flexible recipe syntax:
+
+    $ chef-runner # runs default recipe
+    $ chef-runner recipes/cats.rb
+    $ chef-runner cats
+    $ chef-runner cats recipes/dogs.rb
+    $ chef-runner apt::default
+    $ chef-runner apt::default cats recipes/dogs.rb
+
+
 Vim Integration
 ---------------
 
