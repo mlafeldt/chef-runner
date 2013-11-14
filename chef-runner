@@ -38,7 +38,12 @@ cookbook_path() {
 # place, use lightning-fast rsync to update the current cookbook only.
 install_cookbooks() {
     if ! test -d "$COOKBOOK_PATH/$COOKBOOK_NAME"; then
-        berks install --path "$COOKBOOK_PATH"
+        if test -f Gemfile; then
+            prefix="bundle exec"
+        else
+            prefix=
+        fi
+        $prefix berks install --path "$COOKBOOK_PATH"
     else
         rsync --archive --delete --exclude="$COOKBOOK_PATH" * \
             "$COOKBOOK_PATH/$COOKBOOK_NAME"
