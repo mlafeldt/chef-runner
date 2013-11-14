@@ -30,12 +30,12 @@ cookbook_name() {
     head -n1 "$file" | sed "s/^name/echo/" | sh
 }
 
-# Get path to cookbooks from Vagrantfile; fall back to "cookbooks" if not found.
+# Get path to cookbooks from Vagrantfile; use "vendor/cookbooks" if not found.
 cookbook_path() {
     file="Vagrantfile"
     file_must_exist "$file"
     path=$(grep cookbooks_path "$file" | head -n1 | cut -d= -f2 | tr -d "\"' ")
-    echo ${path:-cookbooks}
+    echo ${path:-"vendor/cookbooks"}
 }
 
 # Install cookbook dependencies with Berkshelf. If the cookbooks are already in
