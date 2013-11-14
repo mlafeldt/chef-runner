@@ -19,17 +19,21 @@ set -e
 
 abort() { echo >&2 "$*"; exit 1; }
 
+file_must_exist() {
+    test -f "$1" || abort "error: $1 not found"
+}
+
 # Get cookbook name from metadata.rb.
 cookbook_name() {
     file="metadata.rb"
-    test -f "$file" || abort "error: $file not found!"
+    file_must_exist "$file"
     head -n1 "$file" | sed "s/^name/echo/" | sh
 }
 
 # Get path to cookbooks from Vagrantfile; fall back to "cookbooks" if not found.
 cookbook_path() {
     file="Vagrantfile"
-    test -f "$file" || abort "error: $file not found!"
+    file_must_exist "$file"
     path=$(grep cookbooks_path "$file" | head -n1 | cut -d= -f2 | tr -d "\"' ")
     echo ${path:-cookbooks}
 }
@@ -111,7 +115,7 @@ main() {
                 LOG_LEVEL=$2; shift 2 ;;
             -j|--json-attributes)
                 JSON_FILE=$2
-                test -f "$JSON_FILE" || abort "error: $JSON_FILE not found!"
+                file_must_exist "$JSON_FILE"
                 shift 2 ;;
             --)
                 shift; break ;;
@@ -145,11 +149,8 @@ main() {
             fi
         done
     else
-        recipe="$COOKBOOK_NAME::default"
-        if ! test -f "recipes/default.rb"; then
-            abort "error: recipe $recipe not found!"
-        fi
-        RUNLIST="$recipe"
+        file_must_exist "recipes/default.rb"
+        RUNLIST="$COOKBOOK_NAME::default"
     fi
 
     install_cookbooks
