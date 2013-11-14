@@ -136,9 +136,14 @@ main() {
     if test $# -gt 0; then
         while test $# -gt 0; do
             case "$1" in
-            *::*) recipe="$1" ;;
-            *.rb) recipe="$COOKBOOK_NAME::$(basename $1 .rb)" ;;
-            *)    recipe="$COOKBOOK_NAME::$1" ;;
+            *::*)
+                recipe="$1" ;;
+            *.rb)
+                file_must_exist "$1"
+                recipe="$COOKBOOK_NAME::$(basename $1 .rb)" ;;
+            *)
+                file_must_exist "recipes/${1}.rb"
+                recipe="$COOKBOOK_NAME::$1" ;;
             esac
             shift
 
