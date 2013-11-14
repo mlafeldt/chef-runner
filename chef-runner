@@ -50,7 +50,7 @@ run_ssh() {
     if test -n "$HOST"; then
         ssh "$HOST" "$@"
     else
-        vagrant ssh "${MACHINE:-default}" -c "$*"
+        VAGRANT_NO_PLUGINS=1 vagrant ssh "${MACHINE:-default}" -c "$*"
     fi
 }
 
