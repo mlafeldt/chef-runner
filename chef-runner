@@ -65,7 +65,7 @@ run_ssh() {
 
 # Run Chef Solo inside a Vagrant VM. This code tries to be clever about
 # provisioning, doing everything it can to integrate well with Vagrant.
-# Provisiong should always work as long the VM is running and /vagrant is
+# Provisioning should always work as long the VM is running and /vagrant is
 # mounted, i.e. `vagrant up` is enough.
 provision() {
     vagrant_path="/tmp/vagrant-chef-1"
