@@ -14,6 +14,9 @@
 #/     -j, --json-attributes <file> Load attributes from a JSON file
 #
 # Written by Mathias Lafeldt <mathias.lafeldt@gmail.com>
+# Licensed under the Apache License 2.0.
+# Project site: https://github.com/mlafeldt/chef-runner
+#
 
 set -e
 
