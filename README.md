@@ -114,47 +114,34 @@ Last but not least, you can configure both output format and log level of Chef:
 
 ### Setting up SSH
 
-By default, chef-runner talks to Vagrant machines using `vagrant ssh`. In a
-multi-machine environment, you can use the `-M` option (or `--machine`) to set
-the name of the machine you want to provision, for example:
+chef-runner uses `ssh` to execute commands on Vagrant machines. If your
+`Vagrantfile` only defines a single machine, you don't need to worry about SSH
+at all -- simply run `chef-runner` and it should work.
 
-    $ chef-runner -M db postgresql::server
+In a multi-machine environment, you need to specify what Vagrant machine you
+want to use. There are two ways to do this.
 
-However, `vagrant ssh` is relatively slow compared to plain `ssh`. In order to
-make use of the latter, you have to do two things.
+1) Use the `-M` option (or `--machine`) to set the name of the Vagrant machine.
+The machine name is the name you have defined in your `Vagrantfile`. To get a
+list of all machine names, run `vagrant status`.
 
-First, assign your VM a private static IP address in the `Vagrantfile`:
+Example:
 
-```ruby
-Vagrant.configure("2") do |config|
-  config.vm.network "private_network", :ip => "10.11.12.13"
-  # ...
-end
-```
+    $ chef-runner -M db
 
-Second, add the following settings to your `~/.ssh/config` file (you have to
-adapt `Host` and `HostName`):
+2) Use the `-H` option (or `--host`) to set a hostname that was configured for
+direct SSH access to the Vagrant machine. This requires that your machine has a
+static IP address and that your `~/.ssh/config` file has a configuration section
+for that hostname (`vagrant ssh-config` can help you here). While this option
+needs more setup work, SSH access is a bit faster compared to `-M`.
 
-```
-Host example.local
-    HostName 10.11.12.13
-    User vagrant
-    UserKnownHostsFile /dev/null
-    StrictHostKeyChecking no
-    PasswordAuthentication no
-    IdentityFile ~/.vagrant.d/insecure_private_key
-    IdentitiesOnly yes
-```
-
-Afterwards, you will be able to log into the VM via `ssh example.local` and,
-more importantly, you can now pass the hostname to chef-runner via `-H` or
-`--host`, for example:
+Example:
 
     $ chef-runner -H example.local
 
 *Technical note: A future version of chef-runner might use `vagrant ssh-config`
 to get the SSH settings of a Vagrant machine and then cache them somewhere, see
-[GitHub issue #3].*
+[GitHub pull request].*
 
 ### Use with Vim
 
@@ -227,7 +214,7 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 
 
 [Berkshelf]: http://berkshelf.com/
-[GitHub issue #3]: https://github.com/mlafeldt/chef-runner/issues/3
+[GitHub pull request]: https://github.com/mlafeldt/chef-runner/pull/3
 [Practicing Ruby cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [Vagrant]: http://vagrantup.com/
 [VirtualBox]: https://www.virtualbox.org/
