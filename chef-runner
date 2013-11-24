@@ -141,7 +141,7 @@ main() {
             case "$1" in
             *::*)
                 recipe="$1" ;;
-            *.rb)
+            recipes/*.rb|./recipes/*.rb)
                 file_must_exist "$1"
                 recipe="$COOKBOOK_NAME::$(basename $1 .rb)" ;;
             *)
