@@ -152,6 +152,10 @@ more importantly, you can now pass the hostname to chef-runner via `-H` or
 
     $ chef-runner -H example.local
 
+*Technical note: A future version of chef-runner might use `vagrant ssh-config`
+to get the SSH settings of a Vagrant machine and then cache them somewhere, see
+[GitHub issue #3].*
+
 ### Use with Vim
 
 As a matter of fact, I primarily wrote chef-runner for use with Vim. Instead of
@@ -223,6 +227,7 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 
 
 [Berkshelf]: http://berkshelf.com/
+[GitHub issue #3]: https://github.com/mlafeldt/chef-runner/issues/3
 [Practicing Ruby cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [Vagrant]: http://vagrantup.com/
 [VirtualBox]: https://www.virtualbox.org/
