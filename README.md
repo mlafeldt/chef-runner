@@ -103,8 +103,8 @@ your [run list] in multiple ways.
 
     $ chef-runner recipes/foo.rb bar dogs::baz
 
-Moreover, the tool allows you to load node attributes from a JSON file (that is
-located inside your cookbook):
+Moreover, chef-runner allows you to load node attributes from a JSON file (that
+is located inside your cookbook):
 
     $ chef-runner -j chef.json
 
