@@ -106,26 +106,26 @@ main() {
 
     while test "$#" -ne 0; do
         case "$1" in
-            -h|--help)
-                grep '^#/' <"$0" | cut -c4-; exit 0 ;;
-            -H|--host)
-                HOST=$2; shift 2 ;;
-            -M|--machine)
-                MACHINE=$2; shift 2 ;;
-            -F|--format)
-                FORMAT=$2; shift 2 ;;
-            -l|--log_level)
-                LOG_LEVEL=$2; shift 2 ;;
-            -j|--json-attributes)
-                JSON_FILE=$2
-                file_must_exist "$JSON_FILE"
-                shift 2 ;;
-            --)
-                shift; break ;;
-            -|[!-]*)
-                break ;;
-            -*)
-                abort "error: invalid option '$1'" ;;
+        -h|--help)
+            grep '^#/' <"$0" | cut -c4-; exit 0 ;;
+        -H|--host)
+            HOST=$2; shift 2 ;;
+        -M|--machine)
+            MACHINE=$2; shift 2 ;;
+        -F|--format)
+            FORMAT=$2; shift 2 ;;
+        -l|--log_level)
+            LOG_LEVEL=$2; shift 2 ;;
+        -j|--json-attributes)
+            JSON_FILE=$2
+            file_must_exist "$JSON_FILE"
+            shift 2 ;;
+        --)
+            shift; break ;;
+        -|[!-]*)
+            break ;;
+        -*)
+            abort "error: invalid option '$1'" ;;
         esac
     done
 
