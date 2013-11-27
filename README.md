@@ -44,8 +44,8 @@ Additionally, your cookbook must have the following files:
 * `Berksfile` - must contain the `metadata` source
 * `Vagrantfile` - optionally configures Chef Solo
 
-To give you an example, the [Practicing Ruby cookbook] is known to work well
-with chef-runner.
+To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
+work well with chef-runner.
 
 ## Installation
 
@@ -185,6 +185,14 @@ you need to pass project-specific options like host or machine name:
 :nnoremap <leader>r :w\|!chef-runner -F min -l warn -H example.local %<cr>
 ```
 
+## More Tips
+
+You can further speed up working with chef-runner by doing the following:
+
+* Split up Chef recipes into smaller logical chunks and include those chunks
+  using the `include_recipe` method ([good example][pr-recipes]).
+* Use [vagrant-cachier] to share a common package cache among Vagrant machines.
+
 ## License and Author
 
 Author:: Mathias Lafeldt (<mathias.lafeldt@gmail.com>)
@@ -215,9 +223,11 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 
 [Berkshelf]: http://berkshelf.com/
 [GitHub pull request]: https://github.com/mlafeldt/chef-runner/pull/3
-[Practicing Ruby cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [Vagrant]: http://vagrantup.com/
 [VirtualBox]: https://www.virtualbox.org/
 [demo video]: http://vimeo.com/78769511
 [leader key]: http://usevim.com/2012/07/20/vim101-leader/
+[pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
+[pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
+[vagrant-cachier]: https://github.com/fgrehm/vagrant-cachier
