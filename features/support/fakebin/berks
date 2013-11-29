@@ -1,0 +1,2 @@
+#!/bin/sh
+echo berks "$@" >> "$HOME"/.history

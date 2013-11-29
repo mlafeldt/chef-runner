@@ -49,7 +49,7 @@ work well with chef-runner.
 
 ## Installation
 
-Simply copy the `chef-runner` shell script to your path. `~/bin` is a great
+Simply copy the shell script `bin/chef-runner` to your path. `~/bin` is a great
 place for it. If you don't currently have a `~/bin`, just do `mkdir ~/bin` and
 add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
 
