@@ -193,6 +193,14 @@ You can further speed up working with chef-runner by doing the following:
   using the `include_recipe` method ([good example][pr-recipes]).
 * Use [vagrant-cachier] to share a common package cache among Vagrant machines.
 
+## Testing
+
+chef-runner comes with a couple of [Cucumber] features that help to ensure the
+tool works as expected. You can run all features this way:
+
+    $ bundle install
+    $ bundle exec cucumber
+
 ## License and Author
 
 Author:: Mathias Lafeldt (<mathias.lafeldt@gmail.com>)
@@ -222,6 +230,7 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 
 
 [Berkshelf]: http://berkshelf.com/
+[Cucumber]: http://cukes.info/
 [GitHub pull request]: https://github.com/mlafeldt/chef-runner/pull/3
 [Vagrant]: http://vagrantup.com/
 [VirtualBox]: https://www.virtualbox.org/
