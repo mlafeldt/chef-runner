@@ -32,7 +32,8 @@ Then(/^\/(.*?)\/ should not be run$/) do |pattern|
 end
 
 Then(/^"([^"]*)" should be run with the option "([^"]*)"$/) do |cmd, option|
-  step %(/#{cmd}.*\s+#{option}\s*/ should be run)
+  regexp = /\b#{cmd}\b.*\s#{option}(\s|\z)/
+  step %(/#{regexp}/ should be run)
 end
 
 Then(/^the runlist should be "([^"]*)"$/) do |runlist|
