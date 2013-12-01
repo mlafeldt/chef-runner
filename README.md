@@ -192,6 +192,8 @@ You can further speed up working with chef-runner by doing the following:
 * Split up Chef recipes into smaller logical chunks and include those chunks
   using the `include_recipe` method ([good example][pr-recipes]).
 * Use [vagrant-cachier] to share a common package cache among Vagrant machines.
+* Enable [SSH connection sharing and persistence][ssh-speedup] to speed up
+  repeated SSH connections.
 
 ## Testing
 
@@ -239,4 +241,5 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 [pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
+[ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 [vagrant-cachier]: https://github.com/fgrehm/vagrant-cachier
