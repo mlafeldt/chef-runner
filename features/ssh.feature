@@ -3,17 +3,20 @@ Feature: Run commands via SSH
   Background:
     Given a cookbook named "cats" with the recipe "default"
 
-  Scenario: Run `vagrant ssh` per default
+  Scenario: Run `ssh -F` per default
+    Given a Vagrant machine named "default"
     When I successfully run `chef-runner`
-    Then /^vagrant ssh default -c .*/ should be run
+    Then /^ssh -F .vagrant/machines/default/ssh_config .* default .*/ should be run
 
-  Scenario: Run `vagrant ssh` with machine name passed via -M
+  Scenario: Run `ssh -F` with machine name passed via -M
+    Given a Vagrant machine named "mybox"
     When I successfully run `chef-runner -M mybox`
-    Then /^vagrant ssh mybox -c .*/ should be run
+    Then /^ssh -F .vagrant/machines/mybox/ssh_config .* mybox .*/ should be run
 
-  Scenario: Run `vagrant ssh` with machine name passed via --machine
+  Scenario: Run `ssh -F` with machine name passed via --machine
+    Given a Vagrant machine named "mybox"
     When I successfully run `chef-runner --machine mybox`
-    Then /^vagrant ssh mybox -c .*/ should be run
+    Then /^ssh -F .vagrant/machines/mybox/ssh_config .* mybox .*/ should be run
 
   Scenario: Run `ssh` with hostname passed via -H
     When I successfully run `chef-runner -H myhost`
