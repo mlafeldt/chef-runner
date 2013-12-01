@@ -32,8 +32,8 @@ provision` in terms of speed.
 To use chef-runner, you need the following software:
 
 * `bash` or `dash` shell to run the chef-runner shell script
-* [VirtualBox] or whatever you use with Vagrant
-* [Vagrant] - version 1.3.4 or higher
+* [VirtualBox] - version 4.2 or higher
+* [Vagrant] - version 1.3.5 or higher
 * [Berkshelf] - installable via `bundle install`
 * `rsync`
 * `ssh`
@@ -138,10 +138,6 @@ needs more setup work, SSH access is a bit faster compared to `-M`.
 Example:
 
     $ chef-runner -H example.local
-
-*Technical note: A future version of chef-runner might use `vagrant ssh-config`
-to get the SSH settings of a Vagrant machine and then cache them somewhere, see
-[GitHub pull request].*
 
 ### Use with Vim
 

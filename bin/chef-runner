@@ -62,7 +62,23 @@ run_ssh() {
     if test -n "$HOST"; then
         ssh "$HOST" "$@"
     else
-        VAGRANT_NO_PLUGINS=1 vagrant ssh "${MACHINE:-default}" -c "$*"
+        # Disable all Vagrant plugins
+        export VAGRANT_NO_PLUGINS=1
+
+        machine_name=${MACHINE:-default}
+        config_file=".vagrant/machines/$machine_name/ssh_config"
+
+        # Write SSH config once for machine
+        if ! test -f "$config_file"; then
+            config=$(vagrant ssh-config "$machine_name")
+            echo "$config" > "$config_file"
+        fi
+
+        # Ask VirtualBox for current SSH port (forwarding)
+        machine_id=$(cat ".vagrant/machines/$machine_name/virtualbox/id")
+        ssh_port=$(VBoxManage showvminfo "$machine_id" --machinereadable | grep ^Forwarding | head -n1 | cut -d, -f4)
+
+        ssh -F "$config_file" -p "$ssh_port" "$machine_name" "$@"
     fi
 }
 

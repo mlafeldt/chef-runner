@@ -1,6 +1,7 @@
 Given(/^a cookbook named "([^"]*)"$/) do |name|
   step %(a file named "metadata.rb" with:), %(name "#{name}")
   step %(an empty file named "Vagrantfile")
+  step %(a Vagrant machine named "default")
 end
 
 Given(/^a cookbook named "([^"]*)" with the recipes? "([^"]*)"$/) do |cookbook, recipes|
@@ -8,6 +9,11 @@ Given(/^a cookbook named "([^"]*)" with the recipes? "([^"]*)"$/) do |cookbook, 
   recipes.split(",").each do |recipe|
     step %(an empty file named "recipes/#{recipe}.rb")
   end
+end
+
+Given(/^a Vagrant machine named "([^"]*)"$/) do |machine|
+  step %(a directory named ".vagrant/machines/#{machine}/virtualbox")
+  step %(an empty file named ".vagrant/machines/#{machine}/virtualbox/id")
 end
 
 # Insert for debugging
