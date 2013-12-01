@@ -139,10 +139,6 @@ Example:
 
     $ chef-runner -H example.local
 
-*Technical note: A future version of chef-runner might use `vagrant ssh-config`
-to get the SSH settings of a Vagrant machine and then cache them somewhere, see
-[GitHub pull request].*
-
 ### Use with Vim
 
 As a matter of fact, I primarily wrote chef-runner for use with Vim. Instead of
@@ -233,7 +229,6 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 
 [Berkshelf]: http://berkshelf.com/
 [Cucumber]: http://cukes.info/
-[GitHub pull request]: https://github.com/mlafeldt/chef-runner/pull/3
 [Vagrant]: http://vagrantup.com/
 [VirtualBox]: https://www.virtualbox.org/
 [demo video]: http://vimeo.com/78769511
