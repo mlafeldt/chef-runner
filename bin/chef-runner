@@ -19,6 +19,7 @@
 #
 
 set -e
+test -n "$CHEF_RUNNER_DEBUG" && set -x
 
 abort() { echo >&2 "$*"; exit 1; }
 
