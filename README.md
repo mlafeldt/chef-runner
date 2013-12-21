@@ -53,6 +53,12 @@ Simply copy the shell script `bin/chef-runner` to your path. `~/bin` is a great
 place for it. If you don't currently have a `~/bin`, just do `mkdir ~/bin` and
 add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
 
+### Using homebrew
+You can install chef-runner using [homebrew], too:
+
+    $ brew tap fh/chef
+    $ brew install chef-runner
+
 ## Usage
 
 ### Command Line Reference
@@ -238,3 +244,4 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 [vagrant-cachier]: https://github.com/fgrehm/vagrant-cachier
+[homebrew]: http://brew.sh/
