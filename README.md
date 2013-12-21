@@ -56,9 +56,8 @@ add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
 ### Using homebrew
 You can install chef-runner using [homebrew], too:
 
-	brew tap fh/chef
- 	brew install chef-runner
- 	
+    $ brew tap fh/chef
+    $ brew install chef-runner
 
 ## Usage
 
@@ -246,4 +245,3 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 [vagrant-cachier]: https://github.com/fgrehm/vagrant-cachier
 [homebrew]: http://brew.sh/
-
