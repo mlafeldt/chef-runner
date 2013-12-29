@@ -199,6 +199,8 @@ You can further speed up working with chef-runner by doing the following:
 
 ## Testing
 
+[![Build Status](https://travis-ci.org/mlafeldt/chef-runner.png?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
+
 chef-runner comes with a couple of [Cucumber] features that help to ensure the
 tool works as expected. You can run all features this way:
 
