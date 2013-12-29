@@ -53,8 +53,9 @@ Simply copy the shell script `bin/chef-runner` to your path. `~/bin` is a great
 place for it. If you don't currently have a `~/bin`, just do `mkdir ~/bin` and
 add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
 
-### Using homebrew
-You can install chef-runner using [homebrew], too:
+### Using Homebrew
+
+If you're on OS X, you can install chef-runner using [Homebrew], too:
 
     $ brew tap fh/chef
     $ brew install chef-runner
@@ -234,12 +235,12 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 
 [Berkshelf]: http://berkshelf.com/
 [Cucumber]: http://cukes.info/
-[Vagrant]: http://vagrantup.com/
-[VirtualBox]: https://www.virtualbox.org/
 [demo video]: http://vimeo.com/78769511
+[Homebrew]: http://brew.sh/
 [leader key]: http://usevim.com/2012/07/20/vim101-leader/
 [pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
-[homebrew]: http://brew.sh/
+[Vagrant]: http://vagrantup.com/
+[VirtualBox]: https://www.virtualbox.org/
