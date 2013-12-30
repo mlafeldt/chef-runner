@@ -57,7 +57,7 @@ add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
 
 If you're on OS X, you can install chef-runner using [Homebrew], too:
 
-    $ brew tap fh/chef
+    $ brew tap mlafeldt/chef
     $ brew install chef-runner
 
 ## Usage
