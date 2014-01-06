@@ -53,6 +53,11 @@ Simply copy the shell script `bin/chef-runner` to your path. `~/bin` is a great
 place for it. If you don't currently have a `~/bin`, just do `mkdir ~/bin` and
 add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
 
+### Using curl
+
+    $ curl -Ls http://git.io/chef-runner > ~/bin/chef-runner
+    $ chmod +x ~/bin/chef-runner
+
 ### Using Homebrew
 
 If you're on OS X, you can install chef-runner using [Homebrew], too:
