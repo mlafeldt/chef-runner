@@ -31,10 +31,10 @@ provision` in terms of speed.
 
 To use chef-runner, you need the following software:
 
-* `bash` or `dash` shell to run the chef-runner shell script
 * [VirtualBox] or whatever you use with Vagrant
 * [Vagrant] - version 1.3.4 or higher
 * [Berkshelf] - installable via `gem install berkshelf`
+* `bash` or `dash` shell to run the chef-runner shell script
 * `rsync`
 * `ssh`
 
