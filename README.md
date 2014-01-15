@@ -7,25 +7,22 @@ chef-runner
 
 ## What is chef-runner?
 
-* A little tool that speeds up your Chef development and testing workflow.
-* A fast alternative to the painfully slow `vagrant provision`.
-* Allows you to change infrastructure code and get immediate feedback.
+* A command-line tool that speeds up your Chef development and testing workflow.
+* A fast alternative to the painfully slow `vagrant provision` ([demo video]
+  comparing both tools).
 * [Integrates with Vim](#use-with-vim) so you don't have to leave your editor
   while hacking on recipes.
-
-Here's a [demo video] that shows how chef-runner compares to `vagrant
-provision` in terms of speed.
+* Allows you to change infrastructure code and get **immediate feedback**.
 
 ## How does it work?
 
-* Directly executes Chef Solo over (plain) SSH without the overhead of `vagrant
-  provision`.
-* Only applies the Chef recipe you've actually modified by overriding Chef's run
-  list.
-* Integrates well with Vagrant: provisioning works as long the VM is running and
-  `/vagrant` is mounted.
-* Installs cookbook dependencies with Berkshelf and updates changes with
-  lightning-fast rsync.
+* chef-runner is a small shell script (~100 LOC).
+* Directly executes Chef Solo over SSH (using `vagrant ssh` or OpenSSH).
+* Overrides Chef runlist to selectively run recipes.
+* Installs cookbook dependencies with Berkshelf and updates changes with rsync.
+* Integrates well with Vagrant as long as the VM is running and `/vagrant` is
+  mounted.
+
 
 ## Requirements
 
