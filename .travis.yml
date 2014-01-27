@@ -2,7 +2,9 @@ language: ruby
 
 rvm: 2.0.0
 
-script: bundle exec cucumber
+install: script/bootstrap
+
+script: script/test
 
 branches:
   only:
