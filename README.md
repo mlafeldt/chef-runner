@@ -1,9 +1,14 @@
 chef-runner
 ===========
 
+The purpose of chef-runner explained in one tweet:
+
 > When it comes to dev/testing, fast feedback is everything. Vagrant needs >5s
 > before it even starts provisioning. Each time. Let's fix that. -- [@mlafeldt
 > (1 Nov 2013)](https://twitter.com/mlafeldt/status/396299646425137152)
+
+For more background, check out my blog post *[Telling people about
+chef-runner][blog post]*.
 
 ## What is chef-runner?
 
@@ -22,7 +27,6 @@ chef-runner
 * Installs cookbook dependencies with Berkshelf and updates changes with rsync.
 * Integrates well with Vagrant as long as the VM is running and `/vagrant` is
   mounted.
-
 
 ## Requirements
 
@@ -232,6 +236,7 @@ Please see `CONTRIBUTING.md` for details.
 
 
 [Berkshelf]: http://berkshelf.com/
+[blog post]: http://mlafeldt.github.io/blog/2014/01/telling-people-about-chef-runner/
 [Cucumber]: http://cukes.info/
 [demo video]: http://vimeo.com/78769511
 [Homebrew]: http://brew.sh/
