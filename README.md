@@ -217,7 +217,7 @@ tool works as expected. You can run all features this way:
 
 Author:: Mathias Lafeldt (<mathias.lafeldt@gmail.com>)
 
-Copyright:: 2013, Mathias Lafeldt
+Copyright:: 2013-2014, Mathias Lafeldt
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License.  You may obtain a copy of the
