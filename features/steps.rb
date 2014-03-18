@@ -1,4 +1,6 @@
 Given(/^a cookbook named "([^"]*)"$/) do |name|
+  step %(a directory named "#{name}")
+  step %(I cd to "#{name}")
   step %(a file named "metadata.rb" with:), %(name "#{name}")
   step %(an empty file named "Vagrantfile")
 end
@@ -12,7 +14,7 @@ end
 
 # Insert for debugging
 Then(/^shell$/) do
-  in_current_dir { system '/bin/bash -i' }
+  in_current_dir { system "/bin/bash -i" }
 end
 
 Then(/^"([^"]*)" should be run$/) do |cmd|
