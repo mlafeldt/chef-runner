@@ -10,6 +10,11 @@ Feature: Override Chef runlist
     When I successfully run `chef-runner recipes/foo.rb`
     Then the runlist should be "cats::foo"
 
+  Scenario: Run local recipe when passing "dirty" filename
+    Given a cookbook named "cats" with the recipe "foo"
+    When I successfully run `chef-runner ./recipes//foo.rb`
+    Then the runlist should be "cats::foo"
+
   Scenario: Run local recipe when passing recipe name
     Given a cookbook named "cats" with the recipe "foo"
     When I successfully run `chef-runner foo`
