@@ -14,18 +14,6 @@ Feature: Install cookbook dependencies
     Then /^rsync .* vendor/cookbooks/cats$/ should be run
     And /^berks .*/ should not be run
 
-  Scenario: Read path to cookbooks from Vagrantfile
-    Given a file named "Vagrantfile" with:
-    """
-      Vagrant.configure("2") do |config|
-        config.vm.provision :chef_solo do |chef|
-          chef.cookbooks_path = "my/cookbook/folder"
-        end
-      end
-    """
-    When I successfully run `chef-runner`
-    Then "berks install --path my/cookbook/folder" should be run
-
   Scenario: Use Bundler when Gemfile is present
     Given an empty file named "Gemfile"
     When I successfully run `chef-runner`
