@@ -6,7 +6,9 @@ go:
 
 install: script/bootstrap
 
-script: script/test
+script:
+  - PATH="$HOME/gopath/bin:$PATH"
+  - script/test
 
 branches:
   only:
