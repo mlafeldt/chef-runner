@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+script/bootstrap
+
+gox \
+    -output="build/chef-runner_{{.OS}}_{{.Arch}}" \
+    -os="darwin linux windows" \
+    ./...

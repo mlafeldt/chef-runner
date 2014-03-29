@@ -2,4 +2,8 @@
 
 set -e
 
-bundle exec cucumber "$@"
+script/bootstrap
+
+go test -v -cover ./...
+
+bundle exec cucumber

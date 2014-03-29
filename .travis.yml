@@ -1,6 +1,8 @@
-language: ruby
+language: go
 
-rvm: 2.0.0
+go:
+  - 1.2
+  - tip
 
 install: script/bootstrap
 
