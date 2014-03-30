@@ -54,7 +54,7 @@ func init() {
 		history = append(history, strings.Join(args, " "))
 		return nil
 	}
-	exec.SetCmdRunnerFunc(f)
+	exec.SetRunnerFunc(f)
 }
 
 func TestVagrantSSH(t *testing.T) {

@@ -57,7 +57,7 @@ func rsyncCookbook(cookbookName, installDir string) error {
 	cmd := []string{"rsync", "--archive", "--delete", "--exclude=" + installDir}
 	cmd = append(cmd, files...)
 	cmd = append(cmd, path.Join(installDir, cookbookName))
-	return exec.ExecuteCommand(cmd)
+	return exec.RunCommand(cmd)
 }
 
 func berkshelf(installDir string) error {
@@ -66,7 +66,7 @@ func berkshelf(installDir string) error {
 		cmd = []string{"bundle", "exec"}
 	}
 	cmd = append(cmd, "berks", "install", "--path", installDir)
-	return exec.ExecuteCommand(cmd)
+	return exec.RunCommand(cmd)
 }
 
 // Install cookbook dependencies with Berkshelf. If the cookbooks are already
@@ -82,11 +82,11 @@ func vagrantSSH(machine, command string) error {
 	if machine == "" {
 		machine = "default"
 	}
-	return exec.ExecuteCommand([]string{"vagrant", "ssh", machine, "-c", command})
+	return exec.RunCommand([]string{"vagrant", "ssh", machine, "-c", command})
 }
 
 func openSSH(host, command string) error {
-	return exec.ExecuteCommand([]string{"ssh", host, "-c", command})
+	return exec.RunCommand([]string{"ssh", host, "-c", command})
 }
 
 func provision(runlist string) error {
