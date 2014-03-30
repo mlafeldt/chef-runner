@@ -57,18 +57,6 @@ func init() {
 	exec.SetRunnerFunc(f)
 }
 
-func TestVagrantSSH(t *testing.T) {
-	defer clearHistory()
-
-	vagrantSSH("", "uname -a")
-	vagrantSSH("web", "uname -a")
-
-	if assert.Equal(t, 2, len(history)) {
-		assert.Equal(t, "vagrant ssh default -c uname -a", history[0])
-		assert.Equal(t, "vagrant ssh web -c uname -a", history[1])
-	}
-}
-
 func TestOpenSSH(t *testing.T) {
 	defer clearHistory()
 

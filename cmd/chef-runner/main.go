@@ -10,6 +10,7 @@ import (
 
 	flags "github.com/jessevdk/go-flags"
 	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner.go/vagrant"
 )
 
 const (
@@ -78,13 +79,6 @@ func installCookbooks(cookbookName, installDir string) error {
 	return berkshelf(installDir)
 }
 
-func vagrantSSH(machine, command string) error {
-	if machine == "" {
-		machine = "default"
-	}
-	return exec.RunCommand([]string{"vagrant", "ssh", machine, "-c", command})
-}
-
 func openSSH(host, command string) error {
 	return exec.RunCommand([]string{"ssh", host, "-c", command})
 }
@@ -112,7 +106,7 @@ func provision(runlist string) error {
 	if opts.Host != "" {
 		err = openSSH(opts.Host, cmd)
 	} else {
-		err = vagrantSSH(opts.Machine, cmd)
+		err = vagrant.RunCommand(opts.Machine, cmd)
 	}
 	return err
 }
