@@ -18,7 +18,7 @@ const (
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
 
-var opts struct {
+type Options struct {
 	Host     string `short:"H" long:"host" description:"Set hostname for direct SSH access" value-name:"NAME"`
 	Machine  string `short:"M" long:"machine" description:"Set name of Vagrant virtual machine" value-name:"NAME"`
 	Format   string `short:"F" long:"format" default:"null" description:"Set output format" value-name:"FORMAT"`
@@ -30,8 +30,8 @@ func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
 }
 
-func parseFlags(argv []string) []string {
-	args, err := flags.ParseArgs(&opts, argv)
+func parseFlags(opts *Options, argv []string) []string {
+	args, err := flags.ParseArgs(opts, argv)
 	if err != nil {
 		// --help is not an error
 		if e, ok := err.(*flags.Error); ok && e.Type == flags.ErrHelp {
@@ -83,7 +83,7 @@ func openSSH(host, command string) error {
 	return exec.RunCommand([]string{"ssh", host, "-c", command})
 }
 
-func provision(runlist string) error {
+func provision(opts Options, runlist string) error {
 	config_file := VagrantChefPath + "/solo.rb"
 	json_file := VagrantChefPath + "/dna.json"
 	cookbooks_path := "/vagrant/" + CookbookPath
@@ -151,9 +151,11 @@ func buildRunList(cookbookName string, recipes []string) string {
 }
 
 func main() {
+	var opts Options
+
 	log.SetFlags(0)
 
-	args := parseFlags(os.Args[1:])
+	args := parseFlags(&opts, os.Args[1:])
 	if opts.Host != "" && opts.Machine != "" {
 		log.Fatal("error: --host and --machine cannot be used together")
 	}
@@ -170,7 +172,7 @@ func main() {
 	if err := installCookbooks(cookbookName, CookbookPath); err != nil {
 		log.Fatal(err)
 	}
-	if err := provision(runlist); err != nil {
+	if err := provision(opts, runlist); err != nil {
 		log.Fatal(err)
 	}
 }
