@@ -1,9 +1,30 @@
 #!/bin/sh
+# Run package tests for a file/directory, or all tests if no argument is passed.
+# Useful to e.g. execute package tests for the file currently open in Vim.
+# Usage: script/test [path]
 
 set -e
 
 script/bootstrap
 
-go test -v -cover ./...
+if test $# -gt 0; then
+    go_pkg_from_path() {
+        path=$1
+        if test -d "$path"; then
+            dir="$path"
+        else
+            dir=$(dirname "$path")
+        fi
+        (cd "$dir" && go list)
+    }
+    pkg=$(go_pkg_from_path "$1")
+else
+    pkg="./..."
+fi
 
-bundle exec cucumber
+go test -v -cover "$pkg"
+
+# HACK: Include features when running all tests
+if test $# -eq 0; then
+    bundle exec cucumber
+fi
