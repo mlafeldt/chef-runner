@@ -11,8 +11,3 @@ Feature: Configure JSON attribute file
     Given an empty file named "chef.json"
     When I successfully run `chef-runner -j chef.json`
     Then "chef-solo" should be run with the option "--json-attributes=/vagrant/chef.json"
-
-  Scenario: Configure attribute file via --json-attributes
-    Given an empty file named "chef.json"
-    When I successfully run `chef-runner --json-attributes chef.json`
-    Then "chef-solo" should be run with the option "--json-attributes=/vagrant/chef.json"

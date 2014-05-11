@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -8,7 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	flags "github.com/jessevdk/go-flags"
 	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
 )
@@ -18,30 +18,8 @@ const (
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
 
-type Options struct {
-	Host     string `short:"H" long:"host" description:"Set hostname for direct SSH access" value-name:"NAME"`
-	Machine  string `short:"M" long:"machine" description:"Set name of Vagrant virtual machine" value-name:"NAME"`
-	Format   string `short:"F" long:"format" default:"null" description:"Set output format" value-name:"FORMAT"`
-	LogLevel string `short:"l" long:"log_level" default:"info" description:"Set log level" value-name:"LEVEL"`
-	JsonFile string `short:"j" long:"json-attributes" description:"Load attributes from a JSON file" value-name:"FILE"`
-}
-
 func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
-}
-
-func parseFlags(opts *Options, argv []string) []string {
-	args, err := flags.ParseArgs(opts, argv)
-	if err != nil {
-		// --help is not an error
-		if e, ok := err.(*flags.Error); ok && e.Type == flags.ErrHelp {
-			os.Exit(0)
-		}
-		// FIXME: show internal parser errors
-		os.Exit(1)
-	}
-
-	return args
 }
 
 func fileExist(name string) bool {
@@ -83,7 +61,7 @@ func openSSH(host, command string) error {
 	return exec.RunCommand([]string{"ssh", host, "-c", command})
 }
 
-func provision(opts Options, runlist string) error {
+func provision(host, machine, format, logLevel, jsonFile string, runlist string) error {
 	config_file := VagrantChefPath + "/solo.rb"
 	json_file := VagrantChefPath + "/dna.json"
 	cookbooks_path := "/vagrant/" + CookbookPath
@@ -92,21 +70,21 @@ func provision(opts Options, runlist string) error {
 	setup_config := fmt.Sprintf("test -f %s || echo 'cookbook_path \"%s\"' | sudo tee %s >/dev/null", config_file, cookbooks_path, config_file)
 	setup_json := fmt.Sprintf("test -f %s || echo '{}' | sudo tee %s >/dev/null", json_file, json_file)
 
-	if opts.JsonFile != "" {
-		json_file = "/vagrant/" + opts.JsonFile
+	if jsonFile != "" {
+		json_file = "/vagrant/" + jsonFile
 	}
 
 	run_chef_solo := fmt.Sprintf("sudo chef-solo --config=%s --json-attributes=%s --override-runlist=%s --format=%s --log_level=%s",
-		config_file, json_file, runlist, opts.Format, opts.LogLevel)
+		config_file, json_file, runlist, format, logLevel)
 
 	cmd := strings.Join([]string{setup_dir, setup_config, setup_json, run_chef_solo}, " && ")
 	// fmt.Println(cmd)
 
 	var err error
-	if opts.Host != "" {
-		err = openSSH(opts.Host, cmd)
+	if host != "" {
+		err = openSSH(host, cmd)
 	} else {
-		err = vagrant.RunCommand(opts.Machine, cmd)
+		err = vagrant.RunCommand(machine, cmd)
 	}
 	return err
 }
@@ -151,13 +129,25 @@ func buildRunList(cookbookName string, recipes []string) string {
 }
 
 func main() {
-	var opts Options
-
 	log.SetFlags(0)
 
-	args := parseFlags(&opts, os.Args[1:])
-	if opts.Host != "" && opts.Machine != "" {
-		log.Fatal("error: --host and --machine cannot be used together")
+	var (
+		host     = flag.String("H", "", "Set hostname for direct SSH access")
+		machine  = flag.String("M", "", "Set name of Vagrant virtual machine")
+		format   = flag.String("F", "null", "Set output format")
+		logLevel = flag.String("l", "info", "Set log level")
+		jsonFile = flag.String("j", "", "Load attributes from a JSON file")
+	)
+
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "usage: chef-runner [flags] [recipe ...]\n")
+		flag.PrintDefaults()
+		os.Exit(2)
+	}
+	flag.Parse()
+
+	if *host != "" && *machine != "" {
+		log.Fatal("error: -H and -M cannot be used together")
 	}
 
 	cwd, err := os.Getwd()
@@ -166,13 +156,13 @@ func main() {
 	}
 	cookbookName := cookbookName(cwd)
 
-	runlist := buildRunList(cookbookName, args)
+	runlist := buildRunList(cookbookName, flag.Args())
 	fmt.Println("Run List is", runlist)
 
 	if err := installCookbooks(cookbookName, CookbookPath); err != nil {
 		log.Fatal(err)
 	}
-	if err := provision(opts, runlist); err != nil {
+	if err := provision(*host, *machine, *format, *logLevel, *jsonFile, runlist); err != nil {
 		log.Fatal(err)
 	}
 }
