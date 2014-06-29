@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner.go/metadata"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
 )
 
@@ -89,7 +90,7 @@ func provision(host, machine, format, logLevel, jsonFile string, runlist string)
 	return err
 }
 
-func cookbookName(cookbookPath string) string {
+func cookbookNameFromPath(cookbookPath string) string {
 	base := path.Base(cookbookPath)
 	if strings.HasPrefix(base, "chef-") {
 		return strings.TrimPrefix(base, "chef-")
@@ -150,11 +151,21 @@ func main() {
 		log.Fatal("error: -H and -M cannot be used together")
 	}
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
+	var cookbookName string
+	if fileExist("metadata.rb") {
+		metadata, err := metadata.ParseFile("metadata.rb")
+		if err != nil {
+			log.Fatal(err)
+		}
+		cookbookName = metadata.Name
 	}
-	cookbookName := cookbookName(cwd)
+	if cookbookName == "" {
+		cwd, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cookbookName = cookbookNameFromPath(cwd)
+	}
 
 	runlist := buildRunList(cookbookName, flag.Args())
 	fmt.Println("Run List is", runlist)

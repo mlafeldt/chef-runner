@@ -16,10 +16,10 @@ var cookbookNameTests = []struct {
 	{"some-other-name", "some-other-name"},
 }
 
-func TestCookbookName(t *testing.T) {
+func TestCookbookNameFromPath(t *testing.T) {
 	for _, test := range cookbookNameTests {
 		expected := test.cookbookName
-		actual := cookbookName(test.cookbookPath)
+		actual := cookbookNameFromPath(test.cookbookPath)
 		assert.Equal(t, expected, actual)
 	}
 }
