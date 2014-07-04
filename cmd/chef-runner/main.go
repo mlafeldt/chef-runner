@@ -22,10 +22,6 @@ const (
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
 
-func init() {
-	os.Setenv("VAGRANT_NO_PLUGINS", "1")
-}
-
 // Install cookbook dependencies with Berkshelf. If the cookbooks are already
 // in place, use lightning-fast rsync to update the current cookbook only.
 func installCookbooks(cookbookName, installDir string) error {
