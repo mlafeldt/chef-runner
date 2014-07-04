@@ -45,24 +45,18 @@ func TestBuildRunList(t *testing.T) {
 	}
 }
 
-var history []string
-
-func clearHistory() { history = []string{} }
+var last_cmd string
 
 func init() {
-	f := func(args []string) error {
-		history = append(history, strings.Join(args, " "))
+	exec.SetRunnerFunc(func(args []string) error {
+		last_cmd = strings.Join(args, " ")
 		return nil
-	}
-	exec.SetRunnerFunc(f)
+	})
 }
 
 func TestOpenSSH(t *testing.T) {
-	defer clearHistory()
-
-	openSSH("somehost.local", "uname -a")
-
-	if assert.Equal(t, 1, len(history)) {
-		assert.Equal(t, "ssh somehost.local -c uname -a", history[0])
+	err := openSSH("somehost.local", "uname -a")
+	if assert.NoError(t, err) {
+		assert.Equal(t, "ssh somehost.local -c uname -a", last_cmd)
 	}
 }

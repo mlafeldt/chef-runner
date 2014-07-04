@@ -9,16 +9,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var history []string
-
-func clearHistory() { history = []string{} }
+var last_cmd string
 
 func init() {
-	f := func(args []string) error {
-		history = append(history, strings.Join(args, " "))
+	exec.SetRunnerFunc(func(args []string) error {
+		last_cmd = strings.Join(args, " ")
 		return nil
-	}
-	exec.SetRunnerFunc(f)
+	})
 }
 
 var copyTests = []struct {
@@ -67,9 +64,8 @@ var copyTests = []struct {
 func TestCopy(t *testing.T) {
 	for _, test := range copyTests {
 		err := rsync.Copy(test.src, test.dst, test.opts)
-		if assert.NoError(t, err) && assert.Equal(t, 1, len(history)) {
-			assert.Equal(t, test.cmd, history[0])
+		if assert.NoError(t, err) {
+			assert.Equal(t, test.cmd, last_cmd)
 		}
-		clearHistory()
 	}
 }

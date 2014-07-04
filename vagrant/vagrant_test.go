@@ -9,29 +9,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var history []string
-
-func clearHistory() { history = []string{} }
+var last_cmd string
 
 func init() {
 	exec.SetRunnerFunc(func(args []string) error {
-		history = append(history, strings.Join(args, " "))
+		last_cmd = strings.Join(args, " ")
 		return nil
 	})
 }
 
 func TestRunCommand_DefaultMachine(t *testing.T) {
-	defer clearHistory()
 	err := vagrant.RunCommand("", "uname -a")
-	if assert.NoError(t, err) && assert.Equal(t, 1, len(history)) {
-		assert.Equal(t, "vagrant ssh default -c uname -a", history[0])
+	if assert.NoError(t, err) {
+		assert.Equal(t, "vagrant ssh default -c uname -a", last_cmd)
 	}
 }
 
 func TestRunCommand_CustomMachine(t *testing.T) {
-	defer clearHistory()
 	err := vagrant.RunCommand("some-machine", "uname -a")
-	if assert.NoError(t, err) && assert.Equal(t, 1, len(history)) {
-		assert.Equal(t, "vagrant ssh some-machine -c uname -a", history[0])
+	if assert.NoError(t, err) {
+		assert.Equal(t, "vagrant ssh some-machine -c uname -a", last_cmd)
 	}
 }
