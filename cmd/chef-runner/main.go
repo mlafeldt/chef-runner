@@ -12,6 +12,7 @@ import (
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
 	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/metadata"
+	"github.com/mlafeldt/chef-runner.go/rsync"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
 )
 
@@ -29,23 +30,23 @@ func fileExist(name string) bool {
 	return err == nil
 }
 
-func rsyncCookbook(cookbookName, installDir string) error {
-	// TODO: filter files more diligently
-	files, err := filepath.Glob("[a-zA-Z]*")
-	if err != nil {
-		return err
-	}
-	cmd := []string{"rsync", "--archive", "--delete", "--exclude=" + installDir}
-	cmd = append(cmd, files...)
-	cmd = append(cmd, path.Join(installDir, cookbookName))
-	return exec.RunCommand(cmd)
-}
-
 // Install cookbook dependencies with Berkshelf. If the cookbooks are already
 // in place, use lightning-fast rsync to update the current cookbook only.
 func installCookbooks(cookbookName, installDir string) error {
 	if fileExist(installDir) {
-		rsyncCookbook(cookbookName, installDir)
+		// TODO: filter files more diligently
+		files, err := filepath.Glob("[a-zA-Z]*")
+		if err != nil {
+			return err
+		}
+		dst := path.Join(installDir, cookbookName)
+		opts := rsync.Options{
+			Archive: true,
+			Delete:  true,
+			Exclude: []string{installDir},
+		}
+		return rsync.Copy(files, dst, opts)
+
 	}
 	return berkshelf.Install(installDir)
 }
