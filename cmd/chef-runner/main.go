@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/mlafeldt/chef-runner.go/berkshelf"
 	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/metadata"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
@@ -40,22 +41,13 @@ func rsyncCookbook(cookbookName, installDir string) error {
 	return exec.RunCommand(cmd)
 }
 
-func berkshelf(installDir string) error {
-	var cmd []string
-	if fileExist("Gemfile") {
-		cmd = []string{"bundle", "exec"}
-	}
-	cmd = append(cmd, "berks", "install", "--path", installDir)
-	return exec.RunCommand(cmd)
-}
-
 // Install cookbook dependencies with Berkshelf. If the cookbooks are already
 // in place, use lightning-fast rsync to update the current cookbook only.
 func installCookbooks(cookbookName, installDir string) error {
 	if fileExist(installDir) {
 		rsyncCookbook(cookbookName, installDir)
 	}
-	return berkshelf(installDir)
+	return berkshelf.Install(installDir)
 }
 
 func openSSH(host, command string) error {
