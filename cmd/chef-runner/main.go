@@ -13,6 +13,7 @@ import (
 	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/metadata"
 	"github.com/mlafeldt/chef-runner.go/rsync"
+	"github.com/mlafeldt/chef-runner.go/util"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
 )
 
@@ -25,15 +26,10 @@ func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
 }
 
-func fileExist(name string) bool {
-	_, err := os.Stat(name)
-	return err == nil
-}
-
 // Install cookbook dependencies with Berkshelf. If the cookbooks are already
 // in place, use lightning-fast rsync to update the current cookbook only.
 func installCookbooks(cookbookName, installDir string) error {
-	if fileExist(installDir) {
+	if util.FileExist(installDir) {
 		// TODO: filter files more diligently
 		files, err := filepath.Glob("[a-zA-Z]*")
 		if err != nil {
@@ -94,14 +90,6 @@ func cookbookNameFromPath(cookbookPath string) string {
 	return base
 }
 
-func baseName(s, suffix string) string {
-	base := path.Base(s)
-	if suffix != "" {
-		base = strings.TrimSuffix(base, suffix)
-	}
-	return base
-}
-
 func buildRunList(cookbookName string, recipes []string) string {
 	if len(recipes) == 0 {
 		return cookbookName + "::default"
@@ -113,7 +101,7 @@ func buildRunList(cookbookName string, recipes []string) string {
 		if strings.Contains(r, "::") {
 			recipeName = r
 		} else if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
-			recipeName = cookbookName + "::" + baseName(r, ".rb")
+			recipeName = cookbookName + "::" + util.BaseName(r, ".rb")
 		} else {
 			recipeName = cookbookName + "::" + r
 		}
@@ -145,7 +133,7 @@ func main() {
 	}
 
 	var cookbookName string
-	if fileExist("metadata.rb") {
+	if util.FileExist("metadata.rb") {
 		metadata, err := metadata.ParseFile("metadata.rb")
 		if err != nil {
 			log.Fatal(err)

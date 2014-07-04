@@ -1,19 +1,13 @@
 package berkshelf
 
 import (
-	"os"
-
 	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner.go/util"
 )
-
-func fileExist(name string) bool {
-	_, err := os.Stat(name)
-	return err == nil
-}
 
 func Install(path string) error {
 	var cmd []string
-	if fileExist("Gemfile") {
+	if util.FileExist("Gemfile") {
 		cmd = []string{"bundle", "exec"}
 	}
 	cmd = append(cmd, "berks", "install", "--path", path)
