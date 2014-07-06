@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
+	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner.go/exec"
-	"github.com/mlafeldt/chef-runner.go/metadata"
 	"github.com/mlafeldt/chef-runner.go/rsync"
 	"github.com/mlafeldt/chef-runner.go/util"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
