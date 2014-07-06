@@ -8,57 +8,32 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParse_Empty(t *testing.T) {
-	metadata, err := metadata.Parse(bytes.NewBufferString(""))
-	assert.NoError(t, err)
-	if assert.NotNil(t, metadata) {
-		assert.Equal(t, "", metadata.Name)
-		assert.Equal(t, "", metadata.Version)
-	}
-}
-
-func TestParse_Name(t *testing.T) {
-	strings := []string{
-		`name "cats"`,
-		`name 'cats'`,
-		` name   "cats" `,
-	}
-	for _, s := range strings {
-		metadata, err := metadata.Parse(bytes.NewBufferString(s))
-		assert.NoError(t, err)
-		if assert.NotNil(t, metadata) {
-			assert.Equal(t, "cats", metadata.Name)
-		}
-	}
-}
-
-func TestParse_Version(t *testing.T) {
-	strings := []string{
-		`version "1.2.3"`,
-		`version '1.2.3'`,
-		` version   "1.2.3" `,
-	}
-	for _, s := range strings {
-		metadata, err := metadata.Parse(bytes.NewBufferString(s))
-		assert.NoError(t, err)
-		if assert.NotNil(t, metadata) {
-			assert.Equal(t, "1.2.3", metadata.Version)
-		}
-	}
-}
-
-func TestParse_All(t *testing.T) {
-	s := `
+var parseTests = []struct {
+	in            string
+	name, version string
+}{
+	{"", "", ""},
+	{`name "cats"`, "cats", ""},
+	{`name 'cats'`, "cats", ""},
+	{` name   "cats" `, "cats", ""},
+	{`version "1.2.3"`, "", "1.2.3"},
+	{`version '1.2.3'`, "", "1.2.3"},
+	{` version   "1.2.3" `, "", "1.2.3"},
+	{`
 # some comment
 name       "dogs"
 maintainer "Pluto"
-version    "2.0.0"
-`
-	metadata, err := metadata.Parse(bytes.NewBufferString(s))
-	assert.NoError(t, err)
-	if assert.NotNil(t, metadata) {
-		assert.Equal(t, "dogs", metadata.Name)
-		assert.Equal(t, "2.0.0", metadata.Version)
+version    "2.0.0"`, "dogs", "2.0.0"},
+}
+
+func TestParse(t *testing.T) {
+	for _, test := range parseTests {
+		metadata, err := metadata.Parse(bytes.NewBufferString(test.in))
+		assert.NoError(t, err)
+		if assert.NotNil(t, metadata) {
+			assert.Equal(t, test.name, metadata.Name)
+			assert.Equal(t, test.version, metadata.Version)
+		}
 	}
 }
 
