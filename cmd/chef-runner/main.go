@@ -6,10 +6,10 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
+	"github.com/mlafeldt/chef-runner.go/cookbook"
 	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/rsync"
@@ -22,38 +22,12 @@ const (
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
 
-func cookbookFiles() ([]string, error) {
-	filesGlob := []string{
-		"README.*",
-		"metadata.*",
-		"attributes",
-		"definitions",
-		"files",
-		"libraries",
-		"providers",
-		"recipes",
-		"resources",
-		"templates",
-	}
-
-	var files []string
-	for _, glob := range filesGlob {
-		matches, err := filepath.Glob(glob)
-		if err != nil {
-			return nil, err
-		}
-		files = append(files, matches...)
-	}
-
-	return files, nil
-}
-
 func installCookbooks(cookbookName, installDir string) error {
 	if !util.FileExist(installDir) {
 		return berkshelf.Install(installDir)
 	}
 
-	files, err := cookbookFiles()
+	files, err := cookbook.Files(".")
 	if err != nil {
 		return err
 	}
@@ -95,17 +69,6 @@ func provision(host, machine, format, logLevel, jsonFile string, runlist string)
 		err = vagrant.RunCommand(machine, cmd)
 	}
 	return err
-}
-
-func cookbookNameFromPath(cookbookPath string) string {
-	base := path.Base(cookbookPath)
-	if strings.HasPrefix(base, "chef-") {
-		return strings.TrimPrefix(base, "chef-")
-	}
-	if strings.HasSuffix(base, "-cookbook") {
-		return strings.TrimSuffix(base, "-cookbook")
-	}
-	return base
 }
 
 func buildRunList(cookbookName string, recipes []string) string {
@@ -163,7 +126,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		cookbookName = cookbookNameFromPath(cwd)
+		cookbookName = cookbook.NameFromPath(cwd)
 	}
 
 	runlist := buildRunList(cookbookName, flag.Args())

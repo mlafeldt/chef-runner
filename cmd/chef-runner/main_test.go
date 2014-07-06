@@ -8,22 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cookbookNameTests = []struct {
-	cookbookPath, cookbookName string
-}{
-	{"/path/to/chef-cats", "cats"},
-	{"/path/to/dogs-cookbook", "dogs"},
-	{"some-other-name", "some-other-name"},
-}
-
-func TestCookbookNameFromPath(t *testing.T) {
-	for _, test := range cookbookNameTests {
-		expected := test.cookbookName
-		actual := cookbookNameFromPath(test.cookbookPath)
-		assert.Equal(t, expected, actual)
-	}
-}
-
 var buildRunListTests = []struct {
 	cookbookName string
 	recipes      []string
