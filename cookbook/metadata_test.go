@@ -1,10 +1,10 @@
-package metadata_test
+package cookbook_test
 
 import (
 	"bytes"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
+	"github.com/mlafeldt/chef-runner.go/cookbook"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +28,7 @@ version    "2.0.0"`, "dogs", "2.0.0"},
 
 func TestParse(t *testing.T) {
 	for _, test := range parseTests {
-		metadata, err := metadata.Parse(bytes.NewBufferString(test.in))
+		metadata, err := cookbook.ParseMetadata(bytes.NewBufferString(test.in))
 		assert.NoError(t, err)
 		if assert.NotNil(t, metadata) {
 			assert.Equal(t, test.name, metadata.Name)
@@ -38,7 +38,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestParseFile(t *testing.T) {
-	metadata, err := metadata.ParseFile("testdata/metadata.rb")
+	metadata, err := cookbook.ParseMetadataFile("testdata/metadata.rb")
 	assert.NoError(t, err)
 	if assert.NotNil(t, metadata) {
 		assert.Equal(t, "practicingruby", metadata.Name)

@@ -10,7 +10,6 @@ import (
 
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
 	"github.com/mlafeldt/chef-runner.go/cookbook"
-	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/rsync"
 	"github.com/mlafeldt/chef-runner.go/util"
@@ -115,7 +114,7 @@ func main() {
 
 	var cookbookName string
 	if util.FileExist("metadata.rb") {
-		metadata, err := metadata.ParseFile("metadata.rb")
+		metadata, err := cookbook.ParseMetadataFile("metadata.rb")
 		if err != nil {
 			log.Fatal(err)
 		}
