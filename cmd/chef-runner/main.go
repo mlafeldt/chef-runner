@@ -22,25 +22,47 @@ const (
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
 
-// Install cookbook dependencies with Berkshelf. If the cookbooks are already
-// in place, use lightning-fast rsync to update the current cookbook only.
-func installCookbooks(cookbookName, installDir string) error {
-	if util.FileExist(installDir) {
-		// TODO: filter files more diligently
-		files, err := filepath.Glob("[a-zA-Z]*")
-		if err != nil {
-			return err
-		}
-		dst := path.Join(installDir, cookbookName)
-		opts := rsync.Options{
-			Archive: true,
-			Delete:  true,
-			Exclude: []string{installDir},
-		}
-		return rsync.Copy(files, dst, opts)
-
+func cookbookFiles() ([]string, error) {
+	filesGlob := []string{
+		"README.*",
+		"metadata.*",
+		"attributes",
+		"definitions",
+		"files",
+		"libraries",
+		"providers",
+		"recipes",
+		"resources",
+		"templates",
 	}
-	return berkshelf.Install(installDir)
+
+	var files []string
+	for _, glob := range filesGlob {
+		matches, err := filepath.Glob(glob)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, matches...)
+	}
+
+	return files, nil
+}
+
+func installCookbooks(cookbookName, installDir string) error {
+	if !util.FileExist(installDir) {
+		return berkshelf.Install(installDir)
+	}
+
+	files, err := cookbookFiles()
+	if err != nil {
+		return err
+	}
+	opts := rsync.Options{
+		Archive: true,
+		Delete:  true,
+		Verbose: true,
+	}
+	return rsync.Copy(files, path.Join(installDir, cookbookName), opts)
 }
 
 func openSSH(host, command string) error {
