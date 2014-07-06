@@ -29,11 +29,11 @@ func TestBuildRunList(t *testing.T) {
 	}
 }
 
-var last_cmd string
+var lastCmd string
 
 func init() {
 	exec.SetRunnerFunc(func(args []string) error {
-		last_cmd = strings.Join(args, " ")
+		lastCmd = strings.Join(args, " ")
 		return nil
 	})
 }
@@ -41,6 +41,6 @@ func init() {
 func TestOpenSSH(t *testing.T) {
 	err := openSSH("somehost.local", "uname -a")
 	if assert.NoError(t, err) {
-		assert.Equal(t, "ssh somehost.local -c uname -a", last_cmd)
+		assert.Equal(t, "ssh somehost.local -c uname -a", lastCmd)
 	}
 }

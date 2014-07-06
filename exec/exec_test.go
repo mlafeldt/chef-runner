@@ -21,14 +21,14 @@ func TestRunCommand_Failure(t *testing.T) {
 func TestRunCommand_Func(t *testing.T) {
 	defer exec.SetRunnerFunc(exec.DefaultRunner)
 
-	var last_cmd string
+	var lastCmd string
 	exec.SetRunnerFunc(func(args []string) error {
-		last_cmd = strings.Join(args, " ")
+		lastCmd = strings.Join(args, " ")
 		return nil
 	})
 
 	err := exec.RunCommand([]string{"some", "test", "command"})
 	if assert.NoError(t, err) {
-		assert.Equal(t, "some test command", last_cmd)
+		assert.Equal(t, "some test command", lastCmd)
 	}
 }

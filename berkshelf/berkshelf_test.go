@@ -10,11 +10,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var last_cmd string
+var lastCmd string
 
 func init() {
 	exec.SetRunnerFunc(func(args []string) error {
-		last_cmd = strings.Join(args, " ")
+		lastCmd = strings.Join(args, " ")
 		return nil
 	})
 }
@@ -22,7 +22,7 @@ func init() {
 func TestInstall(t *testing.T) {
 	err := berkshelf.Install("a/b/c")
 	if assert.NoError(t, err) {
-		assert.Equal(t, "berks install --path a/b/c", last_cmd)
+		assert.Equal(t, "berks install --path a/b/c", lastCmd)
 	}
 }
 
@@ -33,6 +33,6 @@ func TestInstall_Bundler(t *testing.T) {
 
 	err := berkshelf.Install("a/b/c")
 	if assert.NoError(t, err) {
-		assert.Equal(t, "bundle exec berks install --path a/b/c", last_cmd)
+		assert.Equal(t, "bundle exec berks install --path a/b/c", lastCmd)
 	}
 }

@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var last_cmd string
+var lastCmd string
 
 func init() {
 	exec.SetRunnerFunc(func(args []string) error {
-		last_cmd = strings.Join(args, " ")
+		lastCmd = strings.Join(args, " ")
 		return nil
 	})
 }
@@ -65,7 +65,7 @@ func TestCopy(t *testing.T) {
 	for _, test := range copyTests {
 		err := rsync.Copy(test.src, test.dst, test.opts)
 		if assert.NoError(t, err) {
-			assert.Equal(t, test.cmd, last_cmd)
+			assert.Equal(t, test.cmd, lastCmd)
 		}
 	}
 }

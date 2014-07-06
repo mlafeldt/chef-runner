@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var last_cmd string
+var lastCmd string
 
 func init() {
 	exec.SetRunnerFunc(func(args []string) error {
-		last_cmd = strings.Join(args, " ")
+		lastCmd = strings.Join(args, " ")
 		return nil
 	})
 }
@@ -21,13 +21,13 @@ func init() {
 func TestRunCommand_DefaultMachine(t *testing.T) {
 	err := vagrant.RunCommand("", "uname -a")
 	if assert.NoError(t, err) {
-		assert.Equal(t, "vagrant ssh default -c uname -a", last_cmd)
+		assert.Equal(t, "vagrant ssh default -c uname -a", lastCmd)
 	}
 }
 
 func TestRunCommand_CustomMachine(t *testing.T) {
 	err := vagrant.RunCommand("some-machine", "uname -a")
 	if assert.NoError(t, err) {
-		assert.Equal(t, "vagrant ssh some-machine -c uname -a", last_cmd)
+		assert.Equal(t, "vagrant ssh some-machine -c uname -a", lastCmd)
 	}
 }
