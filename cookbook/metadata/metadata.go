@@ -1,4 +1,4 @@
-package cookbook
+package metadata
 
 import (
 	"bufio"
@@ -13,7 +13,7 @@ type Metadata struct {
 	Version string
 }
 
-func ParseMetadata(r io.Reader) (*Metadata, error) {
+func Parse(r io.Reader) (*Metadata, error) {
 	metadata := Metadata{}
 	scanner := bufio.NewScanner(r)
 	re := regexp.MustCompile(`\A(\S+)\s+['"](.*?)['"]\z`)
@@ -42,12 +42,11 @@ func ParseMetadata(r io.Reader) (*Metadata, error) {
 	return &metadata, nil
 }
 
-func ParseMetadataFile(name string) (*Metadata, error) {
+func ParseFile(name string) (*Metadata, error) {
 	f, err := os.Open(name)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-
-	return ParseMetadata(f)
+	return Parse(f)
 }

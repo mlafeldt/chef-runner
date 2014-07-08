@@ -3,6 +3,8 @@ package cookbook
 import (
 	"path"
 	"path/filepath"
+
+	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
 )
 
 type Cookbook struct {
@@ -12,7 +14,7 @@ type Cookbook struct {
 }
 
 func NewCookbook(cookbookPath string) (*Cookbook, error) {
-	metadata, err := ParseMetadataFile(path.Join(cookbookPath, "metadata.rb"))
+	metadata, err := metadata.ParseFile(path.Join(cookbookPath, "metadata.rb"))
 	if err != nil {
 		return nil, err
 	}
