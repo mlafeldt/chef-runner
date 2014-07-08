@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+const (
+	Filename = "metadata.rb"
+)
+
 type Metadata struct {
 	Name    string
 	Version string

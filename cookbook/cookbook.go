@@ -14,7 +14,8 @@ type Cookbook struct {
 }
 
 func NewCookbook(cookbookPath string) (*Cookbook, error) {
-	metadata, err := metadata.ParseFile(path.Join(cookbookPath, "metadata.rb"))
+	metadataPath := path.Join(cookbookPath, metadata.Filename)
+	metadata, err := metadata.ParseFile(metadataPath)
 	if err != nil {
 		return nil, err
 	}
