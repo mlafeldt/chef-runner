@@ -3,10 +3,28 @@ package cookbook
 import (
 	"path"
 	"path/filepath"
-	"strings"
 )
 
-func Files(cookbookPath string) ([]string, error) {
+type Cookbook struct {
+	Path    string
+	Name    string
+	Version string
+}
+
+func NewCookbook(cookbookPath string) (*Cookbook, error) {
+	metadata, err := ParseMetadataFile(path.Join(cookbookPath, "metadata.rb"))
+	if err != nil {
+		return nil, err
+	}
+	cb := Cookbook{
+		Path:    cookbookPath,
+		Name:    metadata.Name,
+		Version: metadata.Version,
+	}
+	return &cb, nil
+}
+
+func (cb *Cookbook) Files() ([]string, error) {
 	filesGlob := []string{
 		"README.*",
 		"metadata.*",
@@ -21,22 +39,11 @@ func Files(cookbookPath string) ([]string, error) {
 	}
 	var files []string
 	for _, glob := range filesGlob {
-		matches, err := filepath.Glob(path.Join(cookbookPath, glob))
+		matches, err := filepath.Glob(path.Join(cb.Path, glob))
 		if err != nil {
 			return nil, err
 		}
 		files = append(files, matches...)
 	}
 	return files, nil
-}
-
-func NameFromPath(cookbookPath string) string {
-	base := path.Base(cookbookPath)
-	if strings.HasPrefix(base, "chef-") {
-		return strings.TrimPrefix(base, "chef-")
-	}
-	if strings.HasSuffix(base, "-cookbook") {
-		return strings.TrimSuffix(base, "-cookbook")
-	}
-	return base
 }

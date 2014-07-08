@@ -7,29 +7,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewCookbook(t *testing.T) {
+	cb, err := cookbook.NewCookbook("testdata")
+	if assert.NoError(t, err) {
+		assert.Equal(t, "testdata", cb.Path)
+		assert.Equal(t, "practicingruby", cb.Name)
+		assert.Equal(t, "1.3.1", cb.Version)
+	}
+}
+
 func TestFiles(t *testing.T) {
+	cb, _ := cookbook.NewCookbook("testdata")
 	expect := []string{
 		"testdata/README.md",
 		"testdata/metadata.rb",
 		"testdata/attributes",
 		"testdata/recipes",
 	}
-	actual, err := cookbook.Files("testdata")
+	actual, err := cb.Files()
 	if assert.NoError(t, err) {
 		assert.Equal(t, expect, actual)
-	}
-}
-
-var nameFromPathTests = []struct {
-	in, out string
-}{
-	{"/path/to/chef-cats", "cats"},
-	{"/path/to/dogs-cookbook", "dogs"},
-	{"some-other-name", "some-other-name"},
-}
-
-func TestNameFromPath(t *testing.T) {
-	for _, test := range nameFromPathTests {
-		assert.Equal(t, test.out, cookbook.NameFromPath(test.in))
 	}
 }

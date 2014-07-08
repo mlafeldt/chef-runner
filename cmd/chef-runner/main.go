@@ -21,12 +21,11 @@ const (
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
 
-func installCookbooks(cookbookName, installDir string) error {
+func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 	if !util.FileExist(installDir) {
 		return berkshelf.Install(installDir)
 	}
-
-	files, err := cookbook.Files(".")
+	files, err := cb.Files()
 	if err != nil {
 		return err
 	}
@@ -35,7 +34,7 @@ func installCookbooks(cookbookName, installDir string) error {
 		Delete:  true,
 		Verbose: true,
 	}
-	return rsync.Copy(files, path.Join(installDir, cookbookName), opts)
+	return rsync.Copy(files, path.Join(installDir, cb.Name), opts)
 }
 
 func openSSH(host, command string) error {
@@ -112,26 +111,15 @@ func main() {
 		log.Fatal("error: -H and -M cannot be used together")
 	}
 
-	var cookbookName string
-	if util.FileExist("metadata.rb") {
-		metadata, err := cookbook.ParseMetadataFile("metadata.rb")
-		if err != nil {
-			log.Fatal(err)
-		}
-		cookbookName = metadata.Name
-	}
-	if cookbookName == "" {
-		cwd, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-		}
-		cookbookName = cookbook.NameFromPath(cwd)
+	cb, err := cookbook.NewCookbook(".")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	runlist := buildRunList(cookbookName, flag.Args())
+	runlist := buildRunList(cb.Name, flag.Args())
 	fmt.Println("Run List is", runlist)
 
-	if err := installCookbooks(cookbookName, CookbookPath); err != nil {
+	if err := installCookbooks(cb, CookbookPath); err != nil {
 		log.Fatal(err)
 	}
 	if err := provision(*host, *machine, *format, *logLevel, *jsonFile, runlist); err != nil {
