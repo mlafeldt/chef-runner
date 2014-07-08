@@ -9,7 +9,8 @@ import (
 
 func TestNewCookbook(t *testing.T) {
 	cb, err := cookbook.NewCookbook("testdata")
-	if assert.NoError(t, err) {
+	assert.NoError(t, err)
+	if assert.NotNil(t, cb) {
 		assert.Equal(t, "testdata", cb.Path)
 		assert.Equal(t, "practicingruby", cb.Name)
 		assert.Equal(t, "1.3.1", cb.Version)
