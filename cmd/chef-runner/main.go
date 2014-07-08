@@ -37,11 +37,19 @@ func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 	return rsync.Copy(files, path.Join(installDir, cb.Name), opts)
 }
 
-func openSSH(host, command string) error {
-	return exec.RunCommand([]string{"ssh", host, "-c", command})
+type SSHClient interface {
+	RunCommand(cmd string) error
 }
 
-func provision(host, machine, format, logLevel, jsonFile string, runlist string) error {
+type OpenSSHClient struct {
+	Host string
+}
+
+func (c *OpenSSHClient) RunCommand(cmd string) error {
+	return exec.RunCommand([]string{"ssh", c.Host, "-c", cmd})
+}
+
+func provision(client SSHClient, format, logLevel, jsonFile string, runlist string) error {
 	config_file := VagrantChefPath + "/solo.rb"
 	json_file := VagrantChefPath + "/dna.json"
 	cookbooks_path := "/vagrant/" + CookbookPath
@@ -58,15 +66,7 @@ func provision(host, machine, format, logLevel, jsonFile string, runlist string)
 		config_file, json_file, runlist, format, logLevel)
 
 	cmd := strings.Join([]string{setup_dir, setup_config, setup_json, run_chef_solo}, " && ")
-	// fmt.Println(cmd)
-
-	var err error
-	if host != "" {
-		err = openSSH(host, cmd)
-	} else {
-		err = vagrant.RunCommand(machine, cmd)
-	}
-	return err
+	return client.RunCommand(cmd)
 }
 
 func buildRunList(cookbookName string, recipes []string) string {
@@ -122,7 +122,15 @@ func main() {
 	if err := installCookbooks(cb, CookbookPath); err != nil {
 		log.Fatal(err)
 	}
-	if err := provision(*host, *machine, *format, *logLevel, *jsonFile, runlist); err != nil {
+
+	var client SSHClient
+	if *host != "" {
+		client = &OpenSSHClient{*host}
+	} else {
+		client = vagrant.NewSSHClient(*machine)
+	}
+
+	if err := provision(client, *format, *logLevel, *jsonFile, runlist); err != nil {
 		log.Fatal(err)
 	}
 }

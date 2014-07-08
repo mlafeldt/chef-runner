@@ -1,10 +1,7 @@
 package main
 
 import (
-	"strings"
 	"testing"
-
-	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,18 +26,18 @@ func TestBuildRunList(t *testing.T) {
 	}
 }
 
-var lastCmd string
+// var lastCmd string
 
-func init() {
-	exec.SetRunnerFunc(func(args []string) error {
-		lastCmd = strings.Join(args, " ")
-		return nil
-	})
-}
+// func init() {
+// 	exec.SetRunnerFunc(func(args []string) error {
+// 		lastCmd = strings.Join(args, " ")
+// 		return nil
+// 	})
+// }
 
-func TestOpenSSH(t *testing.T) {
-	err := openSSH("somehost.local", "uname -a")
-	if assert.NoError(t, err) {
-		assert.Equal(t, "ssh somehost.local -c uname -a", lastCmd)
-	}
-}
+// func TestOpenSSH(t *testing.T) {
+// 	err := openSSH("somehost.local", "uname -a")
+// 	if assert.NoError(t, err) {
+// 		assert.Equal(t, "ssh somehost.local -c uname -a", lastCmd)
+// 	}
+// }
