@@ -10,7 +10,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
 	"github.com/mlafeldt/chef-runner.go/cookbook"
-	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner.go/openssh"
 	"github.com/mlafeldt/chef-runner.go/rsync"
 	"github.com/mlafeldt/chef-runner.go/util"
 	"github.com/mlafeldt/chef-runner.go/vagrant"
@@ -20,6 +20,10 @@ const (
 	CookbookPath    = "vendor/cookbooks"
 	VagrantChefPath = "/tmp/vagrant-chef-1"
 )
+
+type SSHClient interface {
+	RunCommand(cmd string) error
+}
 
 func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 	if !util.FileExist(installDir) {
@@ -35,18 +39,6 @@ func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 		Verbose: true,
 	}
 	return rsync.Copy(files, path.Join(installDir, cb.Name), opts)
-}
-
-type SSHClient interface {
-	RunCommand(cmd string) error
-}
-
-type OpenSSHClient struct {
-	Host string
-}
-
-func (c *OpenSSHClient) RunCommand(cmd string) error {
-	return exec.RunCommand([]string{"ssh", c.Host, "-c", cmd})
 }
 
 func provision(client SSHClient, format, logLevel, jsonFile string, runlist string) error {
@@ -125,7 +117,7 @@ func main() {
 
 	var client SSHClient
 	if *host != "" {
-		client = &OpenSSHClient{*host}
+		client = openssh.NewSSHClient(*host)
 	} else {
 		client = vagrant.NewSSHClient(*machine)
 	}
