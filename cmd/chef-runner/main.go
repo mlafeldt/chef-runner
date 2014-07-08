@@ -22,7 +22,7 @@ const (
 )
 
 type SSHClient interface {
-	RunCommand(cmd string) error
+	RunCommand(command string) error
 }
 
 func installCookbooks(cb *cookbook.Cookbook, installDir string) error {

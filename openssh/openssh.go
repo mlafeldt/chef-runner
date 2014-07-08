@@ -12,6 +12,7 @@ func NewSSHClient(host string) *SSHClient {
 	return &SSHClient{Host: host}
 }
 
-func (c *SSHClient) RunCommand(cmd string) error {
-	return exec.RunCommand([]string{"ssh", c.Host, "-c", cmd})
+func (c *SSHClient) RunCommand(command string) error {
+	cmd := []string{"ssh", c.Host, "-c", command}
+	return exec.RunCommand(cmd)
 }

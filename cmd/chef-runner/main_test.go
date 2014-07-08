@@ -25,19 +25,3 @@ func TestBuildRunList(t *testing.T) {
 		assert.Equal(t, expected, actual)
 	}
 }
-
-// var lastCmd string
-
-// func init() {
-// 	exec.SetRunnerFunc(func(args []string) error {
-// 		lastCmd = strings.Join(args, " ")
-// 		return nil
-// 	})
-// }
-
-// func TestOpenSSH(t *testing.T) {
-// 	err := openSSH("somehost.local", "uname -a")
-// 	if assert.NoError(t, err) {
-// 		assert.Equal(t, "ssh somehost.local -c uname -a", lastCmd)
-// 	}
-// }
