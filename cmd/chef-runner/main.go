@@ -25,6 +25,26 @@ type SSHClient interface {
 	RunCommand(command string) error
 }
 
+func buildRunList(cb *cookbook.Cookbook, recipes []string) string {
+	if len(recipes) == 0 {
+		return cb.Name + "::default"
+	}
+
+	var runlist []string
+	for _, r := range recipes {
+		var recipeName string
+		if strings.Contains(r, "::") {
+			recipeName = r
+		} else if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
+			recipeName = cb.Name + "::" + util.BaseName(r, ".rb")
+		} else {
+			recipeName = cb.Name + "::" + r
+		}
+		runlist = append(runlist, recipeName)
+	}
+	return strings.Join(runlist, ",")
+}
+
 func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 	if !util.FileExist(installDir) {
 		return berkshelf.Install(installDir)
@@ -33,11 +53,7 @@ func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 	if err != nil {
 		return err
 	}
-	opts := rsync.Options{
-		Archive: true,
-		Delete:  true,
-		Verbose: true,
-	}
+	opts := rsync.Options{Archive: true, Delete: true, Verbose: true}
 	return rsync.Copy(files, path.Join(installDir, cb.Name), opts)
 }
 
@@ -61,26 +77,6 @@ func provision(client SSHClient, format, logLevel, jsonFile string, runlist stri
 	return client.RunCommand(cmd)
 }
 
-func buildRunList(cookbookName string, recipes []string) string {
-	if len(recipes) == 0 {
-		return cookbookName + "::default"
-	}
-
-	var runlist []string
-	for _, r := range recipes {
-		var recipeName string
-		if strings.Contains(r, "::") {
-			recipeName = r
-		} else if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
-			recipeName = cookbookName + "::" + util.BaseName(r, ".rb")
-		} else {
-			recipeName = cookbookName + "::" + r
-		}
-		runlist = append(runlist, recipeName)
-	}
-	return strings.Join(runlist, ",")
-}
-
 func main() {
 	log.SetFlags(0)
 
@@ -98,9 +94,16 @@ func main() {
 		os.Exit(2)
 	}
 	flag.Parse()
+	recipes := flag.Args()
 
 	if *host != "" && *machine != "" {
 		log.Fatal("error: -H and -M cannot be used together")
+	}
+	var client SSHClient
+	if *host != "" {
+		client = openssh.NewSSHClient(*host)
+	} else {
+		client = vagrant.NewSSHClient(*machine)
 	}
 
 	cb, err := cookbook.NewCookbook(".")
@@ -108,18 +111,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	runlist := buildRunList(cb.Name, flag.Args())
+	runlist := buildRunList(cb, recipes)
 	fmt.Println("Run List is", runlist)
 
 	if err := installCookbooks(cb, CookbookPath); err != nil {
 		log.Fatal(err)
-	}
-
-	var client SSHClient
-	if *host != "" {
-		client = openssh.NewSSHClient(*host)
-	} else {
-		client = vagrant.NewSSHClient(*machine)
 	}
 
 	if err := provision(client, *format, *logLevel, *jsonFile, runlist); err != nil {

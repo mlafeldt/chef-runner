@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/mlafeldt/chef-runner.go/cookbook"
+	"github.com/stretchr/testify/assert"
 )
 
 var buildRunListTests = []struct {
@@ -20,8 +22,7 @@ var buildRunListTests = []struct {
 
 func TestBuildRunList(t *testing.T) {
 	for _, test := range buildRunListTests {
-		expected := test.runlist
-		actual := buildRunList(test.cookbookName, test.recipes)
-		assert.Equal(t, expected, actual)
+		cb := cookbook.Cookbook{Name: test.cookbookName}
+		assert.Equal(t, test.runlist, buildRunList(&cb, test.recipes))
 	}
 }
