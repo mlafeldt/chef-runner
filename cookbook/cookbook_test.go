@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewCookbook(t *testing.T) {
-	cb, err := cookbook.NewCookbook("testdata")
+func TestNew(t *testing.T) {
+	cb, err := cookbook.New("testdata")
 	assert.NoError(t, err)
 	if assert.NotNil(t, cb) {
 		assert.Equal(t, "testdata", cb.Path)
@@ -23,7 +23,7 @@ func TestString(t *testing.T) {
 }
 
 func TestFiles(t *testing.T) {
-	cb, _ := cookbook.NewCookbook("testdata")
+	cb, _ := cookbook.New("testdata")
 	expect := []string{
 		"testdata/README.md",
 		"testdata/metadata.rb",

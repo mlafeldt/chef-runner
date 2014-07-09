@@ -13,7 +13,7 @@ type Cookbook struct {
 	Version string
 }
 
-func NewCookbook(cookbookPath string) (*Cookbook, error) {
+func New(cookbookPath string) (*Cookbook, error) {
 	metadataPath := path.Join(cookbookPath, metadata.Filename)
 	metadata, err := metadata.ParseFile(metadataPath)
 	if err != nil {

@@ -106,7 +106,7 @@ func main() {
 		client = vagrant.NewSSHClient(*machine)
 	}
 
-	cb, err := cookbook.NewCookbook(".")
+	cb, err := cookbook.New(".")
 	if err != nil {
 		log.Fatal(err)
 	}
