@@ -1,6 +1,8 @@
 package rsync
 
 import (
+	"errors"
+
 	"github.com/mlafeldt/chef-runner.go/exec"
 )
 
@@ -12,6 +14,13 @@ type Options struct {
 }
 
 func Copy(src []string, dst string, opts Options) error {
+	if len(src) == 0 {
+		return errors.New("No source given")
+	}
+	if dst == "" {
+		return errors.New("No destination given")
+	}
+
 	cmd := []string{"rsync"}
 	if opts.Archive {
 		cmd = append(cmd, "--archive")

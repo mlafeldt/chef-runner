@@ -69,3 +69,13 @@ func TestCopy(t *testing.T) {
 		}
 	}
 }
+
+func TestCopy_MissingSource(t *testing.T) {
+	err := rsync.Copy([]string{}, "a/b", rsync.Options{})
+	assert.EqualError(t, err, "No source given")
+}
+
+func TestCopy_MissingDestination(t *testing.T) {
+	err := rsync.Copy([]string{"a"}, "", rsync.Options{})
+	assert.EqualError(t, err, "No destination given")
+}
