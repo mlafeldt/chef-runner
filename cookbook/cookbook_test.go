@@ -18,8 +18,8 @@ func TestNewCookbook(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	cb, _ := cookbook.NewCookbook("testdata")
-	assert.Equal(t, "practicingruby 1.3.1", cb.String())
+	cb := cookbook.Cookbook{Name: "cats", Version: "1.2.3"}
+	assert.Equal(t, "cats 1.2.3", cb.String())
 }
 
 func TestFiles(t *testing.T) {
