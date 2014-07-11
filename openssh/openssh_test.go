@@ -28,6 +28,6 @@ func TestNewSSHClient(t *testing.T) {
 func TestRunCommand(t *testing.T) {
 	err := openssh.NewSSHClient("some-host").RunCommand("uname -a")
 	if assert.NoError(t, err) {
-		assert.Equal(t, "ssh some-host -c uname -a", lastCmd)
+		assert.Equal(t, "ssh some-host uname -a", lastCmd)
 	}
 }

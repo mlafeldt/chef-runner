@@ -13,6 +13,6 @@ func NewSSHClient(host string) *SSHClient {
 }
 
 func (c *SSHClient) RunCommand(command string) error {
-	cmd := []string{"ssh", c.Host, "-c", command}
+	cmd := []string{"ssh", c.Host, command}
 	return exec.RunCommand(cmd)
 }
