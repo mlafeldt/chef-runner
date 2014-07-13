@@ -5,11 +5,15 @@ import (
 	"github.com/mlafeldt/chef-runner.go/util"
 )
 
-func Install(path string) error {
+func InstallCommand(path string) []string {
 	var cmd []string
 	if util.FileExist("Gemfile") {
 		cmd = []string{"bundle", "exec"}
 	}
 	cmd = append(cmd, "berks", "install", "--path", path)
-	return exec.RunCommand(cmd)
+	return cmd
+}
+
+func Install(path string) error {
+	return exec.RunCommand(InstallCommand(path))
 }
