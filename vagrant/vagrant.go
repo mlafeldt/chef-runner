@@ -10,18 +10,18 @@ func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
 }
 
-type SSHClient struct {
+type Client struct {
 	Machine string
 }
 
-func NewSSHClient(machine string) *SSHClient {
+func NewClient(machine string) *Client {
 	if machine == "" {
 		machine = "default"
 	}
-	return &SSHClient{Machine: machine}
+	return &Client{Machine: machine}
 }
 
-func (c *SSHClient) RunCommand(command string) error {
+func (c *Client) RunCommand(command string) error {
 	cmd := []string{"vagrant", "ssh", c.Machine, "-c", command}
 	return exec.RunCommand(cmd)
 }

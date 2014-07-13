@@ -18,15 +18,15 @@ func init() {
 	})
 }
 
-func TestNewSSHClient(t *testing.T) {
-	client := openssh.NewSSHClient("some-host")
+func TestNewClient(t *testing.T) {
+	client := openssh.NewClient("some-host")
 	if assert.NotNil(t, client) {
 		assert.Equal(t, "some-host", client.Host)
 	}
 }
 
 func TestRunCommand(t *testing.T) {
-	err := openssh.NewSSHClient("some-host").RunCommand("uname -a")
+	err := openssh.NewClient("some-host").RunCommand("uname -a")
 	if assert.NoError(t, err) {
 		assert.Equal(t, "ssh some-host uname -a", lastCmd)
 	}

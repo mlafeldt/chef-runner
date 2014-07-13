@@ -18,22 +18,22 @@ func init() {
 	})
 }
 
-func TestNewSSHClient(t *testing.T) {
-	client := vagrant.NewSSHClient("some-machine")
+func TestNewClient(t *testing.T) {
+	client := vagrant.NewClient("some-machine")
 	if assert.NotNil(t, client) {
 		assert.Equal(t, "some-machine", client.Machine)
 	}
 }
 
 func TestRunCommand_DefaultMachine(t *testing.T) {
-	err := vagrant.NewSSHClient("").RunCommand("uname -a")
+	err := vagrant.NewClient("").RunCommand("uname -a")
 	if assert.NoError(t, err) {
 		assert.Equal(t, "vagrant ssh default -c uname -a", lastCmd)
 	}
 }
 
 func TestRunCommand_CustomMachine(t *testing.T) {
-	err := vagrant.NewSSHClient("some-machine").RunCommand("uname -a")
+	err := vagrant.NewClient("some-machine").RunCommand("uname -a")
 	if assert.NoError(t, err) {
 		assert.Equal(t, "vagrant ssh some-machine -c uname -a", lastCmd)
 	}

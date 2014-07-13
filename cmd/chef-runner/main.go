@@ -101,9 +101,9 @@ func main() {
 	}
 	var client SSHClient
 	if *host != "" {
-		client = openssh.NewSSHClient(*host)
+		client = openssh.NewClient(*host)
 	} else {
-		client = vagrant.NewSSHClient(*machine)
+		client = vagrant.NewClient(*machine)
 	}
 
 	cb, err := cookbook.New(".")

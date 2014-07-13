@@ -4,15 +4,15 @@ import (
 	"github.com/mlafeldt/chef-runner.go/exec"
 )
 
-type SSHClient struct {
+type Client struct {
 	Host string
 }
 
-func NewSSHClient(host string) *SSHClient {
-	return &SSHClient{Host: host}
+func NewClient(host string) *Client {
+	return &Client{Host: host}
 }
 
-func (c *SSHClient) RunCommand(command string) error {
+func (c *Client) RunCommand(command string) error {
 	cmd := []string{"ssh", c.Host, command}
 	return exec.RunCommand(cmd)
 }
