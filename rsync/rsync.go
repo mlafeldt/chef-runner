@@ -6,14 +6,16 @@ import (
 	"github.com/mlafeldt/chef-runner.go/exec"
 )
 
-type Options struct {
+type Client struct {
 	Archive bool
 	Delete  bool
 	Verbose bool
 	Exclude []string
 }
 
-func Copy(src []string, dst string, opts Options) error {
+var DefaultClient = &Client{}
+
+func (c *Client) Copy(src []string, dst string) error {
 	if len(src) == 0 {
 		return errors.New("No source given")
 	}
@@ -22,16 +24,16 @@ func Copy(src []string, dst string, opts Options) error {
 	}
 
 	cmd := []string{"rsync"}
-	if opts.Archive {
+	if c.Archive {
 		cmd = append(cmd, "--archive")
 	}
-	if opts.Delete {
+	if c.Delete {
 		cmd = append(cmd, "--delete")
 	}
-	if opts.Verbose {
+	if c.Verbose {
 		cmd = append(cmd, "--verbose")
 	}
-	for _, x := range opts.Exclude {
+	for _, x := range c.Exclude {
 		cmd = append(cmd, "--exclude", x)
 	}
 	cmd = append(cmd, src...)

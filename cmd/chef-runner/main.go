@@ -53,8 +53,8 @@ func installCookbooks(cb *cookbook.Cookbook, installDir string) error {
 	if err != nil {
 		return err
 	}
-	opts := rsync.Options{Archive: true, Delete: true, Verbose: true}
-	return rsync.Copy(files, path.Join(installDir, cb.Name), opts)
+	c := rsync.Client{Archive: true, Delete: true, Verbose: true}
+	return c.Copy(files, path.Join(installDir, cb.Name))
 }
 
 func provision(client SSHClient, format, logLevel, jsonFile string, runlist string) error {

@@ -19,51 +19,51 @@ func init() {
 }
 
 var copyTests = []struct {
-	src  []string
-	dst  string
-	opts rsync.Options
-	cmd  string
+	client rsync.Client
+	src    []string
+	dst    string
+	cmd    string
 }{
 	{
+		rsync.Client{},
 		[]string{"a"}, "b",
-		rsync.Options{},
 		"rsync a b",
 	},
 	{
+		rsync.Client{},
 		[]string{"a", "b"}, "c",
-		rsync.Options{},
 		"rsync a b c",
 	},
 	{
+		rsync.Client{Archive: true},
 		[]string{"a"}, "b",
-		rsync.Options{Archive: true},
 		"rsync --archive a b",
 	},
 	{
+		rsync.Client{Delete: true},
 		[]string{"a"}, "b",
-		rsync.Options{Delete: true},
 		"rsync --delete a b",
 	},
 	{
+		rsync.Client{Verbose: true},
 		[]string{"a"}, "b",
-		rsync.Options{Verbose: true},
 		"rsync --verbose a b",
 	},
 	{
+		rsync.Client{Exclude: []string{"x", "y"}},
 		[]string{"a"}, "b",
-		rsync.Options{Exclude: []string{"x", "y"}},
 		"rsync --exclude x --exclude y a b",
 	},
 	{
+		rsync.Client{Archive: true, Delete: true, Exclude: []string{"x"}},
 		[]string{"a"}, "b",
-		rsync.Options{Archive: true, Delete: true, Exclude: []string{"x"}},
 		"rsync --archive --delete --exclude x a b",
 	},
 }
 
 func TestCopy(t *testing.T) {
 	for _, test := range copyTests {
-		err := rsync.Copy(test.src, test.dst, test.opts)
+		err := test.client.Copy(test.src, test.dst)
 		if assert.NoError(t, err) {
 			assert.Equal(t, test.cmd, lastCmd)
 		}
@@ -71,11 +71,11 @@ func TestCopy(t *testing.T) {
 }
 
 func TestCopy_MissingSource(t *testing.T) {
-	err := rsync.Copy([]string{}, "a/b", rsync.Options{})
+	err := rsync.DefaultClient.Copy([]string{}, "a/b")
 	assert.EqualError(t, err, "No source given")
 }
 
 func TestCopy_MissingDestination(t *testing.T) {
-	err := rsync.Copy([]string{"a"}, "", rsync.Options{})
+	err := rsync.DefaultClient.Copy([]string{"a"}, "")
 	assert.EqualError(t, err, "No destination given")
 }
