@@ -15,12 +15,12 @@ type Client struct {
 
 var DefaultClient = &Client{}
 
-func (c *Client) Copy(src []string, dst string) error {
+func (c *Client) Command(src []string, dst string) ([]string, error) {
 	if len(src) == 0 {
-		return errors.New("No source given")
+		return nil, errors.New("No source given")
 	}
 	if dst == "" {
-		return errors.New("No destination given")
+		return nil, errors.New("No destination given")
 	}
 
 	cmd := []string{"rsync"}
@@ -38,5 +38,13 @@ func (c *Client) Copy(src []string, dst string) error {
 	}
 	cmd = append(cmd, src...)
 	cmd = append(cmd, dst)
+	return cmd, nil
+}
+
+func (c *Client) Copy(src []string, dst string) error {
+	cmd, err := c.Command(src, dst)
+	if err != nil {
+		return err
+	}
 	return exec.RunCommand(cmd)
 }
