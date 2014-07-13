@@ -1,22 +1,11 @@
 package openssh_test
 
 import (
-	"strings"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/exec"
 	"github.com/mlafeldt/chef-runner.go/openssh"
 	"github.com/stretchr/testify/assert"
 )
-
-var lastCmd string
-
-func init() {
-	exec.SetRunnerFunc(func(args []string) error {
-		lastCmd = strings.Join(args, " ")
-		return nil
-	})
-}
 
 func TestNewClient(t *testing.T) {
 	client := openssh.NewClient("some-host")
@@ -25,9 +14,8 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestRunCommand(t *testing.T) {
-	err := openssh.NewClient("some-host").RunCommand("uname -a")
-	if assert.NoError(t, err) {
-		assert.Equal(t, "ssh some-host uname -a", lastCmd)
-	}
+func TestCommand(t *testing.T) {
+	expect := []string{"ssh", "some-host", "uname -a"}
+	actual := openssh.NewClient("some-host").Command("uname -a")
+	assert.Equal(t, expect, actual)
 }

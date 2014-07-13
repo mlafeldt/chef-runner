@@ -12,7 +12,10 @@ func NewClient(host string) *Client {
 	return &Client{Host: host}
 }
 
+func (c *Client) Command(command string) []string {
+	return []string{"ssh", c.Host, command}
+}
+
 func (c *Client) RunCommand(command string) error {
-	cmd := []string{"ssh", c.Host, command}
-	return exec.RunCommand(cmd)
+	return exec.RunCommand(c.Command(command))
 }
