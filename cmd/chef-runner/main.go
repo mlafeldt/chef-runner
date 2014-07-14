@@ -16,10 +16,6 @@ import (
 	"github.com/mlafeldt/chef-runner.go/vagrant"
 )
 
-const (
-	CookbookPath = "vendor/cookbooks"
-)
-
 type SSHClient interface {
 	RunCommand(command string) error
 }
@@ -56,8 +52,8 @@ func main() {
 	var (
 		host     = flag.String("H", "", "Set hostname for direct SSH access")
 		machine  = flag.String("M", "", "Set name of Vagrant virtual machine")
-		format   = flag.String("F", chefsolo.DefaultFormat, "Set output format")
-		logLevel = flag.String("l", chefsolo.DefaultLogLevel, "Set log level")
+		format   = flag.String("F", "", "Set output format")
+		logLevel = flag.String("l", "", "Set log level")
 		jsonFile = flag.String("j", "", "Load attributes from a JSON file")
 	)
 	flag.Usage = usage
@@ -65,12 +61,6 @@ func main() {
 
 	if *host != "" && *machine != "" {
 		log.Fatal("error: -H and -M cannot be used together")
-	}
-	var client SSHClient
-	if *host != "" {
-		client = openssh.NewClient(*host)
-	} else {
-		client = vagrant.NewClient(*machine)
 	}
 
 	cb, err := cookbook.New(".")
@@ -94,21 +84,29 @@ func main() {
 		attributes = string(data)
 	}
 
-	p := chefsolo.Provisoner{
+	provisioner := chefsolo.Provisoner{
 		RunList:    runList,
 		Attributes: attributes,
 		Format:     *format,
 		LogLevel:   *logLevel,
 	}
-	if err := p.CreateSandbox(); err != nil {
+	if err := provisioner.CreateSandbox(); err != nil {
 		log.Fatal(err)
 	}
 
 	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
 	// rid of the Vagrant dependency
 
-	cmd := strings.Join(p.Command(), " ")
+	cmd := strings.Join(provisioner.Command(), " ")
 	log.Println(cmd)
+
+	var client SSHClient
+	if *host != "" {
+		client = openssh.NewClient(*host)
+	} else {
+		client = vagrant.NewClient(*machine)
+	}
+
 	if err := client.RunCommand(cmd); err != nil {
 		log.Fatal(err)
 	}
