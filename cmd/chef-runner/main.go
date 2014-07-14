@@ -77,6 +77,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if cb.Name == "" {
+		log.Fatal("error: unknown cookbook name")
+	}
 
 	recipes := flag.Args()
 	runList := buildRunList(cb.Name, recipes)
