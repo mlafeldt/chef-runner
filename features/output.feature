@@ -5,16 +5,16 @@ Feature: Configure output of Chef
 
   Scenario: Default output format is "null"
     When I successfully run `chef-runner`
-    Then "chef-solo" should be run with the option "--format=null"
+    Then "chef-solo" should be run with the option "--format null"
 
   Scenario: Default log level is "info"
     When I successfully run `chef-runner`
-    Then "chef-solo" should be run with the option "--log_level=info"
+    Then "chef-solo" should be run with the option "--log_level info"
 
   Scenario: Configure output format via -F
     When I successfully run `chef-runner -F doc`
-    Then "chef-solo" should be run with the option "--format=doc"
+    Then "chef-solo" should be run with the option "--format doc"
 
   Scenario: Configure log level via -l
     When I successfully run `chef-runner -l warn`
-    Then "chef-solo" should be run with the option "--log_level=warn"
+    Then "chef-solo" should be run with the option "--log_level warn"
