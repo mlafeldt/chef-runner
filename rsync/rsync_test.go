@@ -61,10 +61,10 @@ func TestCommand(t *testing.T) {
 
 func TestCopy_MissingSource(t *testing.T) {
 	err := rsync.DefaultClient.Copy([]string{}, "a/b")
-	assert.EqualError(t, err, "No source given")
+	assert.EqualError(t, err, "no source given")
 }
 
 func TestCopy_MissingDestination(t *testing.T) {
 	err := rsync.DefaultClient.Copy([]string{"a"}, "")
-	assert.EqualError(t, err, "No destination given")
+	assert.EqualError(t, err, "no destination given")
 }

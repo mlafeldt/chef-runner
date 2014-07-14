@@ -17,10 +17,10 @@ var DefaultClient = &Client{}
 
 func (c *Client) Command(src []string, dst string) ([]string, error) {
 	if len(src) == 0 {
-		return nil, errors.New("No source given")
+		return nil, errors.New("no source given")
 	}
 	if dst == "" {
-		return nil, errors.New("No destination given")
+		return nil, errors.New("no destination given")
 	}
 
 	cmd := []string{"rsync"}
