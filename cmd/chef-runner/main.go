@@ -103,6 +103,10 @@ func main() {
 	if err := p.CreateSandbox(); err != nil {
 		log.Fatal(err)
 	}
+
+	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
+	// rid of the Vagrant dependency
+
 	cmd := strings.Join(p.Command(), " ")
 	log.Println(cmd)
 	if err := client.RunCommand(cmd); err != nil {

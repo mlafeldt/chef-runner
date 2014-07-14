@@ -15,7 +15,10 @@ import (
 
 const (
 	SandboxPath = ".chef-runner"
-	RootPath    = "/vagrant/" + SandboxPath
+
+	// TODO: change prefix from /vagrant to /tmp and explicitly copy files
+	// there in order to get rid of the Vagrant dependency
+	RootPath = "/vagrant/" + SandboxPath
 
 	DefaultFormat   = "null"
 	DefaultLogLevel = "info"
