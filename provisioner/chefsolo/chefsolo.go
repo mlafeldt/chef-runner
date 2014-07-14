@@ -3,34 +3,20 @@ package chefsolo
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path"
 	"strings"
 
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
 	"github.com/mlafeldt/chef-runner.go/cookbook"
+	. "github.com/mlafeldt/chef-runner.go/provisioner"
 	"github.com/mlafeldt/chef-runner.go/rsync"
 	"github.com/mlafeldt/chef-runner.go/util"
 )
 
 const (
-	SandboxPath = ".chef-runner"
-
-	// TODO: change prefix from /vagrant to /tmp and explicitly copy files
-	// there in order to get rid of the Vagrant dependency
-	RootPath = "/vagrant/" + SandboxPath
-
 	DefaultFormat   = "null"
 	DefaultLogLevel = "info"
 )
-
-func sandboxPath(f string) string {
-	return path.Join(SandboxPath, f)
-}
-
-func rootPath(f string) string {
-	return path.Join(RootPath, f)
-}
 
 type Provisoner struct {
 	RunList    []string
@@ -44,16 +30,16 @@ func (p *Provisoner) prepareJSON() error {
 	if p.Attributes != "" {
 		data = p.Attributes
 	}
-	return ioutil.WriteFile(sandboxPath("dna.json"), []byte(data), 0644)
+	return ioutil.WriteFile(SandboxPathTo("dna.json"), []byte(data), 0644)
 }
 
 func (p *Provisoner) prepareSoloConfig() error {
-	data := fmt.Sprintf("cookbook_path \"%s\"\n", rootPath("cookbooks"))
-	return ioutil.WriteFile(sandboxPath("solo.rb"), []byte(data), 0644)
+	data := fmt.Sprintf("cookbook_path \"%s\"\n", RootPathTo("cookbooks"))
+	return ioutil.WriteFile(SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
 
 func (p *Provisoner) prepareCookbooks() error {
-	cookbookPath := sandboxPath("cookbooks")
+	cookbookPath := SandboxPathTo("cookbooks")
 	if !util.FileExist(cookbookPath) {
 		return berkshelf.Install(cookbookPath)
 	}
@@ -70,7 +56,7 @@ func (p *Provisoner) prepareCookbooks() error {
 }
 
 func (p *Provisoner) CreateSandbox() error {
-	if err := os.MkdirAll(SandboxPath, 0755); err != nil {
+	if err := CreateSandbox(); err != nil {
 		return err
 	}
 	if err := p.prepareJSON(); err != nil {
@@ -83,7 +69,7 @@ func (p *Provisoner) CreateSandbox() error {
 }
 
 func (p *Provisoner) CleanupSandbox() error {
-	return os.RemoveAll(SandboxPath)
+	return CleanupSandbox()
 }
 
 func (p *Provisoner) Command() []string {
@@ -97,8 +83,8 @@ func (p *Provisoner) Command() []string {
 	}
 	return []string{
 		"sudo", "chef-solo",
-		"--config", rootPath("solo.rb"),
-		"--json-attributes", rootPath("dna.json"),
+		"--config", RootPathTo("solo.rb"),
+		"--json-attributes", RootPathTo("dna.json"),
 		"--override-runlist", strings.Join(p.RunList, ","),
 		"--format", format,
 		"--log_level", logLevel,
