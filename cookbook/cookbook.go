@@ -27,11 +27,11 @@ func New(cookbookPath string) (*Cookbook, error) {
 	return &cb, nil
 }
 
-func (cb *Cookbook) String() string {
+func (cb Cookbook) String() string {
 	return cb.Name + " " + cb.Version
 }
 
-func (cb *Cookbook) Files() ([]string, error) {
+func (cb Cookbook) Files() ([]string, error) {
 	filesGlob := []string{
 		"README.*",
 		"metadata.*",

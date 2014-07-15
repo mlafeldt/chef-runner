@@ -15,7 +15,7 @@ type Client struct {
 
 var DefaultClient = &Client{}
 
-func (c *Client) Command(src []string, dst string) ([]string, error) {
+func (c Client) Command(src []string, dst string) ([]string, error) {
 	if len(src) == 0 {
 		return nil, errors.New("no source given")
 	}
@@ -41,7 +41,7 @@ func (c *Client) Command(src []string, dst string) ([]string, error) {
 	return cmd, nil
 }
 
-func (c *Client) Copy(src []string, dst string) error {
+func (c Client) Copy(src []string, dst string) error {
 	cmd, err := c.Command(src, dst)
 	if err != nil {
 		return err

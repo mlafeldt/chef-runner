@@ -25,7 +25,7 @@ type Provisoner struct {
 	LogLevel   string
 }
 
-func (p *Provisoner) prepareJSON() error {
+func (p Provisoner) prepareJSON() error {
 	data := "{}\n"
 	if p.Attributes != "" {
 		data = p.Attributes
@@ -33,12 +33,12 @@ func (p *Provisoner) prepareJSON() error {
 	return ioutil.WriteFile(SandboxPathTo("dna.json"), []byte(data), 0644)
 }
 
-func (p *Provisoner) prepareSoloConfig() error {
+func (p Provisoner) prepareSoloConfig() error {
 	data := fmt.Sprintf("cookbook_path \"%s\"\n", RootPathTo("cookbooks"))
 	return ioutil.WriteFile(SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
 
-func (p *Provisoner) prepareCookbooks() error {
+func (p Provisoner) prepareCookbooks() error {
 	cookbookPath := SandboxPathTo("cookbooks")
 	if !util.FileExist(cookbookPath) {
 		return berkshelf.Install(cookbookPath)
@@ -55,7 +55,7 @@ func (p *Provisoner) prepareCookbooks() error {
 	return c.Copy(files, path.Join(cookbookPath, cb.Name))
 }
 
-func (p *Provisoner) CreateSandbox() error {
+func (p Provisoner) CreateSandbox() error {
 	if err := CreateSandbox(); err != nil {
 		return err
 	}
@@ -68,11 +68,11 @@ func (p *Provisoner) CreateSandbox() error {
 	return p.prepareCookbooks()
 }
 
-func (p *Provisoner) CleanupSandbox() error {
+func (p Provisoner) CleanupSandbox() error {
 	return CleanupSandbox()
 }
 
-func (p *Provisoner) Command() []string {
+func (p Provisoner) Command() []string {
 	format := p.Format
 	if format == "" {
 		format = DefaultFormat

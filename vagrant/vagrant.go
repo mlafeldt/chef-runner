@@ -27,10 +27,10 @@ func NewClient(machine string) *Client {
 	return &Client{Machine: machine}
 }
 
-func (c *Client) SSHCommand(command string) []string {
+func (c Client) SSHCommand(command string) []string {
 	return []string{"vagrant", "ssh", c.Machine, "-c", command}
 }
 
-func (c *Client) RunCommand(command string) error {
+func (c Client) RunCommand(command string) error {
 	return exec.RunCommand(c.SSHCommand(command))
 }
