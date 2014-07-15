@@ -18,8 +18,6 @@ type Client struct {
 	Machine string
 }
 
-var DefaultClient = &Client{Machine: DefaultMachine}
-
 func NewClient(machine string) *Client {
 	if machine == "" {
 		machine = DefaultMachine
