@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var copyTests = []struct {
+var copyCommandTests = []struct {
 	client rsync.Client
 	src    []string
 	dst    string
@@ -50,9 +50,9 @@ var copyTests = []struct {
 	},
 }
 
-func TestCommand(t *testing.T) {
-	for _, test := range copyTests {
-		cmd, err := test.client.Command(test.src, test.dst)
+func TestCopyCommand(t *testing.T) {
+	for _, test := range copyCommandTests {
+		cmd, err := test.client.CopyCommand(test.src, test.dst)
 		if assert.NoError(t, err) {
 			assert.Equal(t, test.cmd, cmd)
 		}

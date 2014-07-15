@@ -43,7 +43,7 @@ func (p Provisoner) prepareCookbooks() error {
 	if !util.FileExist(cookbookPath) {
 		return berkshelf.Install(cookbookPath)
 	}
-	cb, err := cookbook.New(".")
+	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
 		return err
 	}

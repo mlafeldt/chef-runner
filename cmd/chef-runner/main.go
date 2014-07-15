@@ -63,7 +63,7 @@ func main() {
 		log.Fatal("error: -H and -M cannot be used together")
 	}
 
-	cb, err := cookbook.New(".")
+	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
 		log.Fatal(err)
 	}

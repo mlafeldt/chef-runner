@@ -14,8 +14,8 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestCommand(t *testing.T) {
+func TestSSHCommand(t *testing.T) {
 	expect := []string{"ssh", "some-host", "uname -a"}
-	actual := openssh.NewClient("some-host").Command("uname -a")
+	actual := openssh.NewClient("some-host").SSHCommand("uname -a")
 	assert.Equal(t, expect, actual)
 }

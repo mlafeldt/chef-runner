@@ -13,7 +13,7 @@ type Cookbook struct {
 	Version string
 }
 
-func New(cookbookPath string) (*Cookbook, error) {
+func NewCookbook(cookbookPath string) (*Cookbook, error) {
 	metadataPath := path.Join(cookbookPath, metadata.Filename)
 	metadata, err := metadata.ParseFile(metadataPath)
 	if err != nil {
@@ -28,6 +28,7 @@ func New(cookbookPath string) (*Cookbook, error) {
 }
 
 func (cb Cookbook) String() string {
+	// TODO: check if fields are actually set
 	return cb.Name + " " + cb.Version
 }
 
