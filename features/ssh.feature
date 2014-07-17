@@ -20,5 +20,5 @@ Feature: Run commands via SSH
     Then the exit status should be 1
     And the stderr should contain:
       """
-      error: -H and -M cannot be used together
+      ERROR: -H and -M cannot be used together
       """

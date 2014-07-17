@@ -3,6 +3,8 @@ package provisioner
 import (
 	"os"
 	"path"
+
+	"github.com/mlafeldt/chef-runner.go/log"
 )
 
 var (
@@ -22,9 +24,12 @@ func RootPathTo(f string) string {
 }
 
 func CreateSandbox() error {
+	log.Info("Preparing local files")
+	log.Debug("Creating local sandbox in", SandboxPath)
 	return os.MkdirAll(SandboxPath, 0755)
 }
 
 func CleanupSandbox() error {
+	log.Debug("Cleaning up local sandbox in", SandboxPath)
 	return os.RemoveAll(SandboxPath)
 }

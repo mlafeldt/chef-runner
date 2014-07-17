@@ -8,6 +8,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner.go/berkshelf"
 	"github.com/mlafeldt/chef-runner.go/cookbook"
+	"github.com/mlafeldt/chef-runner.go/log"
 	. "github.com/mlafeldt/chef-runner.go/provisioner"
 	"github.com/mlafeldt/chef-runner.go/rsync"
 	"github.com/mlafeldt/chef-runner.go/util"
@@ -26,6 +27,7 @@ type Provisoner struct {
 }
 
 func (p Provisoner) prepareJSON() error {
+	log.Debug("Preparing JSON data")
 	data := "{}\n"
 	if p.Attributes != "" {
 		data = p.Attributes
@@ -34,6 +36,7 @@ func (p Provisoner) prepareJSON() error {
 }
 
 func (p Provisoner) prepareSoloConfig() error {
+	log.Debug("Preparing Chef Solo config")
 	data := fmt.Sprintf("cookbook_path \"%s\"\n", RootPathTo("cookbooks"))
 	return ioutil.WriteFile(SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
@@ -41,6 +44,7 @@ func (p Provisoner) prepareSoloConfig() error {
 func (p Provisoner) prepareCookbooks() error {
 	cookbookPath := SandboxPathTo("cookbooks")
 	if !util.FileExist(cookbookPath) {
+		log.Info("Installing cookbooks with Berkshelf")
 		return berkshelf.Install(cookbookPath)
 	}
 	cb, err := cookbook.NewCookbook(".")
@@ -51,6 +55,7 @@ func (p Provisoner) prepareCookbooks() error {
 	if err != nil {
 		return err
 	}
+	log.Info("Updating", cb.Name, "cookbook with rsync")
 	c := rsync.Client{Archive: true, Delete: true, Verbose: true}
 	return c.Copy(files, path.Join(cookbookPath, cb.Name))
 }

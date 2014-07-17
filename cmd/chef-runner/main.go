@@ -4,12 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/mlafeldt/chef-runner.go/cookbook"
+	"github.com/mlafeldt/chef-runner.go/log"
 	"github.com/mlafeldt/chef-runner.go/openssh"
 	"github.com/mlafeldt/chef-runner.go/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner.go/util"
@@ -18,6 +18,17 @@ import (
 
 type SSHClient interface {
 	RunCommand(command string) error
+}
+
+func usage() {
+	fmt.Fprintf(os.Stderr, "usage: chef-runner [flags] [recipe ...]\n")
+	flag.PrintDefaults()
+	os.Exit(2)
+}
+
+func abort(v ...interface{}) {
+	log.Error(v...)
+	os.Exit(1)
 }
 
 func buildRunList(cookbookName string, recipes []string) []string {
@@ -40,15 +51,7 @@ func buildRunList(cookbookName string, recipes []string) []string {
 	return runList
 }
 
-func usage() {
-	fmt.Fprintf(os.Stderr, "usage: chef-runner [flags] [recipe ...]\n")
-	flag.PrintDefaults()
-	os.Exit(2)
-}
-
 func main() {
-	log.SetFlags(0)
-
 	var (
 		host     = flag.String("H", "", "Set hostname for direct SSH access")
 		machine  = flag.String("M", "", "Set name of Vagrant virtual machine")
@@ -60,29 +63,31 @@ func main() {
 	flag.Parse()
 
 	if *host != "" && *machine != "" {
-		log.Fatal("error: -H and -M cannot be used together")
+		abort("-H and -M cannot be used together")
 	}
 
 	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
-		log.Fatal(err)
+		abort(err)
 	}
 	if cb.Name == "" {
-		log.Fatal("error: unknown cookbook name")
+		abort("unknown cookbook name")
 	}
+	log.Debug("Cookbook =", cb)
 
 	recipes := flag.Args()
 	runList := buildRunList(cb.Name, recipes)
-	log.Println("Run List is", runList)
+	log.Debug("Run list =", runList)
 
 	var attributes string
 	if *jsonFile != "" {
 		data, err := ioutil.ReadFile(*jsonFile)
 		if err != nil {
-			log.Fatal(err)
+			abort(err)
 		}
 		attributes = string(data)
 	}
+	log.Debug("Attributes =", attributes)
 
 	provisioner := chefsolo.Provisoner{
 		RunList:    runList,
@@ -91,14 +96,14 @@ func main() {
 		LogLevel:   *logLevel,
 	}
 	if err := provisioner.CreateSandbox(); err != nil {
-		log.Fatal(err)
+		abort(err)
 	}
 
 	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
 	// rid of the Vagrant dependency
 
 	cmd := strings.Join(provisioner.Command(), " ")
-	log.Println(cmd)
+	log.Debug(cmd)
 
 	var client SSHClient
 	if *host != "" {
@@ -108,6 +113,6 @@ func main() {
 	}
 
 	if err := client.RunCommand(cmd); err != nil {
-		log.Fatal(err)
+		abort(err)
 	}
 }
