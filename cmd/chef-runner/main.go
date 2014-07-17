@@ -20,6 +20,24 @@ type SSHClient interface {
 	RunCommand(command string) error
 }
 
+func logLevel() int {
+	l := log.LevelInfo
+	e := os.Getenv("CHEF_RUNNER_LOG")
+	if e == "" {
+		return l
+	}
+	m := map[string]int{
+		"debug": log.LevelDebug,
+		"info":  log.LevelInfo,
+		"warn":  log.LevelWarn,
+		"error": log.LevelError,
+	}
+	if v, ok := m[strings.ToLower(e)]; ok {
+		l = v
+	}
+	return l
+}
+
 func usage() {
 	fmt.Fprintf(os.Stderr, "usage: chef-runner [flags] [recipe ...]\n")
 	flag.PrintDefaults()
@@ -52,6 +70,8 @@ func buildRunList(cookbookName string, recipes []string) []string {
 }
 
 func main() {
+	log.Level = logLevel()
+
 	var (
 		host     = flag.String("H", "", "Set hostname for direct SSH access")
 		machine  = flag.String("M", "", "Set name of Vagrant virtual machine")
