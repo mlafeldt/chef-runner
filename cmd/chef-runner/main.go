@@ -18,6 +18,7 @@ import (
 
 type SSHClient interface {
 	RunCommand(command string) error
+	String() string
 }
 
 func logLevel() int {
@@ -122,15 +123,16 @@ func main() {
 	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
 	// rid of the Vagrant dependency
 
-	cmd := strings.Join(provisioner.Command(), " ")
-	log.Debug(cmd)
-
 	var client SSHClient
 	if *host != "" {
 		client = openssh.NewClient(*host)
 	} else {
 		client = vagrant.NewClient(*machine)
 	}
+
+	log.Info("Running Chef using " + client.String())
+	cmd := strings.Join(provisioner.Command(), " ")
+	log.Debug(cmd)
 
 	if err := client.RunCommand(cmd); err != nil {
 		abort(err)

@@ -1,6 +1,8 @@
 package openssh
 
 import (
+	"fmt"
+
 	"github.com/mlafeldt/chef-runner.go/exec"
 )
 
@@ -10,6 +12,10 @@ type Client struct {
 
 func NewClient(host string) *Client {
 	return &Client{Host: host}
+}
+
+func (c Client) String() string {
+	return fmt.Sprintf("OpenSSH (host: %s)", c.Host)
 }
 
 func (c Client) SSHCommand(command string) []string {

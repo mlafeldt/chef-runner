@@ -7,11 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewClient(t *testing.T) {
-	client := openssh.NewClient("some-host")
-	if assert.NotNil(t, client) {
-		assert.Equal(t, "some-host", client.Host)
-	}
+func TestString(t *testing.T) {
+	expect := "OpenSSH (host: some-host)"
+	actual := openssh.NewClient("some-host").String()
+	assert.Equal(t, expect, actual)
 }
 
 func TestSSHCommand(t *testing.T) {

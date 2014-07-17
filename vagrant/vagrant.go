@@ -1,6 +1,7 @@
 package vagrant
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/mlafeldt/chef-runner.go/exec"
@@ -23,6 +24,10 @@ func NewClient(machine string) *Client {
 		machine = DefaultMachine
 	}
 	return &Client{Machine: machine}
+}
+
+func (c Client) String() string {
+	return fmt.Sprintf("Vagrant (machine: %s)", c.Machine)
 }
 
 func (c Client) SSHCommand(command string) []string {
