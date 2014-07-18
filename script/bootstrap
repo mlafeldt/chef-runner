@@ -2,4 +2,9 @@
 
 set -e
 
-bundle install
+go get -v -t ./...
+go get -v code.google.com/p/go.tools/cmd/cover
+
+bundle check >/dev/null || bundle install
+
+:

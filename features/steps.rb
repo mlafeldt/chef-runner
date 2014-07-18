@@ -2,7 +2,6 @@ Given(/^a cookbook named "([^"]*)"$/) do |name|
   step %(a directory named "#{name}")
   step %(I cd to "#{name}")
   step %(a file named "metadata.rb" with:), %(name "#{name}")
-  step %(an empty file named "Vagrantfile")
 end
 
 Given(/^a cookbook named "([^"]*)" with the recipes? "([^"]*)"$/) do |cookbook, recipes|
@@ -39,5 +38,5 @@ Then(/^"([^"]*)" should be run with the option "([^"]*)"$/) do |cmd, option|
 end
 
 Then(/^the runlist should be "([^"]*)"$/) do |runlist|
-  step %("chef-solo" should be run with the option "--override-runlist=#{runlist}")
+  step %("chef-solo" should be run with the option "--override-runlist #{runlist}")
 end
