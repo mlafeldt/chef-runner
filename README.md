@@ -21,21 +21,19 @@ chef-runner][blog post]*.
 
 ## How does it work?
 
-* chef-runner is a small shell script (~100 LOC).
+* Prepares Chef configuration and cookbooks in local `.chef-runner` folder.
 * Directly executes Chef Solo over SSH (using `vagrant ssh` or OpenSSH).
 * Overrides Chef runlist to selectively run recipes.
 * Installs cookbook dependencies with Berkshelf and updates changes with rsync.
-* Integrates well with Vagrant as long as the VM is running and `/vagrant` is
-  mounted.
 
 ## Requirements
 
 To use chef-runner, you need the following software:
 
+* [Go] to download, compile, and install the chef-runner tool
 * [VirtualBox] or whatever you use with Vagrant
 * [Vagrant] - version 1.3.4 or higher
 * [Berkshelf] - installable via `gem install berkshelf`
-* `bash` or `dash` shell to run the chef-runner shell script
 * `rsync`
 * `ssh`
 
@@ -43,28 +41,25 @@ Additionally, your cookbook must have the following files:
 
 * `metadata.rb` - must define the cookbook's name
 * `Berksfile` - must contain the `metadata` source
-* `Vagrantfile` - optionally configures Chef Solo
 
 To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
 work well with chef-runner.
 
 ## Installation
 
-Simply copy the shell script `bin/chef-runner` to your path. `~/bin` is a great
-place for it. If you don't currently have a `~/bin`, just do `mkdir ~/bin` and
-add `export PATH="$HOME/bin:$PATH"` to your .bashrc, .zshrc, etc.
+First, make sure you have [Go] installed.
 
-### Using curl
+To install the `chef-runner` command-line tool run this:
 
-    $ curl -Ls http://git.io/chef-runner > ~/bin/chef-runner
-    $ chmod +x ~/bin/chef-runner
+    $ go get github.com/mlafeldt/chef-runner/cmd/chef-runner
 
-### Using Homebrew
+For this command to work, `$GOPATH` must be set correctly. Also check that
+`$GOPATH` is part of `$PATH`, so that the `chef-runner` executable can be found.
+For example, here are the relevant lines from my `~/.bashrc` file:
 
-If you're on OS X, you can install chef-runner using [Homebrew], too:
-
-    $ brew tap mlafeldt/chef
-    $ brew install chef-runner
+    export GOPATH="$HOME/devel/go"
+    export GOROOT="$(go env GOROOT)"
+    export PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
 
 ## Usage
 
@@ -74,17 +69,17 @@ chef-runner is a simple command-line tool that has a couple of options:
 
     Usage: chef-runner [options] [--] [<recipe>...]
 
-        -h, --help                   Show help text
-        -H, --host <name>            Set hostname for direct SSH access
-        -M, --machine <name>         Set name of Vagrant virtual machine
+        -h              Show help text
+        -H <name>       Set hostname for direct SSH access
+        -M <name>       Set name of Vagrant virtual machine
 
     Options that will be passed to Chef Solo:
 
-        -F, --format <format>        Set output format (null, doc, minimal, min)
-                                     default: null
-        -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
-                                     default: info
-        -j, --json-attributes <file> Load attributes from a JSON file
+        -F <format>     Set output format (null, doc, minimal, min)
+                        default: null
+        -l <level>      Set log level (debug, info, warn, error, fatal)
+                        default: info
+        -j <file>       Load attributes from a JSON file
 
 ### Running Chef Recipes
 
@@ -134,19 +129,19 @@ at all -- simply run `chef-runner` and it should work.
 In a multi-machine environment, you need to specify what Vagrant machine you
 want to use. There are two ways to do this.
 
-1) Use the `-M` option (or `--machine`) to set the name of the Vagrant machine.
-The machine name is the name you have defined in your `Vagrantfile`. To get a
-list of all machine names, run `vagrant status`.
+1) Use the `-M` option to set the name of the Vagrant machine. The machine name
+is the name you have defined in your `Vagrantfile`. To get a list of all machine
+names, run `vagrant status`.
 
 Example:
 
     $ chef-runner -M db
 
-2) Use the `-H` option (or `--host`) to set a hostname that was configured for
-direct SSH access to the Vagrant machine. This requires that your machine has a
-static IP address and that your `~/.ssh/config` file has a configuration section
-for that hostname (`vagrant ssh-config` can help you here). While this option
-needs more setup work, SSH access is a bit faster compared to `-M`.
+2) Use the `-H` option to set a hostname that was configured for direct SSH
+access to the Vagrant machine. This requires that your machine has a static IP
+address and that your `~/.ssh/config` file has a configuration section for that
+hostname (`vagrant ssh-config` can help you here). While this option needs more
+setup work, SSH access is a bit faster compared to `-M`.
 
 Example:
 
@@ -207,11 +202,10 @@ You can further speed up working with chef-runner by doing the following:
 
 [![Build Status](https://travis-ci.org/mlafeldt/chef-runner.png?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
 
-chef-runner comes with a couple of [Cucumber] features that help to ensure the
-tool works as expected. You can run all features this way:
+chef-runner comes with a couple of Go unit tests and Cucumber features that help
+to ensure the tool works as expected. You can run all tests this way:
 
-    $ bundle install
-    $ bundle exec cucumber
+    $ ./script/test
 
 ## License and Author
 
@@ -237,9 +231,8 @@ Please see `CONTRIBUTING.md` for details.
 
 [Berkshelf]: http://berkshelf.com/
 [blog post]: http://mlafeldt.github.io/blog/2014/01/telling-people-about-chef-runner/
-[Cucumber]: http://cukes.info/
 [demo video]: http://vimeo.com/78769511
-[Homebrew]: http://brew.sh/
+[Go]: http://golang.org/doc/install
 [leader key]: http://usevim.com/2012/07/20/vim101-leader/
 [pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
