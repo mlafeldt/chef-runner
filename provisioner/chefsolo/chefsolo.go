@@ -6,12 +6,12 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mlafeldt/chef-runner.go/berkshelf"
-	"github.com/mlafeldt/chef-runner.go/cookbook"
-	"github.com/mlafeldt/chef-runner.go/log"
-	. "github.com/mlafeldt/chef-runner.go/provisioner"
-	"github.com/mlafeldt/chef-runner.go/rsync"
-	"github.com/mlafeldt/chef-runner.go/util"
+	"github.com/mlafeldt/chef-runner/berkshelf"
+	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/log"
+	. "github.com/mlafeldt/chef-runner/provisioner"
+	"github.com/mlafeldt/chef-runner/rsync"
+	"github.com/mlafeldt/chef-runner/util"
 )
 
 const (

@@ -3,7 +3,7 @@ package openssh
 import (
 	"fmt"
 
-	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner/exec"
 )
 
 type Client struct {

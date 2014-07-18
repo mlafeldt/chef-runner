@@ -3,7 +3,7 @@ package openssh_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/openssh"
+	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/stretchr/testify/assert"
 )
 

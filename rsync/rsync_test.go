@@ -3,7 +3,7 @@ package rsync_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/rsync"
+	"github.com/mlafeldt/chef-runner/rsync"
 	"github.com/stretchr/testify/assert"
 )
 

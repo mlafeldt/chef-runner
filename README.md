@@ -51,7 +51,7 @@ First, make sure you have [Go] installed.
 
 To install the `chef-runner` command-line tool run this:
 
-    $ go get github.com/mlafeldt/chef-runner/cmd/chef-runner
+    $ go get github.com/mlafeldt/chef-runner
 
 For this command to work, `$GOPATH` must be set correctly. Also check that
 `$GOPATH` is part of `$PATH`, so that the `chef-runner` executable can be found.

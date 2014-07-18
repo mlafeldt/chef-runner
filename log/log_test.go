@@ -3,7 +3,7 @@ package log_test
 import (
 	"os"
 
-	"github.com/mlafeldt/chef-runner.go/log"
+	"github.com/mlafeldt/chef-runner/log"
 )
 
 func init() {

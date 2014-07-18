@@ -4,7 +4,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/mlafeldt/chef-runner.go/log"
+	"github.com/mlafeldt/chef-runner/log"
 )
 
 var (

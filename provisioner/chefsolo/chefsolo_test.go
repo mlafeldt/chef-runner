@@ -3,7 +3,7 @@ package chefsolo_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/provisioner/chefsolo"
+	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/stretchr/testify/assert"
 )
 

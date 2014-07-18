@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/stretchr/testify/assert"
 )
 

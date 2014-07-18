@@ -4,7 +4,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
+	"github.com/mlafeldt/chef-runner/cookbook/metadata"
 )
 
 type Cookbook struct {

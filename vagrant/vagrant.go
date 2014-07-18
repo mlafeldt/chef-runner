@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mlafeldt/chef-runner.go/exec"
+	"github.com/mlafeldt/chef-runner/exec"
 )
 
 const (

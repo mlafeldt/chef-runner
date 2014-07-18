@@ -8,12 +8,12 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mlafeldt/chef-runner.go/cookbook"
-	"github.com/mlafeldt/chef-runner.go/log"
-	"github.com/mlafeldt/chef-runner.go/openssh"
-	"github.com/mlafeldt/chef-runner.go/provisioner/chefsolo"
-	"github.com/mlafeldt/chef-runner.go/util"
-	"github.com/mlafeldt/chef-runner.go/vagrant"
+	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/log"
+	"github.com/mlafeldt/chef-runner/openssh"
+	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
+	"github.com/mlafeldt/chef-runner/util"
+	"github.com/mlafeldt/chef-runner/vagrant"
 )
 
 type SSHClient interface {

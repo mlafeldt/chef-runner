@@ -1,8 +1,8 @@
 package berkshelf
 
 import (
-	"github.com/mlafeldt/chef-runner.go/exec"
-	"github.com/mlafeldt/chef-runner.go/util"
+	"github.com/mlafeldt/chef-runner/exec"
+	"github.com/mlafeldt/chef-runner/util"
 )
 
 func InstallCommand(path string) []string {

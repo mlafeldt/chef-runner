@@ -3,7 +3,7 @@ package vagrant_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/vagrant"
+	"github.com/mlafeldt/chef-runner/vagrant"
 	"github.com/stretchr/testify/assert"
 )
 

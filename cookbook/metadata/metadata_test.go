@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/cookbook/metadata"
+	"github.com/mlafeldt/chef-runner/cookbook/metadata"
 	"github.com/stretchr/testify/assert"
 )
 

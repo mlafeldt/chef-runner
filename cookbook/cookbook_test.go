@@ -3,7 +3,7 @@ package cookbook_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner.go/cookbook"
+	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/stretchr/testify/assert"
 )
 
