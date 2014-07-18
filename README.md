@@ -38,6 +38,7 @@ To use chef-runner, you need the following software:
 * [Berkshelf] - installable via `gem install berkshelf`
 * `rsync`
 * `ssh`
+* Chef must be pre-installed inside all virtual machines
 
 Additionally, your cookbook must have the following files:
 
