@@ -30,7 +30,7 @@ chef-runner][blog post]*.
 
 To use chef-runner, you need the following software:
 
-* [Go] to download, compile, and install the chef-runner tool
+* [Go] - version 1.2 or higher to install chef-runner
 * [VirtualBox] or whatever you use with Vagrant
 * [Vagrant] - version 1.3.4 or higher
 * [Berkshelf] - installable via `gem install berkshelf`
@@ -49,7 +49,8 @@ work well with chef-runner.
 
 First, make sure you have [Go] installed.
 
-To install the `chef-runner` command-line tool run this:
+This single line will download, compile, and install the `chef-runner`
+command-line tool:
 
     $ go get github.com/mlafeldt/chef-runner
 
