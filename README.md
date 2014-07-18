@@ -1,6 +1,8 @@
 chef-runner
 ===========
 
+[![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
+
 The purpose of chef-runner explained in one tweet:
 
 > When it comes to dev/testing, fast feedback is everything. Vagrant needs >5s
@@ -204,8 +206,6 @@ You can further speed up working with chef-runner by doing the following:
   repeated SSH connections.
 
 ## Testing
-
-[![Build Status](https://travis-ci.org/mlafeldt/chef-runner.png?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
 
 chef-runner comes with a couple of Go unit tests and Cucumber features that help
 to ensure the tool works as expected. You can run all tests this way:
