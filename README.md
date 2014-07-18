@@ -117,9 +117,13 @@ is located inside your cookbook):
 
     $ chef-runner -j chef.json
 
-Last but not least, you can configure both output format and log level of Chef:
+You can also configure both output format and log level of Chef:
 
     $ chef-runner -F doc -l warn
+
+Last but not least, here is how to enable debug messages:
+
+    $ CHEF_RUNNER_LOG=debug chef-runner ...
 
 ### Setting up SSH
 
