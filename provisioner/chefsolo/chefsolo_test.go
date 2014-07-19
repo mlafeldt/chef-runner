@@ -1,11 +1,85 @@
 package chefsolo_test
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/stretchr/testify/assert"
 )
+
+var lastCmd []string
+
+func init() {
+	exec.SetRunnerFunc(func(args []string) error {
+		lastCmd = args
+		return nil
+	})
+}
+
+var createSandboxTests = []struct {
+	provisioner   chefsolo.Provisoner
+	withCookbooks bool
+
+	writeAttributes string
+	writeConfig     string
+	runCmd          []string
+}{
+	{
+		chefsolo.Provisoner{},
+		false,
+		"{}\n",
+		"cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		[]string{"bundle", "exec", "berks", "install",
+			"--path", ".chef-runner/cookbooks"},
+	},
+	{
+		chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},
+		false,
+		`{"foo": "bar"}`,
+		"cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		[]string{"bundle", "exec", "berks", "install",
+			"--path", ".chef-runner/cookbooks"},
+	},
+	{
+		chefsolo.Provisoner{},
+		true,
+		"{}\n",
+		"cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		[]string{"rsync", "--archive", "--delete", "--verbose",
+			"README.md", "metadata.rb", "attributes", "recipes",
+			".chef-runner/cookbooks/practicingruby"},
+	},
+}
+
+func TestCreateSandbox(t *testing.T) {
+	if err := os.Chdir("../../testdata"); err != nil {
+		panic(err)
+	}
+
+	defer os.RemoveAll(".chef-runner")
+
+	for _, test := range createSandboxTests {
+		if test.withCookbooks {
+			os.MkdirAll(".chef-runner/cookbooks", 0755)
+		}
+
+		err := test.provisioner.CreateSandbox()
+		assert.NoError(t, err)
+
+		attributes, err := ioutil.ReadFile(".chef-runner/dna.json")
+		assert.NoError(t, err)
+		assert.Equal(t, test.writeAttributes, string(attributes))
+
+		config, err := ioutil.ReadFile(".chef-runner/solo.rb")
+		assert.NoError(t, err)
+		assert.Equal(t, test.writeConfig, string(config))
+
+		assert.Equal(t, test.runCmd, lastCmd)
+	}
+}
 
 var cmdPrefix = []string{"sudo", "chef-solo",
 	"--config", "/vagrant/.chef-runner/solo.rb",
