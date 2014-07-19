@@ -5,7 +5,3 @@ set -e
 go get -v -t \
     ./... \
     code.google.com/p/go.tools/cmd/cover
-
-bundle check >/dev/null || bundle install
-
-:

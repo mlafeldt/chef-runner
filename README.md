@@ -208,8 +208,8 @@ You can further speed up working with chef-runner by doing the following:
 
 ## Testing
 
-chef-runner comes with a couple of Go unit tests and Cucumber features that help
-to ensure the tool works as expected. You can run all tests this way:
+chef-runner comes with lots of Go unit tests that help to ensure the tool works
+as expected. You can run all tests this way:
 
     $ ./script/test
 
