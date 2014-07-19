@@ -40,8 +40,21 @@ func logLevel() int {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: chef-runner [flags] [recipe ...]\n")
-	flag.PrintDefaults()
+	text := `Usage: chef-runner [options] [--] [<recipe>...]
+
+    -h              Show help text
+    -H <name>       Set hostname for direct SSH access
+    -M <name>       Set name of Vagrant virtual machine
+
+Options that will be passed to Chef Solo:
+
+    -F <format>     Set output format (null, doc, minimal, min)
+		    default: null
+    -l <level>      Set log level (debug, info, warn, error, fatal)
+		    default: info
+    -j <file>       Load attributes from a JSON file
+`
+	fmt.Fprintf(os.Stderr, text)
 	os.Exit(2)
 }
 
