@@ -8,26 +8,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var parseTests = []struct {
-	in            string
-	name, version string
-}{
-	{"", "", ""},
-	{`name "cats"`, "cats", ""},
-	{`name 'cats'`, "cats", ""},
-	{` name   "cats" `, "cats", ""},
-	{`version "1.2.3"`, "", "1.2.3"},
-	{`version '1.2.3'`, "", "1.2.3"},
-	{` version   "1.2.3" `, "", "1.2.3"},
-	{`
+func TestParse(t *testing.T) {
+	tests := []struct {
+		in            string
+		name, version string
+	}{
+		{"", "", ""},
+		{`name "cats"`, "cats", ""},
+		{`name 'cats'`, "cats", ""},
+		{` name   "cats" `, "cats", ""},
+		{`version "1.2.3"`, "", "1.2.3"},
+		{`version '1.2.3'`, "", "1.2.3"},
+		{` version   "1.2.3" `, "", "1.2.3"},
+		{`
 # some comment
 name       "dogs"
 maintainer "Pluto"
 version    "2.0.0"`, "dogs", "2.0.0"},
-}
-
-func TestParse(t *testing.T) {
-	for _, test := range parseTests {
+	}
+	for _, test := range tests {
 		metadata, err := metadata.Parse(bytes.NewBufferString(test.in))
 		assert.NoError(t, err)
 		if assert.NotNil(t, metadata) {

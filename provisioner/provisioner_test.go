@@ -8,31 +8,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var sandboxPathToTests = []struct {
-	in, out string
-}{
-	{"", ".chef-runner"},
-	{"a", ".chef-runner/a"},
-	{"/a/b/c", ".chef-runner/a/b/c"},
-}
-
 func TestSandboxPathTo(t *testing.T) {
-	for _, test := range sandboxPathToTests {
-		assert.Equal(t, test.out, provisioner.SandboxPathTo(test.in))
+	tests := map[string]string{
+		"":       ".chef-runner",
+		"a":      ".chef-runner/a",
+		"/a/b/c": ".chef-runner/a/b/c",
+	}
+	for in, out := range tests {
+		assert.Equal(t, out, provisioner.SandboxPathTo(in))
 	}
 }
 
-var rootPathToTests = []struct {
-	in, out string
-}{
-	{"", "/vagrant/.chef-runner"},
-	{"a", "/vagrant/.chef-runner/a"},
-	{"/a/b/c", "/vagrant/.chef-runner/a/b/c"},
-}
-
 func TestRootPathTo(t *testing.T) {
-	for _, test := range rootPathToTests {
-		assert.Equal(t, test.out, provisioner.RootPathTo(test.in))
+	tests := map[string]string{
+		"":       "/vagrant/.chef-runner",
+		"a":      "/vagrant/.chef-runner/a",
+		"/a/b/c": "/vagrant/.chef-runner/a/b/c",
+	}
+	for in, out := range tests {
+		assert.Equal(t, out, provisioner.RootPathTo(in))
 	}
 }
 

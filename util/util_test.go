@@ -18,22 +18,21 @@ func TestFileExist(t *testing.T) {
 	assert.True(t, util.FileExist(filename))
 }
 
-var baseNameTests = []struct {
-	in     string
-	suffix string
-	out    string
-}{
-	{"", "", "."},
-	{"a", "", "a"},
-	{"a/b", "", "b"},
-	{"/a/b/c", "", "c"},
-	{"a.x", ".x", "a"},
-	{"a/b.x", ".x", "b"},
-	{"a/b.x", ".y", "b.x"},
-}
-
 func TestBaseName(t *testing.T) {
-	for _, test := range baseNameTests {
+	tests := []struct {
+		in     string
+		suffix string
+		out    string
+	}{
+		{"", "", "."},
+		{"a", "", "a"},
+		{"a/b", "", "b"},
+		{"/a/b/c", "", "c"},
+		{"a.x", ".x", "a"},
+		{"a/b.x", ".x", "b"},
+		{"a/b.x", ".y", "b.x"},
+	}
+	for _, test := range tests {
 		assert.Equal(t, test.out, util.BaseName(test.in, test.suffix))
 	}
 }
