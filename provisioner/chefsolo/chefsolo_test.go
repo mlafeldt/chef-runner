@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/exec"
+	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,6 +18,9 @@ func init() {
 		lastCmd = args
 		return nil
 	})
+
+	// Be quiet during testing
+	log.Level = log.LevelWarn
 }
 
 var createSandboxTests = []struct {

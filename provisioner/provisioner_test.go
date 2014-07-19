@@ -4,9 +4,15 @@ import (
 	"os"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/stretchr/testify/assert"
 )
+
+func init() {
+	// Be quiet during testing
+	log.Level = log.LevelWarn
+}
 
 func TestSandboxPathTo(t *testing.T) {
 	tests := map[string]string{
