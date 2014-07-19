@@ -37,7 +37,7 @@ version    "2.0.0"`, "dogs", "2.0.0"},
 }
 
 func TestParseFile(t *testing.T) {
-	metadata, err := metadata.ParseFile("../testdata/metadata.rb")
+	metadata, err := metadata.ParseFile("../../testdata/metadata.rb")
 	assert.NoError(t, err)
 	if assert.NotNil(t, metadata) {
 		assert.Equal(t, "practicingruby", metadata.Name)
