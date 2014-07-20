@@ -5,23 +5,23 @@
 
 set -e
 
-script/bootstrap
+go_pkg_from_path() {
+    path=$1
+    if test -d "$path"; then
+        dir="$path"
+    else
+        dir=$(dirname "$path")
+    fi
+    (cd "$dir" && go list)
+}
 
 if test $# -gt 0; then
-    go_pkg_from_path() {
-        path=$1
-        if test -d "$path"; then
-            dir="$path"
-        else
-            dir=$(dirname "$path")
-        fi
-        (cd "$dir" && go list)
-    }
     pkg=$(go_pkg_from_path "$1")
-    verbose="-v"
+    verbose=-v
 else
-    pkg="./..."
-    verbose=""
+    pkg=./...
+    verbose=
 fi
 
-go test $verbose -cover "$pkg"
+script/bootstrap "$pkg"
+go test -cover $verbose "$pkg"

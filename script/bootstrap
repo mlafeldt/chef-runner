@@ -1,7 +1,11 @@
 #!/bin/sh
+# Download and install Go dependencies.
+# Usage: script/bootstrap [package]
 
 set -e
 
+pkg=${1:-./...}
+
 go get -v -t \
-    ./... \
+    "$pkg" \
     code.google.com/p/go.tools/cmd/cover
