@@ -49,9 +49,9 @@ func usage() {
 Options that will be passed to Chef Solo:
 
     -F <format>     Set output format (null, doc, minimal, min)
-		    default: null
+                    default: null
     -l <level>      Set log level (debug, info, warn, error, fatal)
-		    default: info
+                    default: info
     -j <file>       Load attributes from a JSON file
 `
 	fmt.Fprintf(os.Stderr, text)
