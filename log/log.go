@@ -8,8 +8,10 @@ import (
 	"github.com/mitchellh/colorstring"
 )
 
+type Level int
+
 const (
-	LevelDebug = iota
+	LevelDebug Level = iota
 	LevelInfo
 	LevelWarn
 	LevelError
@@ -29,23 +31,27 @@ var levelColor = [...]string{
 	LevelError: "[red]",
 }
 
-var Level = LevelDebug
+var level = LevelDebug
 var UseColor = true
 
-func colorize(l int, s string) string {
+func SetLevel(l Level) {
+	level = l
+}
+
+func colorize(l Level, s string) string {
 	if !UseColor {
 		return s
 	}
 	return colorstring.Color(levelColor[l] + s)
 }
 
-func format(l int, v ...interface{}) string {
+func format(l Level, v ...interface{}) string {
 	msg := levelPrefix[l] + fmt.Sprintln(v...)
 	return colorize(l, msg)
 }
 
-func output(w io.Writer, l int, v ...interface{}) error {
-	if l >= Level {
+func output(w io.Writer, l Level, v ...interface{}) error {
+	if l >= level {
 		_, err := fmt.Fprint(w, format(l, v...))
 		return err
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func TestLogLevel(t *testing.T) {
-	tests := map[string]int{
+	tests := map[string]log.Level{
 		"":      log.LevelInfo,
 		"debug": log.LevelDebug,
 		"info":  log.LevelInfo,

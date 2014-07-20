@@ -11,7 +11,7 @@ import (
 
 func init() {
 	// Be quiet during testing
-	log.Level = log.LevelWarn
+	log.SetLevel(log.LevelWarn)
 }
 
 func TestSandboxPathTo(t *testing.T) {

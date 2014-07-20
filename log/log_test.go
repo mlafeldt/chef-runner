@@ -35,9 +35,9 @@ func ExampleError() {
 	// ERROR: some error message
 }
 
-func ExampleLevel() {
-	defer func() { log.Level = log.LevelDebug }()
-	log.Level = log.LevelInfo
+func ExampleSetLevel() {
+	defer log.SetLevel(log.LevelDebug)
+	log.SetLevel(log.LevelInfo)
 
 	log.Debug("some debug message")
 	log.Info("some info message")

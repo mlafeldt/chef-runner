@@ -21,13 +21,13 @@ type SSHClient interface {
 	String() string
 }
 
-func logLevel() int {
+func logLevel() log.Level {
 	l := log.LevelInfo
 	e := os.Getenv("CHEF_RUNNER_LOG")
 	if e == "" {
 		return l
 	}
-	m := map[string]int{
+	m := map[string]log.Level{
 		"debug": log.LevelDebug,
 		"info":  log.LevelInfo,
 		"warn":  log.LevelWarn,
@@ -84,7 +84,7 @@ func buildRunList(cookbookName string, recipes []string) []string {
 }
 
 func main() {
-	log.Level = logLevel()
+	log.SetLevel(logLevel())
 
 	var (
 		host     = flag.String("H", "", "Set hostname for direct SSH access")
