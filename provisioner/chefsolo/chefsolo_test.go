@@ -25,7 +25,7 @@ func init() {
 
 var createSandboxTests = []struct {
 	provisioner   chefsolo.Provisoner
-	withCookbooks bool
+	fakeCookbooks bool
 
 	writeAttributes string
 	writeConfig     string
@@ -40,14 +40,6 @@ var createSandboxTests = []struct {
 			"--path", ".chef-runner/cookbooks"},
 	},
 	{
-		chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},
-		false,
-		`{"foo": "bar"}`,
-		"cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
-		[]string{"bundle", "exec", "berks", "install",
-			"--path", ".chef-runner/cookbooks"},
-	},
-	{
 		chefsolo.Provisoner{},
 		true,
 		"{}\n",
@@ -55,6 +47,14 @@ var createSandboxTests = []struct {
 		[]string{"rsync", "--archive", "--delete", "--verbose",
 			"README.md", "metadata.rb", "attributes", "recipes",
 			".chef-runner/cookbooks/practicingruby"},
+	},
+	{
+		chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},
+		false,
+		`{"foo": "bar"}`,
+		"cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		[]string{"bundle", "exec", "berks", "install",
+			"--path", ".chef-runner/cookbooks"},
 	},
 }
 
@@ -66,12 +66,11 @@ func TestCreateSandbox(t *testing.T) {
 	defer os.RemoveAll(".chef-runner")
 
 	for _, test := range createSandboxTests {
-		if test.withCookbooks {
+		if test.fakeCookbooks {
 			os.MkdirAll(".chef-runner/cookbooks", 0755)
 		}
 
-		err := test.provisioner.CreateSandbox()
-		assert.NoError(t, err)
+		assert.NoError(t, test.provisioner.CreateSandbox())
 
 		attributes, err := ioutil.ReadFile(".chef-runner/dna.json")
 		assert.NoError(t, err)
@@ -82,6 +81,8 @@ func TestCreateSandbox(t *testing.T) {
 		assert.Equal(t, test.writeConfig, string(config))
 
 		assert.Equal(t, test.runCmd, lastCmd)
+
+		assert.NoError(t, test.provisioner.CleanupSandbox())
 	}
 }
 
