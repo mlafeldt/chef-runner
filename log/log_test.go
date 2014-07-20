@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	log.UseColor = false
+	log.DisableColor()
 }
 
 func ExampleDebug() {

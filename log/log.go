@@ -32,14 +32,18 @@ var levelColor = [...]string{
 }
 
 var level = LevelDebug
-var UseColor = true
+var useColor = true
 
 func SetLevel(l Level) {
 	level = l
 }
 
+func DisableColor() {
+	useColor = false
+}
+
 func colorize(l Level, s string) string {
-	if !UseColor {
+	if !useColor {
 		return s
 	}
 	return colorstring.Color(levelColor[l] + s)
