@@ -16,6 +16,7 @@ type Client struct {
 	Port        int
 	PrivateKeys []string
 	Options     map[string]string
+	ConfigFile  string
 }
 
 // NewClient creates an OpenSSH client from the given host string. The host
@@ -80,6 +81,10 @@ func (c Client) Command(command string) ([]string, error) {
 	sort.Strings(optionNames)
 	for _, k := range optionNames {
 		cmd = append(cmd, "-o", k+"="+c.Options[k])
+	}
+
+	if c.ConfigFile != "" {
+		cmd = append(cmd, "-F", c.ConfigFile)
 	}
 
 	cmd = append(cmd, c.Host, command)

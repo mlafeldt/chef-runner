@@ -120,6 +120,13 @@ var commandTests = []struct {
 		[]string{"ssh", "-l", "some-user", "-p", "1234", "-i", "some-key",
 			"-o", "SomeOption=yes", "some-host", "uname -a"},
 	},
+	{
+		openssh.Client{
+			Host:       "some-host",
+			ConfigFile: "some/config/file",
+		},
+		[]string{"ssh", "-F", "some/config/file", "some-host", "uname -a"},
+	},
 }
 
 func TestCommand(t *testing.T) {
