@@ -1,6 +1,7 @@
 package openssh
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strconv"
@@ -24,7 +25,14 @@ func (c Client) String() string {
 	return fmt.Sprintf("OpenSSH (host: %s)", c.Host)
 }
 
-func (c Client) SSHCommand(command string) []string {
+func (c Client) SSHCommand(command string) ([]string, error) {
+	if command == "" {
+		return nil, errors.New("no command given")
+	}
+	if c.Host == "" {
+		return nil, errors.New("no host given")
+	}
+
 	cmd := []string{"ssh"}
 
 	if c.User != "" {
@@ -50,9 +58,13 @@ func (c Client) SSHCommand(command string) []string {
 	}
 
 	cmd = append(cmd, c.Host, command)
-	return cmd
+	return cmd, nil
 }
 
 func (c Client) RunCommand(command string) error {
-	return exec.RunCommand(c.SSHCommand(command))
+	cmd, err := c.SSHCommand(command)
+	if err != nil {
+		return err
+	}
+	return exec.RunCommand(cmd)
 }

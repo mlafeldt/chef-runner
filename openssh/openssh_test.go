@@ -71,6 +71,19 @@ var sshCommandTests = []struct {
 
 func TestSSHCommand(t *testing.T) {
 	for _, test := range sshCommandTests {
-		assert.Equal(t, test.cmd, test.client.SSHCommand("uname -a"))
+		cmd, err := test.client.SSHCommand("uname -a")
+		if assert.NoError(t, err) {
+			assert.Equal(t, test.cmd, cmd)
+		}
 	}
+}
+
+func TestRunCommand_MissingCommand(t *testing.T) {
+	err := openssh.Client{Host: "some-host"}.RunCommand("")
+	assert.EqualError(t, err, "no command given")
+}
+
+func TestRunCommand_MissingHost(t *testing.T) {
+	err := openssh.Client{}.RunCommand("uname -a")
+	assert.EqualError(t, err, "no host given")
 }
