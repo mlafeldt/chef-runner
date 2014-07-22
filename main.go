@@ -21,6 +21,9 @@ type SSHClient interface {
 	String() string
 }
 
+var _ SSHClient = (*openssh.Client)(nil)
+var _ SSHClient = (*vagrant.Client)(nil)
+
 func logLevel() log.Level {
 	l := log.LevelInfo
 	e := os.Getenv("CHEF_RUNNER_LOG")
