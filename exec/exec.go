@@ -2,13 +2,13 @@ package exec
 
 import (
 	"os"
-	"os/exec"
+	goexec "os/exec"
 )
 
 type RunnerFunc func(args []string) error
 
 func DefaultRunner(args []string) error {
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd := goexec.Command(args[0], args[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
