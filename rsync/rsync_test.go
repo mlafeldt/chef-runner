@@ -57,6 +57,13 @@ var commandTests = []struct {
 		cmd:    []string{"rsync", "--archive", "--delete", "--exclude", "x", "a", "b"},
 	},
 	{
+		client: rsync.Client{RemoteShell: "some-shell", RemoteHost: "some-host"},
+		src:    []string{"a"},
+		dst:    "b",
+		cmd:    []string{"rsync", "--rsh", "some-shell", "a", "some-host:b"},
+	},
+	// Check for errors
+	{
 		client:    rsync.Client{},
 		src:       []string{},
 		dst:       "b",
@@ -69,6 +76,13 @@ var commandTests = []struct {
 		dst:       "",
 		cmd:       nil,
 		errString: "no destination given",
+	},
+	{
+		client:    rsync.Client{RemoteShell: "some-shell"},
+		src:       []string{"a"},
+		dst:       "b",
+		cmd:       nil,
+		errString: "no remote host given",
 	},
 }
 

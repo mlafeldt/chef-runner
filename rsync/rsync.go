@@ -11,6 +11,9 @@ type Client struct {
 	Delete  bool
 	Verbose bool
 	Exclude []string
+
+	RemoteShell string
+	RemoteHost  string
 }
 
 var DefaultClient = &Client{}
@@ -24,18 +27,31 @@ func (c Client) Command(src []string, dst string) ([]string, error) {
 	}
 
 	cmd := []string{"rsync"}
+
 	if c.Archive {
 		cmd = append(cmd, "--archive")
 	}
+
 	if c.Delete {
 		cmd = append(cmd, "--delete")
 	}
+
 	if c.Verbose {
 		cmd = append(cmd, "--verbose")
 	}
+
 	for _, x := range c.Exclude {
 		cmd = append(cmd, "--exclude", x)
 	}
+
+	if c.RemoteShell != "" {
+		if c.RemoteHost == "" {
+			return nil, errors.New("no remote host given")
+		}
+		cmd = append(cmd, "--rsh", c.RemoteShell)
+		dst = c.RemoteHost + ":" + dst
+	}
+
 	cmd = append(cmd, src...)
 	cmd = append(cmd, dst)
 	return cmd, nil
