@@ -25,7 +25,7 @@ func (c Client) String() string {
 	return fmt.Sprintf("OpenSSH (host: %s)", c.Host)
 }
 
-func (c Client) SSHCommand(command string) ([]string, error) {
+func (c Client) Command(command string) ([]string, error) {
 	if command == "" {
 		return nil, errors.New("no command given")
 	}
@@ -62,7 +62,7 @@ func (c Client) SSHCommand(command string) ([]string, error) {
 }
 
 func (c Client) RunCommand(command string) error {
-	cmd, err := c.SSHCommand(command)
+	cmd, err := c.Command(command)
 	if err != nil {
 		return err
 	}

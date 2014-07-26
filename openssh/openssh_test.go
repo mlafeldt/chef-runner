@@ -13,7 +13,7 @@ func TestString(t *testing.T) {
 	assert.Equal(t, expect, actual)
 }
 
-var sshCommandTests = []struct {
+var commandTests = []struct {
 	client openssh.Client
 	cmd    []string
 }{
@@ -69,9 +69,9 @@ var sshCommandTests = []struct {
 	},
 }
 
-func TestSSHCommand(t *testing.T) {
-	for _, test := range sshCommandTests {
-		cmd, err := test.client.SSHCommand("uname -a")
+func TestCommand(t *testing.T) {
+	for _, test := range commandTests {
+		cmd, err := test.client.Command("uname -a")
 		if assert.NoError(t, err) {
 			assert.Equal(t, test.cmd, cmd)
 		}
