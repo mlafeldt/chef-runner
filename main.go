@@ -141,7 +141,10 @@ func main() {
 
 	var client SSHClient
 	if *host != "" {
-		client = openssh.NewClient(*host)
+		client, err = openssh.NewClient(*host)
+		if err != nil {
+			abort(err)
+		}
 	} else {
 		client = vagrant.NewClient(*machine)
 	}

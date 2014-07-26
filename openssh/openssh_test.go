@@ -7,10 +7,63 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var newClientTests = []struct {
+	host      string
+	client    *openssh.Client
+	errString string
+}{
+	{
+		host: "some-host",
+		client: &openssh.Client{
+			Host: "some-host",
+		},
+	},
+	{
+		host: "some-user@some-host",
+		client: &openssh.Client{
+			Host: "some-host",
+			User: "some-user",
+		},
+	},
+	{
+		host: "some-host:1234",
+		client: &openssh.Client{
+			Host: "some-host",
+			Port: 1234,
+		},
+	},
+	{
+		host: "some-user@some-host:1234",
+		client: &openssh.Client{
+			Host: "some-host",
+			User: "some-user",
+			Port: 1234,
+		},
+	},
+	{
+		host:      "some-host:abc",
+		client:    nil,
+		errString: "invalid SSH port",
+	},
+}
+
+func TestNewClient(t *testing.T) {
+	for _, test := range newClientTests {
+		c, err := openssh.NewClient(test.host)
+		if test.errString == "" {
+			assert.NoError(t, err)
+		} else {
+			assert.EqualError(t, err, test.errString)
+		}
+		assert.Equal(t, test.client, c)
+	}
+}
+
 func TestString(t *testing.T) {
 	expect := "OpenSSH (host: some-host)"
-	actual := openssh.NewClient("some-host").String()
-	assert.Equal(t, expect, actual)
+	c, err := openssh.NewClient("some-host")
+	assert.NoError(t, err)
+	assert.Equal(t, expect, c.String())
 }
 
 var commandTests = []struct {

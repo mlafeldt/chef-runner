@@ -146,14 +146,16 @@ Example:
     $ chef-runner -M db
 
 2) Use the `-H` option to set a hostname that was configured for direct SSH
-access to the Vagrant machine. This requires that your machine has a static IP
-address and that your `~/.ssh/config` file has a configuration section for that
-hostname (`vagrant ssh-config` can help you here). While this option needs more
-setup work, SSH access is a bit faster compared to `-M`.
+access to the Vagrant machine. The argument passed to `-H` has the format
+`[user@]hostname[:port]`, allowing you to optionally change SSH user and port.
+If you need to change other SSH settings, add a host-specific configuration
+section to your `~/.ssh/config`.
 
-Example:
+Examples:
 
     $ chef-runner -H example.local
+    $ chef-runner -H user@example.local
+    $ chef-runner -H example.local:1234
 
 ### Use with Vim
 

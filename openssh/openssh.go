@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/mlafeldt/chef-runner/exec"
 )
@@ -17,8 +18,32 @@ type Client struct {
 	Options     map[string]string
 }
 
-func NewClient(host string) *Client {
-	return &Client{Host: host}
+// NewClient creates a OpenSSH client from the given host string. The host
+// string has the format [user@]hostname[:port]
+func NewClient(host string) (*Client, error) {
+	var user string
+	a := strings.Split(host, "@")
+	if len(a) > 1 {
+		user = a[0]
+		host = a[1]
+	}
+
+	var port int
+	a = strings.Split(host, ":")
+	if len(a) > 1 {
+		host = a[0]
+		var err error
+		if port, err = strconv.Atoi(a[1]); err != nil {
+			return nil, errors.New("invalid SSH port")
+		}
+	}
+
+	c := Client{
+		Host: host,
+		User: user,
+		Port: port,
+	}
+	return &c, nil
 }
 
 func (c Client) String() string {
