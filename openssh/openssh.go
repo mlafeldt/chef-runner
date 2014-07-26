@@ -18,7 +18,7 @@ type Client struct {
 	Options     map[string]string
 }
 
-// NewClient creates a OpenSSH client from the given host string. The host
+// NewClient creates an OpenSSH client from the given host string. The host
 // string has the format [user@]hostname[:port]
 func NewClient(host string) (*Client, error) {
 	var user string
