@@ -1,3 +1,9 @@
+// Package log provides functions for logging debug, informational, warning,
+// and error messages to standard output/error. Clients should set the current
+// log level; only messages at that level or higher will actually be logged.
+// Compared to Go's standard log package, this package supports colored output.
+//
+// Inspired by https://github.com/cloudflare/cfssl/blob/master/log/log.go
 package log
 
 import (
