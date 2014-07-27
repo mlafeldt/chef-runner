@@ -110,11 +110,10 @@ func main() {
 	if cb.Name == "" {
 		abort("unknown cookbook name")
 	}
-	log.Debug("Cookbook =", cb)
+	log.Debugf("Cookbook = %s\n", cb)
 
 	recipes := flag.Args()
 	runList := buildRunList(cb.Name, recipes)
-	log.Debug("Run list =", runList)
 
 	var attributes string
 	if *jsonFile != "" {
@@ -124,7 +123,6 @@ func main() {
 		}
 		attributes = string(data)
 	}
-	log.Debug("Attributes =", attributes)
 
 	provisioner := chefsolo.Provisoner{
 		RunList:    runList,
@@ -132,6 +130,9 @@ func main() {
 		Format:     *format,
 		LogLevel:   *logLevel,
 	}
+
+	log.Debugf("Provisoner = %+v\n", provisioner)
+
 	if err := provisioner.CreateSandbox(); err != nil {
 		abort(err)
 	}
@@ -149,7 +150,8 @@ func main() {
 		client = vagrant.NewClient(*machine)
 	}
 
-	log.Info("Running Chef using " + client.String())
+	log.Infof("Running Chef via %s\n", client)
+
 	cmd := strings.Join(provisioner.Command(), " ")
 	log.Debug(cmd)
 
