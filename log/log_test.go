@@ -16,8 +16,22 @@ func ExampleDebug() {
 	// DEBUG: some debug message
 }
 
+func ExampleDebugf() {
+	s := "debug"
+	log.Debugf("some %s message", s)
+	// Output:
+	// DEBUG: some debug message
+}
+
 func ExampleInfo() {
 	log.Info("some info message")
+	// Output:
+	// INFO: some info message
+}
+
+func ExampleInfof() {
+	s := "info"
+	log.Infof("some %s message", s)
 	// Output:
 	// INFO: some info message
 }
@@ -28,9 +42,24 @@ func ExampleWarn() {
 	// WARNING: some warning message
 }
 
+func ExampleWarnf() {
+	s := "warning"
+	log.Warnf("some %s message", s)
+	// Output:
+	// WARNING: some warning message
+}
+
 func ExampleError() {
 	os.Stderr = os.Stdout
 	log.Error("some error message")
+	// Output:
+	// ERROR: some error message
+}
+
+func ExampleErrorf() {
+	os.Stderr = os.Stdout
+	s := "error"
+	log.Errorf("some %s message", s)
 	// Output:
 	// ERROR: some error message
 }

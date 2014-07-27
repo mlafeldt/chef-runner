@@ -49,31 +49,50 @@ func colorize(l Level, s string) string {
 	return colorstring.Color(levelColor[l] + s)
 }
 
-func format(l Level, v ...interface{}) string {
-	msg := levelPrefix[l] + fmt.Sprintln(v...)
-	return colorize(l, msg)
+func output(w io.Writer, l Level, v ...interface{}) error {
+	if l < level {
+		return nil
+	}
+	_, err := fmt.Fprint(w, colorize(l, levelPrefix[l]+fmt.Sprintln(v...)))
+	return err
 }
 
-func output(w io.Writer, l Level, v ...interface{}) error {
-	if l >= level {
-		_, err := fmt.Fprint(w, format(l, v...))
-		return err
+func outputf(w io.Writer, l Level, format string, v ...interface{}) error {
+	if l < level {
+		return nil
 	}
-	return nil
+	_, err := fmt.Fprintf(w, colorize(l, levelPrefix[l]+format), v...)
+	return err
 }
 
 func Debug(v ...interface{}) error {
 	return output(os.Stdout, LevelDebug, v...)
 }
 
+func Debugf(format string, v ...interface{}) error {
+	return outputf(os.Stdout, LevelDebug, format, v...)
+}
+
 func Info(v ...interface{}) error {
 	return output(os.Stdout, LevelInfo, v...)
+}
+
+func Infof(format string, v ...interface{}) error {
+	return outputf(os.Stdout, LevelInfo, format, v...)
 }
 
 func Warn(v ...interface{}) error {
 	return output(os.Stdout, LevelWarn, v...)
 }
 
+func Warnf(format string, v ...interface{}) error {
+	return outputf(os.Stdout, LevelWarn, format, v...)
+}
+
 func Error(v ...interface{}) error {
 	return output(os.Stderr, LevelError, v...)
+}
+
+func Errorf(format string, v ...interface{}) error {
+	return outputf(os.Stderr, LevelError, format, v...)
 }
