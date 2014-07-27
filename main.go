@@ -88,6 +88,7 @@ func buildRunList(cookbookName string, recipes []string) []string {
 
 func main() {
 	log.SetLevel(logLevel())
+	log.Info("Starting chef-runner")
 
 	var (
 		host     = flag.String("H", "", "Set hostname for direct SSH access")
@@ -158,4 +159,6 @@ func main() {
 	if err := client.RunCommand(cmd); err != nil {
 		abort(err)
 	}
+
+	log.Info("chef-runner finished.")
 }
