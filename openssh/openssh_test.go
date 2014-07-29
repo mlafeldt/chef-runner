@@ -35,11 +35,15 @@ func TestString(t *testing.T) {
 }
 
 var commandTests = []struct {
-	client    openssh.Client
-	cmd       string
-	result    []string
-	errString string
+	client openssh.Client
+	cmd    string
+	result []string
 }{
+	{
+		client: openssh.Client{},
+		cmd:    "",
+		result: []string{"ssh"},
+	},
 	{
 		client: openssh.Client{
 			Host: "some-host",
@@ -106,29 +110,21 @@ var commandTests = []struct {
 		result: []string{"ssh", "-F", "some/config/file", "some-host",
 			"uname -a"},
 	},
-	// Check for errors
-	{
-		client:    openssh.Client{},
-		cmd:       "uname -a",
-		result:    nil,
-		errString: "no host given",
-	},
-	{
-		client:    openssh.Client{Host: "some-host"},
-		cmd:       "",
-		result:    nil,
-		errString: "no command given",
-	},
 }
 
 func TestCommand(t *testing.T) {
 	for _, test := range commandTests {
-		result, err := test.client.Command(test.cmd)
-		if test.errString == "" {
-			assert.NoError(t, err)
-		} else {
-			assert.EqualError(t, err, test.errString)
-		}
+		result := test.client.Command(test.cmd)
 		assert.Equal(t, test.result, result)
 	}
+}
+
+func TestRunCommand_MissingCommand(t *testing.T) {
+	err := openssh.Client{Host: "some-host"}.RunCommand("")
+	assert.EqualError(t, err, "no command given")
+}
+
+func TestRunCommand_MissingHost(t *testing.T) {
+	err := openssh.Client{}.RunCommand("uname -a")
+	assert.EqualError(t, err, "no host given")
 }
