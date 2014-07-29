@@ -88,7 +88,6 @@ func buildRunList(cookbookName string, recipes []string) []string {
 
 func main() {
 	log.SetLevel(logLevel())
-	log.Info("Starting chef-runner")
 
 	// usage() prints out flag documentation. No need to duplicate it here.
 	var (
@@ -104,6 +103,8 @@ func main() {
 	if *host != "" && *machine != "" {
 		abort("-H and -M cannot be used together")
 	}
+
+	log.Info("Starting chef-runner")
 
 	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
