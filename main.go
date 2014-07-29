@@ -90,12 +90,13 @@ func main() {
 	log.SetLevel(logLevel())
 	log.Info("Starting chef-runner")
 
+	// usage() prints out flag documentation. No need to duplicate it here.
 	var (
-		host     = flag.String("H", "", "Set hostname for direct SSH access")
-		machine  = flag.String("M", "", "Set name of Vagrant virtual machine")
-		format   = flag.String("F", "", "Set output format")
-		logLevel = flag.String("l", "", "Set log level")
-		jsonFile = flag.String("j", "", "Load attributes from a JSON file")
+		host     = flag.String("H", "", "")
+		machine  = flag.String("M", "", "")
+		format   = flag.String("F", "", "")
+		logLevel = flag.String("l", "", "")
+		jsonFile = flag.String("j", "", "")
 	)
 	flag.Usage = usage
 	flag.Parse()
