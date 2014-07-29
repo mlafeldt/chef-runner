@@ -1,15 +1,14 @@
-package vagrant_test
+package vagrant
 
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestString(t *testing.T) {
 	expect := "Vagrant driver (machine: some-machine)"
-	actual := vagrant.NewDriver("some-machine").String()
+	actual := Driver{machine: "some-machine"}.String()
 	assert.Equal(t, expect, actual)
 }
 

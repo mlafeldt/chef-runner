@@ -15,63 +15,48 @@ const (
 	DefaultMachine = "default"
 )
 
+type Driver struct {
+	machine   string
+	sshClient *openssh.Client
+}
+
 func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
 }
 
-type Driver struct {
-	Machine   string
-	sshClient *openssh.Client
-}
-
-func NewDriver(machine string) *Driver {
+func NewDriver(machine string) (*Driver, error) {
 	if machine == "" {
 		machine = DefaultMachine
 	}
-	return &Driver{Machine: machine}
-}
 
-func (d *Driver) String() string {
-	return fmt.Sprintf("Vagrant driver (machine: %s)", d.Machine)
-}
-
-func (d *Driver) SSHConfig() (string, error) {
-	config, err := goexec.Command("vagrant", "ssh-config", d.Machine).Output()
-	if err != nil {
-		return "", err
-	}
-	return string(config), nil
-}
-
-func (d *Driver) WriteSSHConfig(filename string) error {
-	log.Debug("Writing current SSH config to", filename)
-	config, err := d.SSHConfig()
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(filename, []byte(config), 0644)
-}
-
-func (d *Driver) SSHClient() (*openssh.Client, error) {
-	if d.sshClient != nil {
-		return d.sshClient, nil
-	}
 	// TODO: reuse existing config file, but make sure it's still valid
-	configFile := path.Join(".vagrant", "machines", d.Machine, "ssh_config")
-	if err := d.WriteSSHConfig(configFile); err != nil {
+	log.Debug("Asking Vagrant for SSH config")
+	config, err := goexec.Command("vagrant", "ssh-config", machine).Output()
+	if err != nil {
 		return nil, err
 	}
-	d.sshClient = &openssh.Client{
-		Host:       "default",
-		ConfigFile: configFile,
+
+	configFile := path.Join(".vagrant", "machines", machine, "ssh_config")
+
+	log.Debug("Writing current SSH config to", configFile)
+	if err := ioutil.WriteFile(configFile, config, 0644); err != nil {
+		return nil, err
 	}
-	return d.sshClient, nil
+
+	drv := Driver{
+		machine: machine,
+		sshClient: &openssh.Client{
+			Host:       "default",
+			ConfigFile: configFile,
+		},
+	}
+	return &drv, nil
 }
 
-func (d *Driver) RunCommand(command string) error {
-	sshClient, err := d.SSHClient()
-	if err != nil {
-		return err
-	}
-	return sshClient.RunCommand(command)
+func (drv Driver) String() string {
+	return fmt.Sprintf("Vagrant driver (machine: %s)", drv.machine)
+}
+
+func (drv Driver) RunCommand(command string) error {
+	return drv.sshClient.RunCommand(command)
 }

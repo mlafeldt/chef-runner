@@ -139,22 +139,25 @@ func main() {
 	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
 	// rid of the Vagrant dependency
 
-	var driver driver.Driver
+	var drv driver.Driver
 	if *host != "" {
-		driver, err = openssh.NewClient(*host)
+		drv, err = openssh.NewClient(*host)
 		if err != nil {
 			abort(err)
 		}
 	} else {
-		driver = vagrant.NewDriver(*machine)
+		drv, err = vagrant.NewDriver(*machine)
+		if err != nil {
+			abort(err)
+		}
 	}
 
-	log.Infof("Running Chef using %s\n", driver)
+	log.Infof("Running Chef using %s\n", drv)
 
 	cmd := strings.Join(provisioner.Command(), " ")
 	log.Debug(cmd)
 
-	if err := driver.RunCommand(cmd); err != nil {
+	if err := drv.RunCommand(cmd); err != nil {
 		abort(err)
 	}
 
