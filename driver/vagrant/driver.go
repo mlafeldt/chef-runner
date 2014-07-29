@@ -54,14 +54,12 @@ func NewDriver(machine string) (*Driver, error) {
 		ConfigFile: configFile,
 	}
 
-	sshCmd := sshClient.Command("")
-	remoteShell := strings.Join(sshCmd[:len(sshCmd)-1], " ")
 	rsyncClient := &rsync.Client{
 		Archive:     true,
 		Delete:      true,
 		Verbose:     true,
 		RemoteHost:  "default",
-		RemoteShell: remoteShell,
+		RemoteShell: strings.Join(sshClient.Shell(), " "),
 	}
 
 	return &Driver{machine, sshClient, rsyncClient}, nil

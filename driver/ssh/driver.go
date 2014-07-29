@@ -22,14 +22,12 @@ func NewDriver(host string) (*Driver, error) {
 		return nil, err
 	}
 
-	sshCmd := sshClient.Command("")
-	remoteShell := strings.Join(sshCmd[:len(sshCmd)-1], " ")
 	rsyncClient := &rsync.Client{
 		Archive:     true,
 		Delete:      true,
 		Verbose:     true,
 		RemoteHost:  sshClient.Host,
-		RemoteShell: remoteShell,
+		RemoteShell: strings.Join(sshClient.Shell(), " "),
 	}
 
 	return &Driver{host, sshClient, rsyncClient}, nil

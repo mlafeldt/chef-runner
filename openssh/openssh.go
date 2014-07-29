@@ -100,3 +100,8 @@ func (c Client) RunCommand(command string) error {
 	}
 	return exec.RunCommand(c.Command(command))
 }
+
+func (c Client) Shell() []string {
+	cmd := c.Command("")
+	return cmd[:len(cmd)-1]
+}

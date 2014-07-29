@@ -128,3 +128,8 @@ func TestRunCommand_MissingHost(t *testing.T) {
 	err := openssh.Client{}.RunCommand("uname -a")
 	assert.EqualError(t, err, "no host given")
 }
+
+func TestShell(t *testing.T) {
+	c, _ := openssh.NewClient("some-user@some-host:1234")
+	assert.Equal(t, []string{"ssh", "-l", "some-user", "-p", "1234"}, c.Shell())
+}
