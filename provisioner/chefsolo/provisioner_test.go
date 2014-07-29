@@ -35,7 +35,7 @@ var createSandboxTests = []struct {
 		provisioner:     chefsolo.Provisoner{},
 		fakeCookbooks:   false,
 		writeAttributes: "{}\n",
-		writeConfig:     "cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
 		runCmd: []string{"bundle", "exec", "berks", "install",
 			"--path", ".chef-runner/cookbooks"},
 	},
@@ -43,7 +43,7 @@ var createSandboxTests = []struct {
 		provisioner:     chefsolo.Provisoner{},
 		fakeCookbooks:   true,
 		writeAttributes: "{}\n",
-		writeConfig:     "cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
 		runCmd: []string{"rsync", "--archive", "--delete", "--verbose",
 			"README.md", "metadata.rb", "attributes", "recipes",
 			".chef-runner/cookbooks/practicingruby"},
@@ -52,7 +52,7 @@ var createSandboxTests = []struct {
 		provisioner:     chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},
 		fakeCookbooks:   false,
 		writeAttributes: `{"foo": "bar"}`,
-		writeConfig:     "cookbook_path \"/vagrant/.chef-runner/cookbooks\"\n",
+		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
 		runCmd: []string{"bundle", "exec", "berks", "install",
 			"--path", ".chef-runner/cookbooks"},
 	},
@@ -87,8 +87,8 @@ func TestCreateSandbox(t *testing.T) {
 }
 
 var cmdPrefix = []string{"sudo", "chef-solo",
-	"--config", "/vagrant/.chef-runner/solo.rb",
-	"--json-attributes", "/vagrant/.chef-runner/dna.json",
+	"--config", "/tmp/chef-runner/solo.rb",
+	"--json-attributes", "/tmp/chef-runner/dna.json",
 }
 
 var commandTests = []struct {
