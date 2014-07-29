@@ -9,20 +9,13 @@ import (
 	"strings"
 
 	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/driver"
+	"github.com/mlafeldt/chef-runner/driver/ssh"
+	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
-	"github.com/mlafeldt/chef-runner/vagrant"
 )
-
-type SSHClient interface {
-	RunCommand(command string) error
-	String() string
-}
-
-var _ SSHClient = (*openssh.Client)(nil)
-var _ SSHClient = (*vagrant.Client)(nil)
 
 func logLevel() log.Level {
 	l := log.LevelInfo
@@ -143,22 +136,22 @@ func main() {
 	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
 	// rid of the Vagrant dependency
 
-	var client SSHClient
+	var drv driver.Driver
 	if *host != "" {
-		client, err = openssh.NewClient(*host)
-		if err != nil {
-			abort(err)
-		}
+		drv, err = ssh.NewDriver(*host)
 	} else {
-		client = vagrant.NewClient(*machine)
+		drv, err = vagrant.NewDriver(*machine)
+	}
+	if err != nil {
+		abort(err)
 	}
 
-	log.Infof("Running Chef via %s\n", client)
+	log.Infof("Running Chef using %s\n", drv)
 
 	cmd := strings.Join(provisioner.Command(), " ")
 	log.Debug(cmd)
 
-	if err := client.RunCommand(cmd); err != nil {
+	if err := drv.RunCommand(cmd); err != nil {
 		abort(err)
 	}
 
