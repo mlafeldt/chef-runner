@@ -1,3 +1,6 @@
+// Package vagrant implements the driver.Driver interface. Under the hood
+// `vagrant ssh-config` is used to get a working SSH configuration for the
+// current Vagrant machine.
 package vagrant
 
 import (

@@ -1,3 +1,5 @@
+// Package ssh implements the driver.Driver interface. The implementation is
+// just a simple wrapper around the openssh package.
 package ssh
 
 import (
