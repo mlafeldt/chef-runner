@@ -10,14 +10,14 @@ import (
 
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/driver"
+	"github.com/mlafeldt/chef-runner/driver/ssh"
 	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
 )
 
-var _ driver.Driver = (*openssh.Client)(nil)
+var _ driver.Driver = (*ssh.Driver)(nil)
 var _ driver.Driver = (*vagrant.Driver)(nil)
 
 func logLevel() log.Level {
@@ -141,15 +141,12 @@ func main() {
 
 	var drv driver.Driver
 	if *host != "" {
-		drv, err = openssh.NewClient(*host)
-		if err != nil {
-			abort(err)
-		}
+		drv, err = ssh.NewDriver(*host)
 	} else {
 		drv, err = vagrant.NewDriver(*machine)
-		if err != nil {
-			abort(err)
-		}
+	}
+	if err != nil {
+		abort(err)
 	}
 
 	log.Infof("Running Chef using %s\n", drv)
