@@ -19,57 +19,57 @@ func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
 }
 
-type Client struct {
+type Driver struct {
 	Machine   string
 	sshClient *openssh.Client
 }
 
-func NewClient(machine string) *Client {
+func NewDriver(machine string) *Driver {
 	if machine == "" {
 		machine = DefaultMachine
 	}
-	return &Client{Machine: machine}
+	return &Driver{Machine: machine}
 }
 
-func (c *Client) String() string {
-	return fmt.Sprintf("Vagrant (machine: %s)", c.Machine)
+func (d *Driver) String() string {
+	return fmt.Sprintf("Vagrant driver (machine: %s)", d.Machine)
 }
 
-func (c *Client) SSHConfig() (string, error) {
-	config, err := goexec.Command("vagrant", "ssh-config", c.Machine).Output()
+func (d *Driver) SSHConfig() (string, error) {
+	config, err := goexec.Command("vagrant", "ssh-config", d.Machine).Output()
 	if err != nil {
 		return "", err
 	}
 	return string(config), nil
 }
 
-func (c *Client) WriteSSHConfig(filename string) error {
+func (d *Driver) WriteSSHConfig(filename string) error {
 	log.Debug("Writing current SSH config to", filename)
-	config, err := c.SSHConfig()
+	config, err := d.SSHConfig()
 	if err != nil {
 		return err
 	}
 	return ioutil.WriteFile(filename, []byte(config), 0644)
 }
 
-func (c *Client) SSHClient() (*openssh.Client, error) {
-	if c.sshClient != nil {
-		return c.sshClient, nil
+func (d *Driver) SSHClient() (*openssh.Client, error) {
+	if d.sshClient != nil {
+		return d.sshClient, nil
 	}
 	// TODO: reuse existing config file, but make sure it's still valid
-	configFile := path.Join(".vagrant", "machines", c.Machine, "ssh_config")
-	if err := c.WriteSSHConfig(configFile); err != nil {
+	configFile := path.Join(".vagrant", "machines", d.Machine, "ssh_config")
+	if err := d.WriteSSHConfig(configFile); err != nil {
 		return nil, err
 	}
-	c.sshClient = &openssh.Client{
+	d.sshClient = &openssh.Client{
 		Host:       "default",
 		ConfigFile: configFile,
 	}
-	return c.sshClient, nil
+	return d.sshClient, nil
 }
 
-func (c *Client) RunCommand(command string) error {
-	sshClient, err := c.SSHClient()
+func (d *Driver) RunCommand(command string) error {
+	sshClient, err := d.SSHClient()
 	if err != nil {
 		return err
 	}

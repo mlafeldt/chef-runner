@@ -8,8 +8,8 @@ import (
 )
 
 func TestString(t *testing.T) {
-	expect := "Vagrant (machine: some-machine)"
-	actual := vagrant.NewClient("some-machine").String()
+	expect := "Vagrant driver (machine: some-machine)"
+	actual := vagrant.NewDriver("some-machine").String()
 	assert.Equal(t, expect, actual)
 }
 

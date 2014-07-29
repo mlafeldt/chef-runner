@@ -22,7 +22,7 @@ type SSHClient interface {
 }
 
 var _ SSHClient = (*openssh.Client)(nil)
-var _ SSHClient = (*vagrant.Client)(nil)
+var _ SSHClient = (*vagrant.Driver)(nil)
 
 func logLevel() log.Level {
 	l := log.LevelInfo
@@ -150,7 +150,7 @@ func main() {
 			abort(err)
 		}
 	} else {
-		client = vagrant.NewClient(*machine)
+		client = vagrant.NewDriver(*machine)
 	}
 
 	log.Infof("Running Chef via %s\n", client)
