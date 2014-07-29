@@ -88,7 +88,7 @@ var commandTests = []struct {
 
 func TestCommand(t *testing.T) {
 	for _, test := range commandTests {
-		cmd, err := test.client.Command(test.src, test.dst)
+		cmd, err := test.client.Command(test.dst, test.src...)
 		if test.errString == "" {
 			assert.NoError(t, err)
 		} else {

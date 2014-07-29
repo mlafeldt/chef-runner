@@ -59,7 +59,7 @@ func (p Provisoner) prepareCookbooks() error {
 	}
 	log.Info("Updating", cb.Name, "cookbook with rsync")
 	c := rsync.Client{Archive: true, Delete: true, Verbose: true}
-	return c.Copy(files, path.Join(cookbookPath, cb.Name))
+	return c.Copy(path.Join(cookbookPath, cb.Name), files...)
 }
 
 func (p Provisoner) CreateSandbox() error {
