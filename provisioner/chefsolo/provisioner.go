@@ -1,3 +1,5 @@
+// Package chefsolo implements the provisioner.Provisoner interface using Chef
+// Solo.
 package chefsolo
 
 import (

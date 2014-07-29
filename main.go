@@ -13,6 +13,7 @@ import (
 	"github.com/mlafeldt/chef-runner/driver/ssh"
 	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
+	"github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
 )
@@ -120,16 +121,17 @@ func main() {
 		attributes = string(data)
 	}
 
-	provisioner := chefsolo.Provisoner{
+	var prov provisioner.Provisioner
+	prov = chefsolo.Provisoner{
 		RunList:    runList,
 		Attributes: attributes,
 		Format:     *format,
 		LogLevel:   *logLevel,
 	}
 
-	log.Debugf("Provisoner = %+v\n", provisioner)
+	log.Debugf("Provisoner = %+v\n", prov)
 
-	if err := provisioner.CreateSandbox(); err != nil {
+	if err := prov.CreateSandbox(); err != nil {
 		abort(err)
 	}
 
@@ -148,7 +150,7 @@ func main() {
 
 	log.Infof("Running Chef using %s\n", drv)
 
-	cmd := strings.Join(provisioner.Command(), " ")
+	cmd := strings.Join(prov.Command(), " ")
 	log.Debug(cmd)
 
 	if err := drv.RunCommand(cmd); err != nil {
