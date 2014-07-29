@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
-	"github.com/mlafeldt/chef-runner/vagrant"
 )
 
 type SSHClient interface {
