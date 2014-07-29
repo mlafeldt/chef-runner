@@ -135,9 +135,6 @@ func main() {
 		abort(err)
 	}
 
-	// TODO: Copy files from p.SandboxPath to p.RootPath in order to get
-	// rid of the Vagrant dependency
-
 	var drv driver.Driver
 	if *host != "" {
 		drv, err = ssh.NewDriver(*host)
@@ -145,6 +142,13 @@ func main() {
 		drv, err = vagrant.NewDriver(*machine)
 	}
 	if err != nil {
+		abort(err)
+	}
+
+	log.Info("Uploading local files to instance")
+	log.Debugf("Uploading files from %s to %s on instance\n",
+		provisioner.SandboxPath, provisioner.RootPath)
+	if err := drv.Upload(provisioner.RootPath, provisioner.SandboxPath+"/"); err != nil {
 		abort(err)
 	}
 
