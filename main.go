@@ -17,9 +17,6 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
-var _ driver.Driver = (*ssh.Driver)(nil)
-var _ driver.Driver = (*vagrant.Driver)(nil)
-
 func logLevel() log.Level {
 	l := log.LevelInfo
 	e := os.Getenv("CHEF_RUNNER_LOG")
