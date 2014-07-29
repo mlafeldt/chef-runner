@@ -7,57 +7,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var newClientTests = []struct {
-	host      string
-	client    *openssh.Client
-	errString string
-}{
-	{
-		host: "some-host",
-		client: &openssh.Client{
-			Host: "some-host",
-		},
-	},
-	{
-		host: "some-user@some-host",
-		client: &openssh.Client{
-			Host: "some-host",
-			User: "some-user",
-		},
-	},
-	{
-		host: "some-host:1234",
-		client: &openssh.Client{
-			Host: "some-host",
-			Port: 1234,
-		},
-	},
-	{
-		host: "some-user@some-host:1234",
-		client: &openssh.Client{
-			Host: "some-host",
-			User: "some-user",
-			Port: 1234,
-		},
-	},
-	// Check for errors
-	{
-		host:      "some-host:abc",
-		client:    nil,
-		errString: "invalid SSH port",
-	},
+var newClientTests = map[string]*openssh.Client{
+	"some-host":                &openssh.Client{Host: "some-host"},
+	"some-user@some-host":      &openssh.Client{Host: "some-host", User: "some-user"},
+	"some-host:1234":           &openssh.Client{Host: "some-host", Port: 1234},
+	"some-user@some-host:1234": &openssh.Client{Host: "some-host", User: "some-user", Port: 1234},
 }
 
 func TestNewClient(t *testing.T) {
-	for _, test := range newClientTests {
-		c, err := openssh.NewClient(test.host)
-		if test.errString == "" {
-			assert.NoError(t, err)
-		} else {
-			assert.EqualError(t, err, test.errString)
-		}
-		assert.Equal(t, test.client, c)
+	for host, client := range newClientTests {
+		result, err := openssh.NewClient(host)
+		assert.NoError(t, err)
+		assert.Equal(t, client, result)
 	}
+}
+
+func TestNewClient_InvalidPort(t *testing.T) {
+	c, err := openssh.NewClient("some-host:abc")
+	assert.EqualError(t, err, "invalid SSH port")
+	assert.Nil(t, c)
 }
 
 func TestString(t *testing.T) {
