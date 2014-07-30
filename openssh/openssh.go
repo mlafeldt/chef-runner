@@ -2,7 +2,6 @@ package openssh
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -45,10 +44,6 @@ func NewClient(host string) (*Client, error) {
 		Port: port,
 	}
 	return &c, nil
-}
-
-func (c Client) String() string {
-	return fmt.Sprintf("OpenSSH (host: %s)", c.Host)
 }
 
 func (c Client) Command(command string) []string {

@@ -28,12 +28,6 @@ func TestNewClient_InvalidPort(t *testing.T) {
 	assert.Nil(t, c)
 }
 
-func TestString(t *testing.T) {
-	expect := "OpenSSH (host: some-host)"
-	c, _ := openssh.NewClient("some-host")
-	assert.Equal(t, expect, c.String())
-}
-
 var commandTests = []struct {
 	client openssh.Client
 	cmd    string
