@@ -1,5 +1,5 @@
 // Package vagrant implements the driver.Driver interface. Under the hood
-// `vagrant ssh-config` is used to get a working SSH configuration for the
+// `vagrant ssh-config` is executed to get a working SSH configuration for the
 // current Vagrant machine.
 package vagrant
 
@@ -9,9 +9,11 @@ import (
 	"os"
 	goexec "os/exec"
 	"path"
+	"strings"
 
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/openssh"
+	"github.com/mlafeldt/chef-runner/rsync"
 )
 
 const (
@@ -19,8 +21,9 @@ const (
 )
 
 type Driver struct {
-	machine   string
-	sshClient *openssh.Client
+	machine     string
+	sshClient   *openssh.Client
+	rsyncClient *rsync.Client
 }
 
 func init() {
@@ -46,14 +49,20 @@ func NewDriver(machine string) (*Driver, error) {
 		return nil, err
 	}
 
-	drv := Driver{
-		machine: machine,
-		sshClient: &openssh.Client{
-			Host:       "default",
-			ConfigFile: configFile,
-		},
+	sshClient := &openssh.Client{
+		Host:       "default",
+		ConfigFile: configFile,
 	}
-	return &drv, nil
+
+	rsyncClient := &rsync.Client{
+		Archive:     true,
+		Delete:      true,
+		Verbose:     true,
+		RemoteHost:  "default",
+		RemoteShell: strings.Join(sshClient.Shell(), " "),
+	}
+
+	return &Driver{machine, sshClient, rsyncClient}, nil
 }
 
 func (drv Driver) String() string {
@@ -62,4 +71,8 @@ func (drv Driver) String() string {
 
 func (drv Driver) RunCommand(command string) error {
 	return drv.sshClient.RunCommand(command)
+}
+
+func (drv Driver) Upload(dst string, src ...string) error {
+	return drv.rsyncClient.Copy(dst, src...)
 }

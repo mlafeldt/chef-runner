@@ -18,10 +18,7 @@ type Provisioner interface {
 
 var (
 	SandboxPath = ".chef-runner"
-
-	// TODO: change prefix from /vagrant to /tmp and explicitly copy files
-	// there in order to get rid of the Vagrant dependency
-	RootPath = "/vagrant/" + SandboxPath
+	RootPath    = "/tmp/chef-runner"
 )
 
 func SandboxPathTo(f string) string {

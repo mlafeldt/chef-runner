@@ -51,14 +51,7 @@ func (c Client) String() string {
 	return fmt.Sprintf("OpenSSH (host: %s)", c.Host)
 }
 
-func (c Client) Command(command string) ([]string, error) {
-	if command == "" {
-		return nil, errors.New("no command given")
-	}
-	if c.Host == "" {
-		return nil, errors.New("no host given")
-	}
-
+func (c Client) Command(command string) []string {
 	cmd := []string{"ssh"}
 
 	if c.User != "" {
@@ -87,14 +80,28 @@ func (c Client) Command(command string) ([]string, error) {
 		cmd = append(cmd, "-F", c.ConfigFile)
 	}
 
-	cmd = append(cmd, c.Host, command)
-	return cmd, nil
+	if c.Host != "" {
+		cmd = append(cmd, c.Host)
+	}
+
+	if command != "" {
+		cmd = append(cmd, command)
+	}
+
+	return cmd
 }
 
 func (c Client) RunCommand(command string) error {
-	cmd, err := c.Command(command)
-	if err != nil {
-		return err
+	if command == "" {
+		return errors.New("no command given")
 	}
-	return exec.RunCommand(cmd)
+	if c.Host == "" {
+		return errors.New("no host given")
+	}
+	return exec.RunCommand(c.Command(command))
+}
+
+func (c Client) Shell() []string {
+	cmd := c.Command("")
+	return cmd[:len(cmd)-1]
 }
