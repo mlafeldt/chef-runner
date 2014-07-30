@@ -39,6 +39,12 @@ var commandTests = []struct {
 		cmd:    []string{"rsync", "--delete", "a", "b"},
 	},
 	{
+		client: rsync.Client{Compress: true},
+		src:    []string{"a"},
+		dst:    "b",
+		cmd:    []string{"rsync", "--compress", "a", "b"},
+	},
+	{
 		client: rsync.Client{Verbose: true},
 		src:    []string{"a"},
 		dst:    "b",
@@ -51,16 +57,16 @@ var commandTests = []struct {
 		cmd:    []string{"rsync", "--exclude", "x", "--exclude", "y", "a", "b"},
 	},
 	{
-		client: rsync.Client{Archive: true, Delete: true, Exclude: []string{"x"}},
-		src:    []string{"a"},
-		dst:    "b",
-		cmd:    []string{"rsync", "--archive", "--delete", "--exclude", "x", "a", "b"},
-	},
-	{
 		client: rsync.Client{RemoteShell: "some-shell", RemoteHost: "some-host"},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--rsh", "some-shell", "a", "some-host:b"},
+	},
+	{
+		client: rsync.Client{Archive: true, Compress: true, Exclude: []string{"x"}},
+		src:    []string{"a"},
+		dst:    "b",
+		cmd:    []string{"rsync", "--archive", "--compress", "--exclude", "x", "a", "b"},
 	},
 	// Check for errors
 	{

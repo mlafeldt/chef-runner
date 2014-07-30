@@ -7,10 +7,11 @@ import (
 )
 
 type Client struct {
-	Archive bool
-	Delete  bool
-	Verbose bool
-	Exclude []string
+	Archive  bool
+	Delete   bool
+	Compress bool
+	Verbose  bool
+	Exclude  []string
 
 	RemoteShell string
 	RemoteHost  string
@@ -34,6 +35,10 @@ func (c Client) Command(dst string, src ...string) ([]string, error) {
 
 	if c.Delete {
 		cmd = append(cmd, "--delete")
+	}
+
+	if c.Compress {
+		cmd = append(cmd, "--compress")
 	}
 
 	if c.Verbose {
