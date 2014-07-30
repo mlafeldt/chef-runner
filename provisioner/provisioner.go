@@ -1,6 +1,6 @@
 // Package provisioner defines the interface that all provisioners need to
 // implement. It also provides common functions shared by all provisioners. A
-// provisioner is responsible for provisioning an instance with Chef.
+// provisioner is responsible for provisioning a machine with Chef.
 package provisioner
 
 import (
