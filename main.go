@@ -145,7 +145,7 @@ func main() {
 		abort(err)
 	}
 
-	log.Info("Uploading local files to instance")
+	log.Info("Uploading local files to instance. This may take a while...")
 	log.Debugf("Uploading files from %s to %s on instance\n",
 		provisioner.SandboxPath, provisioner.RootPath)
 	if err := drv.Upload(provisioner.RootPath, provisioner.SandboxPath+"/"); err != nil {
