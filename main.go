@@ -98,7 +98,7 @@ func main() {
 		abort("-H and -M cannot be used together")
 	}
 
-	log.Info("Starting chef-runner")
+	log.Infof("Starting chef-runner (%s)\n", Version)
 
 	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
