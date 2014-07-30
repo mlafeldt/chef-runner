@@ -1,3 +1,34 @@
+## v0.3.0 (Jul 30 2014)
+
+The goal of this release is to *ssh all the things* in order to support any
+system reachable over SSH. In addition to local Vagrant machines, chef-runner
+can now provision remote machines like EC2 instances. To achieve this, I made
+the following changes:
+
+* The argument passed to `-H` now has the format `[user@]hostname[:port]`,
+  allowing you to optionally change SSH user and port. (Other SSH settings can
+  be set via  `~/.ssh/config`.)
+* rsync over SSH is used to transfer files to `/tmp/chef-runner` on the target
+  machine. chef-runner no longer depends on `/vagrant` being mounted.
+* With Vagrant, instead of running commands via `vagrant ssh`, feed the output
+  of `vagrant ssh-config` into OpenSSH. The same SSH configuration is used to
+  upload files with rsync.
+
+Other changes:
+
+* Introduce flexible driver concept (inspired by [Test Kitchen]). A driver is
+  responsible for running commands on and uploading files to a machine using
+  whatever mechanism is available. chef-runner currently contains drivers for
+  Vagrant and SSH, but more can -- and will -- be added.
+* Always transfer files with `rsync --compress` to speed things up.
+* Remove Cucumber scenarios. They didn't add much value to the Go tests and were
+  *very* slow. Now Travis builds are much faster.
+* More and better Go tests.
+* More and better log messages.
+* Option `-h` outputs more useful usage text (the one shown in the README).
+
+[Test Kitchen]: https://github.com/test-kitchen/test-kitchen
+
 ## v0.2.0 (Jul 18 2014)
 
 This release is a complete rewrite of chef-runner in Go -- a real programming
