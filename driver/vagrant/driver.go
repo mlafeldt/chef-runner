@@ -65,14 +65,14 @@ func NewDriver(machine string) (*Driver, error) {
 	return &Driver{machine, sshClient, rsyncClient}, nil
 }
 
-func (drv Driver) String() string {
-	return fmt.Sprintf("Vagrant driver (machine: %s)", drv.machine)
-}
-
 func (drv Driver) RunCommand(command string) error {
 	return drv.sshClient.RunCommand(command)
 }
 
 func (drv Driver) Upload(dst string, src ...string) error {
 	return drv.rsyncClient.Copy(dst, src...)
+}
+
+func (drv Driver) String() string {
+	return fmt.Sprintf("Vagrant driver (machine: %s)", drv.machine)
 }
