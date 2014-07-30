@@ -44,9 +44,9 @@ var createSandboxTests = []struct {
 		fakeCookbooks:   true,
 		writeAttributes: "{}\n",
 		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
-		runCmd: []string{"rsync", "--archive", "--delete", "--verbose",
-			"README.md", "metadata.rb", "attributes", "recipes",
-			".chef-runner/cookbooks/practicingruby"},
+		runCmd: []string{"rsync", "--archive", "--delete", "--compress",
+			"--verbose", "README.md", "metadata.rb", "attributes",
+			"recipes", ".chef-runner/cookbooks/practicingruby"},
 	},
 	{
 		provisioner:     chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},

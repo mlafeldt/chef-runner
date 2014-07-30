@@ -57,6 +57,7 @@ func NewDriver(machine string) (*Driver, error) {
 	rsyncClient := &rsync.Client{
 		Archive:     true,
 		Delete:      true,
+		Compress:    true,
 		Verbose:     true,
 		RemoteHost:  "default",
 		RemoteShell: strings.Join(sshClient.Shell(), " "),

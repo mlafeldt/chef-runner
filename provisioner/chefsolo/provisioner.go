@@ -58,7 +58,12 @@ func (p Provisoner) prepareCookbooks() error {
 		return err
 	}
 	log.Info("Updating", cb.Name, "cookbook with rsync")
-	c := rsync.Client{Archive: true, Delete: true, Verbose: true}
+	c := rsync.Client{
+		Archive:  true,
+		Delete:   true,
+		Compress: true,
+		Verbose:  true,
+	}
 	return c.Copy(path.Join(cookbookPath, cb.Name), files...)
 }
 
