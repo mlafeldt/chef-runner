@@ -17,6 +17,8 @@ chef-runner][blog post]*.
 * A command-line tool that speeds up your Chef development and testing workflow.
 * A fast alternative to the painfully slow `vagrant provision` ([demo video]
   comparing both tools).
+* Rapidly provisions local Vagrant machines as well as remote machines like EC2
+  instances.
 * [Integrates with Vim](#use-with-vim) so you don't have to leave your editor
   while hacking on recipes.
 * Allows you to change infrastructure code and get **immediate feedback**.
@@ -24,33 +26,34 @@ chef-runner][blog post]*.
 ## How does it work?
 
 * Prepares Chef configuration and cookbooks in local `.chef-runner` folder.
-* Directly executes Chef Solo over SSH (using `vagrant ssh` or OpenSSH).
-* Overrides Chef runlist to selectively run recipes.
 * Installs cookbook dependencies with Berkshelf and updates changes with rsync.
+* Uploads data to target machine using rsync over SSH.
+* Directly executes Chef Solo over SSH.
+* Overrides Chef run list to selectively run recipes.
 
 ## Requirements
 
 To use chef-runner, you need the following software:
 
-* [Go] - version 1.2 or higher to install chef-runner
-* [VirtualBox] or whatever you use with Vagrant
-* [Vagrant] - version 1.3.4 or higher
-* [Berkshelf] - installable via `gem install berkshelf`
-* `rsync`
-* `ssh`
-* Chef must be pre-installed inside all virtual machines
+* `ssh` command-line tool (OpenSSH)
+* `rsync` command-line tool
+* [Berkshelf] - installable via `gem install berkshelf` or Bundler
+* Chef must be pre-installed on the target machine
 
 Additionally, your cookbook must have the following files:
 
 * `metadata.rb` - must define the cookbook's name
-* `Berksfile` - must contain the `metadata` source
+* `Berksfile` - must define all required cookbook dependencies
+
+When using chef-runner with [Vagrant], make sure you have Vagrant version 1.3.4
+or higher.
 
 To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
 work well with chef-runner.
 
 ## Installation
 
-First, make sure you have [Go] installed.
+First, make sure you have [Go] version 1.2 or higher.
 
 This single line will download, compile, and install the `chef-runner`
 command-line tool:
@@ -86,10 +89,6 @@ chef-runner is a simple command-line tool that has a couple of options:
         -j <file>       Load attributes from a JSON file
 
 ### Running Chef Recipes
-
-Before you use chef-runner, make sure that the Vagrant machine you want to
-provision is running in the background. You can check the status with `vagrant
-status`. If the machine isn't up yet, run `vagrant up`.
 
 chef-runner executes one or more recipes you pass on the command line, in the
 exact order given. The tool has a flexible recipe syntax allowing you to compose
@@ -128,28 +127,33 @@ Last but not least, here is how to enable debug messages:
 
     $ CHEF_RUNNER_LOG=debug chef-runner ...
 
-### Setting up SSH
+### Vagrant
 
-chef-runner uses `ssh` to execute commands on Vagrant machines. If your
-`Vagrantfile` only defines a single machine, you don't need to worry about SSH
-at all -- simply run `chef-runner` and it should work.
+Here's how to use chef-runner with local Vagrant machines:
 
-In a multi-machine environment, you need to specify what Vagrant machine you
-want to use. There are two ways to do this.
+First, make sure that the Vagrant machine you want to provision is running in
+the background. You can check the status with `vagrant status`. If the machine
+isn't up yet, run `vagrant up`.
 
-1) Use the `-M` option to set the name of the Vagrant machine. The machine name
-is the name you have defined in your `Vagrantfile`. To get a list of all machine
-names, run `vagrant status`.
+If your `Vagrantfile` only defines a single machine, simply run `chef-runner`
+and it should work. In a multi-machine environment, you need to specify what
+Vagrant machine you want to use. Use the `-M` option to set the name of the
+Vagrant machine. The machine name is the name you have defined in your
+`Vagrantfile`. To get a list of all machine names, run `vagrant status`.
 
 Example:
 
     $ chef-runner -M db
 
-2) Use the `-H` option to set a hostname that was configured for direct SSH
-access to the Vagrant machine. The argument passed to `-H` has the format
-`[user@]hostname[:port]`, allowing you to optionally change SSH user and port.
-If you need to change other SSH settings, add a host-specific configuration
-section to your `~/.ssh/config`.
+### SSH
+
+chef-runner can also provision remote machines like EC2 instances, or basically
+any systems reachable over SSH.
+
+Use the `-H` option to specify the name of a host that was configured for direct
+SSH access. The argument passed to `-H` has the format `[user@]hostname[:port]`,
+allowing you to optionally change SSH user and port. If you need to change other
+SSH settings, add a host-specific configuration section to your `~/.ssh/config`.
 
 Examples:
 
@@ -172,16 +176,15 @@ There's no Vim plugin (yet). For now, you can just stick this one-liner in your
 nnoremap <leader>r :w\|!chef-runner %<cr>
 ```
 
-With this key mapping in place, make sure that the Vagrant machine is up and
-open a recipe in Vim:
+With this key mapping in place, make sure that the target machine is up and open
+a recipe in Vim:
 
 ```sh
-$ vagrant up
 $ vim recipes/default.rb
 ```
 
 Now whenever you type `<leader>r` (your [leader key] then `r`), chef-runner will
-run the *current* recipe inside the Vagrant machine, giving you fast feedback on
+run the *current* recipe on the target machine, giving you fast feedback on
 local code changes. (As a bonus, the mapping will also save the file for you.)
 
 Of course, you can also change the key mapping to include whatever chef-runner
@@ -238,7 +241,7 @@ Please see `CONTRIBUTING.md` for details.
 
 
 [Berkshelf]: http://berkshelf.com/
-[blog post]: http://mlafeldt.github.io/blog/2014/01/telling-people-about-chef-runner/
+[blog post]: http://mlafeldt.github.io/blog/telling-people-about-chef-runner/
 [demo video]: http://vimeo.com/78769511
 [Go]: http://golang.org/doc/install
 [leader key]: http://usevim.com/2012/07/20/vim101-leader/
@@ -247,4 +250,3 @@ Please see `CONTRIBUTING.md` for details.
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 [Vagrant]: http://vagrantup.com/
-[VirtualBox]: https://www.virtualbox.org/
