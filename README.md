@@ -1,7 +1,8 @@
 chef-runner
 ===========
 
-[![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
+[![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner) [![Gobuild Download](http://gobuild.io/badge/github.com/mlafeldt/chef-runner/download.png)](http://gobuild.io/github.com/mlafeldt/chef-runner)
+
 
 The purpose of chef-runner explained in one tweet:
 
