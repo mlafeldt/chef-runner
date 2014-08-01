@@ -4,6 +4,7 @@
   pass the UUID reported by `vagrant global-status` to chef-runner's `-M`
   option. Among other things, this new feature allows you to provision Vagrant
   machines managed by Test Kitchen.
+* Show error message of `vagrant ssh-config` in case it fails.
 
 ## v0.3.0 (Jul 30 2014)
 

@@ -4,6 +4,7 @@
 package vagrant
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -38,9 +39,10 @@ func NewDriver(machine string) (*Driver, error) {
 
 	// TODO: reuse existing config file, but make sure it's still valid
 	log.Debug("Asking Vagrant for SSH config")
-	config, err := goexec.Command("vagrant", "ssh-config", machine).Output()
+	out, err := goexec.Command("vagrant", "ssh-config", machine).CombinedOutput()
 	if err != nil {
-		return nil, err
+		msg := fmt.Sprintf("`vagrant ssh-config` failed with output:\n\n%s", out)
+		return nil, errors.New(msg)
 	}
 
 	configFile := path.Join(ConfigPath, "machines", machine, "ssh_config")
@@ -48,7 +50,7 @@ func NewDriver(machine string) (*Driver, error) {
 	if err := os.MkdirAll(path.Dir(configFile), 0755); err != nil {
 		return nil, err
 	}
-	if err := ioutil.WriteFile(configFile, config, 0644); err != nil {
+	if err := ioutil.WriteFile(configFile, out, 0644); err != nil {
 		return nil, err
 	}
 
