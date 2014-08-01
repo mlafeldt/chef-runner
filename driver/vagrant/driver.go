@@ -18,6 +18,7 @@ import (
 
 const (
 	DefaultMachine = "default"
+	ConfigPath     = ".chef-runner/vagrant"
 )
 
 type Driver struct {
@@ -42,9 +43,11 @@ func NewDriver(machine string) (*Driver, error) {
 		return nil, err
 	}
 
-	configFile := path.Join(".vagrant", "machines", machine, "ssh_config")
-
+	configFile := path.Join(ConfigPath, "machines", machine, "ssh_config")
 	log.Debug("Writing current SSH config to", configFile)
+	if err := os.MkdirAll(path.Dir(configFile), 0755); err != nil {
+		return nil, err
+	}
 	if err := ioutil.WriteFile(configFile, config, 0644); err != nil {
 		return nil, err
 	}
