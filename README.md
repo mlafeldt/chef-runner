@@ -45,8 +45,8 @@ Additionally, your cookbook must have the following files:
 * `metadata.rb` - must define the cookbook's name
 * `Berksfile` - must define all required cookbook dependencies
 
-When using chef-runner with [Vagrant], make sure you have Vagrant version 1.3.4
-or higher.
+When using chef-runner with [Vagrant], make sure you have a recent version of
+Vagrant installed.
 
 To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
 work well with chef-runner.
@@ -78,7 +78,7 @@ chef-runner is a simple command-line tool that has a couple of options:
 
         -h              Show help text
         -H <name>       Set hostname for direct SSH access
-        -M <name>       Set name of Vagrant virtual machine
+        -M <name>       Set name/UUID of Vagrant virtual machine
 
     Options that will be passed to Chef Solo:
 
@@ -129,7 +129,8 @@ Last but not least, here is how to enable debug messages:
 
 ### Vagrant
 
-Here's how to use chef-runner with local Vagrant machines:
+Here's how to use chef-runner with Vagrant machines that are defined in a local
+`Vagrantfile` inside the current working directory:
 
 First, make sure that the Vagrant machine you want to provision is running in
 the background. You can check the status with `vagrant status`. If the machine
@@ -144,6 +145,23 @@ Vagrant machine. The machine name is the name you have defined in your
 Example:
 
     $ chef-runner -M db
+
+chef-runner can also provision "global" Vagrant machines that live in a
+different directory. For this, all you need to know is the machine's UUID. You
+can get a list of all UUIDs by running `vagrant global-status`, e.g.
+
+    $ vagrant global-status
+    id       name    provider   state    directory
+    -----------------------------------------------------
+    a748337  default virtualbox running  /path/to/project
+    ...
+
+Then simply pass the UUID of the machine you want to use to chef-runner:
+
+    $ chef-runner -M a748337 ...
+
+Among other things, this allows you to provision Vagrant machines managed by
+[Test Kitchen].
 
 ### SSH
 
@@ -249,4 +267,5 @@ Please see `CONTRIBUTING.md` for details.
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
+[Test Kitchen]: https://github.com/test-kitchen/test-kitchen
 [Vagrant]: http://vagrantup.com/

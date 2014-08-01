@@ -41,7 +41,7 @@ func usage() {
 
     -h              Show help text
     -H <name>       Set hostname for direct SSH access
-    -M <name>       Set name of Vagrant virtual machine
+    -M <name>       Set name/UUID of Vagrant virtual machine
 
 Options that will be passed to Chef Solo:
 
