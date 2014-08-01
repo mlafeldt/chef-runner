@@ -16,9 +16,9 @@ func init() {
 
 func TestSandboxPathTo(t *testing.T) {
 	tests := map[string]string{
-		"":       ".chef-runner",
-		"a":      ".chef-runner/a",
-		"/a/b/c": ".chef-runner/a/b/c",
+		"":       ".chef-runner/sandbox",
+		"a":      ".chef-runner/sandbox/a",
+		"/a/b/c": ".chef-runner/sandbox/a/b/c",
 	}
 	for in, out := range tests {
 		assert.Equal(t, out, provisioner.SandboxPathTo(in))
