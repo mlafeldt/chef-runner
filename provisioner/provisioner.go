@@ -17,7 +17,7 @@ type Provisioner interface {
 }
 
 var (
-	SandboxPath = ".chef-runner"
+	SandboxPath = ".chef-runner/sandbox"
 	RootPath    = "/tmp/chef-runner"
 )
 
