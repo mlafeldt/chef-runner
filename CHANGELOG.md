@@ -1,3 +1,10 @@
+## v0.4.0 (unreleased)
+
+* Support provisioning of "global" Vagrant machines via their UUID. For this,
+  pass the UUID reported by `vagrant global-status` to chef-runner's `-M`
+  option. Among other things, this new feature allows you to provision Vagrant
+  machines managed by Test Kitchen.
+
 ## v0.3.0 (Jul 30 2014)
 
 The goal of this release is to *ssh all the things* in order to support any
