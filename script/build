@@ -1,4 +1,7 @@
 #!/bin/sh
+# Build project for multiple architectures. With --release, also create
+# download archives.
+# Usage: script/build [-r|--release]
 
 set -e
 
