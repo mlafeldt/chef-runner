@@ -4,6 +4,8 @@
   pass the UUID reported by `vagrant global-status` to chef-runner's `-M`
   option. Among other things, this new feature allows you to provision Vagrant
   machines managed by Test Kitchen.
+* Extend `script/build` to enable building of download archives with pre-built
+  chef-runner binaries for OS X, Linux, FreeBSD, and OpenBSD.
 * Show error message of `vagrant ssh-config` in case it fails.
 
 ## v0.3.0 (Jul 30 2014)

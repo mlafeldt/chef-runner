@@ -2,9 +2,31 @@
 
 set -e
 
-script/bootstrap
+version=$(git describe --tags --match "v[0-9]*" --abbrev=4 --dirty 2>/dev/null)
+version=$(expr "$version" : v*'\(.*\)' | sed -e 's/-/./g')
 
+echo "Building chef-runner version $version ..."
+
+echo "Installing dependencies..."
+go get -v -t ./...
+
+echo "Running all tests..."
+go test -race ./...
+
+echo "Cross-compiling binaries..."
+rm -rf build
 gox \
-    -output="build/chef-runner_{{.OS}}_{{.Arch}}" \
-    -os="darwin linux windows" \
+    -output="build/{{.Dir}}_${version}_{{.OS}}_{{.Arch}}/{{.Dir}}" \
+    -os="darwin linux freebsd openbsd" \
     ./...
+
+case "$1" in
+-r|--release)
+    echo "Creating zip archives..."
+    cd build
+    for i in *; do zip -r "$i.zip" "$i"; done
+    echo "Creating SHA256SUMS file..."
+    shasum -a256 *.zip > SHA256SUMS
+esac
+
+echo "Done."
