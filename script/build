@@ -7,6 +7,7 @@ set -e
 
 git_version=$(git describe --tags --match "v[0-9]*" --abbrev=4 --dirty 2>/dev/null)
 version=$(expr "$git_version" : v*'\(.*\)' | sed -e 's/-/./g')
+build_dir="build/$version"
 
 echo "Building chef-runner $git_version ..."
 
@@ -17,9 +18,9 @@ echo "Running all tests..."
 go test -race ./...
 
 echo "Cross-compiling binaries..."
-rm -rf build
+rm -rf "$build_dir"
 gox \
-    -output="build/{{.Dir}}_${version}_{{.OS}}_{{.Arch}}/{{.Dir}}" \
+    -output="${build_dir}/{{.Dir}}_${version}_{{.OS}}_{{.Arch}}/{{.Dir}}" \
     -os="darwin linux freebsd openbsd" \
     -ldflags "-X main.GitVersion $git_version" \
     ./...
@@ -27,7 +28,7 @@ gox \
 case "$1" in
 -r|--release)
     echo "Creating zip archives..."
-    cd build
+    cd "$build_dir"
     for i in *; do zip -r "$i.zip" "$i"; done
     echo "Creating SHA256SUMS file..."
     shasum -a256 *.zip > SHA256SUMS
