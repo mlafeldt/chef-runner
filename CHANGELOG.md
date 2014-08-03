@@ -1,15 +1,22 @@
-## v0.4.0 (unreleased)
+## v0.4.0 (Aug 4 2014)
+
+FEATURES:
 
 * Support provisioning of "global" Vagrant machines via their UUID. For this,
   pass the UUID reported by `vagrant global-status` to chef-runner's `-M`
   option. Among other things, this new feature allows you to provision Vagrant
   machines managed by Test Kitchen.
 * Use [Librarian-Chef] to install cookbook dependencies if `Cheffile` exists.
+  (Also removes temporary Librarian-Chef files from cookbooks before
+  transferring them.)
+* New option `-version` shows the current program version as well as target OS
+  and architecture.
+
+IMPROVEMENTS:
+
 * Extend `script/build` to enable building of download archives with pre-built
   chef-runner binaries for OS X, Linux, FreeBSD, and OpenBSD. Builds triggered
   by this script report the exact Git version that is being compiled.
-* New option `-version` shows the current program version as well as target OS
-  and architecture.
 * Show error message of `vagrant ssh-config` in case it fails.
 
 [Librarian-Chef]: https://github.com/applicationsonline/librarian-chef
