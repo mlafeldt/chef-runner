@@ -5,7 +5,6 @@ package chefsolo
 import (
 	"fmt"
 	"io/ioutil"
-	"path"
 	"strings"
 
 	"github.com/mlafeldt/chef-runner/berkshelf"
@@ -64,7 +63,7 @@ func (p Provisoner) copyThisCookbook() error {
 		Compress: true,
 		Verbose:  true,
 	}
-	return c.Copy(path.Join(SandboxPathTo("cookbooks"), cb.Name), files...)
+	return c.Copy(SandboxPathTo("cookbooks", cb.Name), files...)
 }
 
 func (p Provisoner) prepareCookbooks() error {

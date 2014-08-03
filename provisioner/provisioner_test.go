@@ -23,6 +23,8 @@ func TestSandboxPathTo(t *testing.T) {
 	for in, out := range tests {
 		assert.Equal(t, out, provisioner.SandboxPathTo(in))
 	}
+	assert.Equal(t, ".chef-runner/sandbox/a/b/c",
+		provisioner.SandboxPathTo("a", "b", "c"))
 }
 
 func TestRootPathTo(t *testing.T) {
@@ -34,6 +36,8 @@ func TestRootPathTo(t *testing.T) {
 	for in, out := range tests {
 		assert.Equal(t, out, provisioner.RootPathTo(in))
 	}
+	assert.Equal(t, "/tmp/chef-runner/a/b/c",
+		provisioner.RootPathTo("a", "b", "c"))
 }
 
 func TestCreateAndCleanupSandbox(t *testing.T) {

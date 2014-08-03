@@ -21,12 +21,14 @@ var (
 	RootPath    = "/tmp/chef-runner"
 )
 
-func SandboxPathTo(f string) string {
-	return path.Join(SandboxPath, f)
+func SandboxPathTo(elem ...string) string {
+	slice := append([]string{SandboxPath}, elem...)
+	return path.Join(slice...)
 }
 
-func RootPathTo(f string) string {
-	return path.Join(RootPath, f)
+func RootPathTo(elem ...string) string {
+	slice := append([]string{RootPath}, elem...)
+	return path.Join(slice...)
 }
 
 func CreateSandbox() error {
