@@ -9,6 +9,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/berkshelf"
 	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/librarian"
 	"github.com/mlafeldt/chef-runner/log"
 	. "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/rsync"
@@ -44,7 +45,12 @@ func (p Provisoner) prepareSoloConfig() error {
 
 func (p Provisoner) resolveWithBerkshelf() error {
 	log.Info("Installing cookbooks with Berkshelf")
-	return berkshelf.Install(SandboxPathTo("cookbooks"))
+	return berkshelf.InstallCookbooks(SandboxPathTo("cookbooks"))
+}
+
+func (p Provisoner) resolveWithLibrarian() error {
+	log.Info("Installing cookbooks with Librarian-Chef")
+	return librarian.InstallCookbooks(SandboxPathTo("cookbooks"))
 }
 
 func (p Provisoner) copyThisCookbook() error {
@@ -67,10 +73,16 @@ func (p Provisoner) copyThisCookbook() error {
 }
 
 func (p Provisoner) prepareCookbooks() error {
-	if !util.FileExist(SandboxPathTo("cookbooks")) {
+	if util.FileExist(SandboxPathTo("cookbooks")) {
+		return p.copyThisCookbook()
+	}
+	if util.FileExist("Berksfile") {
 		return p.resolveWithBerkshelf()
 	}
-	return p.copyThisCookbook()
+	if util.FileExist("Cheffile") {
+		return p.resolveWithLibrarian()
+	}
+	return nil
 }
 
 func (p Provisoner) CreateSandbox() error {
