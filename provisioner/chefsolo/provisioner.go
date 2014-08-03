@@ -43,12 +43,12 @@ func (p Provisoner) prepareSoloConfig() error {
 	return ioutil.WriteFile(SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
 
-func (p Provisoner) prepareCookbooks() error {
-	cookbookPath := SandboxPathTo("cookbooks")
-	if !util.FileExist(cookbookPath) {
-		log.Info("Installing cookbooks with Berkshelf")
-		return berkshelf.Install(cookbookPath)
-	}
+func (p Provisoner) resolveWithBerkshelf() error {
+	log.Info("Installing cookbooks with Berkshelf")
+	return berkshelf.Install(SandboxPathTo("cookbooks"))
+}
+
+func (p Provisoner) copyThisCookbook() error {
 	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
 		return err
@@ -64,7 +64,14 @@ func (p Provisoner) prepareCookbooks() error {
 		Compress: true,
 		Verbose:  true,
 	}
-	return c.Copy(path.Join(cookbookPath, cb.Name), files...)
+	return c.Copy(path.Join(SandboxPathTo("cookbooks"), cb.Name), files...)
+}
+
+func (p Provisoner) prepareCookbooks() error {
+	if !util.FileExist(SandboxPathTo("cookbooks")) {
+		return p.resolveWithBerkshelf()
+	}
+	return p.copyThisCookbook()
 }
 
 func (p Provisoner) CreateSandbox() error {
