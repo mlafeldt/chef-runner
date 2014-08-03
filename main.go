@@ -40,6 +40,8 @@ func usage() {
 	text := `Usage: chef-runner [options] [--] [<recipe>...]
 
     -h              Show help text
+    -version        Show program version
+
     -H <name>       Set hostname for direct SSH access
     -M <name>       Set name/UUID of Vagrant virtual machine
 
@@ -85,20 +87,26 @@ func main() {
 
 	// usage() prints out flag documentation. No need to duplicate it here.
 	var (
-		host     = flag.String("H", "", "")
-		machine  = flag.String("M", "", "")
-		format   = flag.String("F", "", "")
-		logLevel = flag.String("l", "", "")
-		jsonFile = flag.String("j", "", "")
+		host        = flag.String("H", "", "")
+		machine     = flag.String("M", "", "")
+		format      = flag.String("F", "", "")
+		logLevel    = flag.String("l", "", "")
+		jsonFile    = flag.String("j", "", "")
+		showVersion = flag.Bool("version", false, "")
 	)
 	flag.Usage = usage
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
+		os.Exit(0)
+	}
 
 	if *host != "" && *machine != "" {
 		abort("-H and -M cannot be used together")
 	}
 
-	log.Infof("Starting chef-runner (%s)\n", VersionString())
+	log.Infof("Starting chef-runner (%s %s)\n", VersionString(), TargetString())
 
 	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
