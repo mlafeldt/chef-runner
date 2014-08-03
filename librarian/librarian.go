@@ -5,7 +5,7 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
-func InstallCommand(path string) []string {
+func Command(path string) []string {
 	var cmd []string
 	if util.FileExist("Gemfile") {
 		cmd = []string{"bundle", "exec"}
@@ -14,6 +14,6 @@ func InstallCommand(path string) []string {
 	return cmd
 }
 
-func Install(path string) error {
-	return exec.RunCommand(InstallCommand(path))
+func InstallCookbooks(path string) error {
+	return exec.RunCommand(Command(path))
 }

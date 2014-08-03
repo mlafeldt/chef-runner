@@ -45,12 +45,12 @@ func (p Provisoner) prepareSoloConfig() error {
 
 func (p Provisoner) resolveWithBerkshelf() error {
 	log.Info("Installing cookbooks with Berkshelf")
-	return berkshelf.Install(SandboxPathTo("cookbooks"))
+	return berkshelf.InstallCookbooks(SandboxPathTo("cookbooks"))
 }
 
 func (p Provisoner) resolveWithLibrarian() error {
 	log.Info("Installing cookbooks with Librarian-Chef")
-	return librarian.Install(SandboxPathTo("cookbooks"))
+	return librarian.InstallCookbooks(SandboxPathTo("cookbooks"))
 }
 
 func (p Provisoner) copyThisCookbook() error {
