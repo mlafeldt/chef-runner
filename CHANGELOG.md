@@ -6,7 +6,10 @@
   machines managed by Test Kitchen.
 * Use [Librarian-Chef] to install cookbook dependencies if `Cheffile` exists.
 * Extend `script/build` to enable building of download archives with pre-built
-  chef-runner binaries for OS X, Linux, FreeBSD, and OpenBSD.
+  chef-runner binaries for OS X, Linux, FreeBSD, and OpenBSD. Builds triggered
+  by this script report the exact Git version that is being compiled.
+* New option `-version` shows the current program version as well as target OS
+  and architecture.
 * Show error message of `vagrant ssh-config` in case it fails.
 
 [Librarian-Chef]: https://github.com/applicationsonline/librarian-chef

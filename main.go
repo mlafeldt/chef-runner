@@ -98,7 +98,7 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Printf("chef-runner %s\n", VersionString())
+		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
 		os.Exit(0)
 	}
 
@@ -106,7 +106,7 @@ func main() {
 		abort("-H and -M cannot be used together")
 	}
 
-	log.Infof("Starting chef-runner (%s)\n", VersionString())
+	log.Infof("Starting chef-runner (%s %s)\n", VersionString(), TargetString())
 
 	cb, err := cookbook.NewCookbook(".")
 	if err != nil {
