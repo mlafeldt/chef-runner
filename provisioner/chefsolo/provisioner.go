@@ -79,7 +79,11 @@ func (p Provisoner) prepareCookbooks() error {
 		return p.resolveWithLibrarian()
 	}
 
-	log.Error("Berksfile or Cheffile must exist in current directory")
+	if util.FileExist(metadata.Filename) {
+		return p.resolveWithRsync()
+	}
+
+	log.Error("Berksfile, Cheffile, or metadata.rb must exist in current directory")
 	return errors.New("cookbooks could not be found")
 }
 
