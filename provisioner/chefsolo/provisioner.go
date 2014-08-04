@@ -22,6 +22,10 @@ const (
 	DefaultLogLevel = "info"
 )
 
+var (
+	CookbookPath = SandboxPathTo("cookbooks")
+)
+
 type Provisoner struct {
 	RunList    []string
 	Attributes string
@@ -46,27 +50,25 @@ func (p Provisoner) prepareSoloConfig() error {
 
 func (p Provisoner) resolveWithBerkshelf() error {
 	log.Info("Installing cookbooks with Berkshelf")
-	return berkshelf.InstallCookbooks(SandboxPathTo("cookbooks"))
+	return berkshelf.InstallCookbooks(CookbookPath)
 }
 
 func (p Provisoner) resolveWithLibrarian() error {
 	log.Info("Installing cookbooks with Librarian-Chef")
-	return librarian.InstallCookbooks(SandboxPathTo("cookbooks"))
+	return librarian.InstallCookbooks(CookbookPath)
 }
 
 func (p Provisoner) resolveWithRsync() error {
 	log.Info("Installing cookbook in current directory with rsync")
-	return rsync.InstallCookbook(SandboxPathTo("cookbooks"), ".")
+	return rsync.InstallCookbook(CookbookPath, ".")
 }
 
 func (p Provisoner) prepareCookbooks() error {
 	// If the current folder is a cookbook and its dependencies have
 	// already been resolved, only update this cookbook with rsync.
 	// TODO: improve this check by comparing timestamps etc.
-	if util.FileExist(metadata.Filename) {
-		if util.FileExist(SandboxPathTo("cookbooks")) {
-			return p.resolveWithRsync()
-		}
+	if util.FileExist(metadata.Filename) && util.FileExist(CookbookPath) {
+		return p.resolveWithRsync()
 	}
 
 	if util.FileExist("Berksfile") {
