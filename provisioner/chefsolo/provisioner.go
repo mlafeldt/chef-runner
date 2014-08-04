@@ -3,6 +3,7 @@
 package chefsolo
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"strings"
@@ -82,7 +83,9 @@ func (p Provisoner) prepareCookbooks() error {
 	if util.FileExist("Cheffile") {
 		return p.resolveWithLibrarian()
 	}
-	return nil
+
+	log.Error("Berksfile or Cheffile must exist in current directory")
+	return errors.New("Cookbooks could not be found")
 }
 
 func (p Provisoner) CreateSandbox() error {
