@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+
+	"github.com/mlafeldt/chef-runner/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner/log"
 	. "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
@@ -58,14 +60,19 @@ func (p Provisoner) resolveWithRsync() error {
 }
 
 func (p Provisoner) prepareCookbooks() error {
-	// If cookbooks folder already exists, only update it with fast rsync.
+	// If the current folder is a cookbook and its dependencies have
+	// already been resolved, only update this cookbook with rsync.
 	// TODO: improve this check by comparing timestamps etc.
-	if util.FileExist(SandboxPathTo("cookbooks")) {
-		return p.resolveWithRsync()
+	if util.FileExist(metadata.Filename) {
+		if util.FileExist(SandboxPathTo("cookbooks")) {
+			return p.resolveWithRsync()
+		}
 	}
+
 	if util.FileExist("Berksfile") {
 		return p.resolveWithBerkshelf()
 	}
+
 	if util.FileExist("Cheffile") {
 		return p.resolveWithLibrarian()
 	}
