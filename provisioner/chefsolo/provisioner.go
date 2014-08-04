@@ -7,13 +7,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-
-	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/log"
 	. "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
 	"github.com/mlafeldt/chef-runner/resolver/librarian"
-	"github.com/mlafeldt/chef-runner/rsync"
+	"github.com/mlafeldt/chef-runner/resolver/rsync"
 	"github.com/mlafeldt/chef-runner/util"
 )
 
@@ -54,28 +52,16 @@ func (p Provisoner) resolveWithLibrarian() error {
 	return librarian.InstallCookbooks(SandboxPathTo("cookbooks"))
 }
 
-func (p Provisoner) copyThisCookbook() error {
-	cb, err := cookbook.NewCookbook(".")
-	if err != nil {
-		return err
-	}
-	files, err := cb.Files()
-	if err != nil {
-		return err
-	}
-	log.Info("Updating", cb.Name, "cookbook with rsync")
-	c := rsync.Client{
-		Archive:  true,
-		Delete:   true,
-		Compress: true,
-		Verbose:  true,
-	}
-	return c.Copy(SandboxPathTo("cookbooks", cb.Name), files...)
+func (p Provisoner) resolveWithRsync() error {
+	log.Info("Installing cookbook in current directory with rsync")
+	return rsync.InstallCookbook(SandboxPathTo("cookbooks"), ".")
 }
 
 func (p Provisoner) prepareCookbooks() error {
+	// If cookbooks folder already exists, only update it with fast rsync.
+	// TODO: improve this check by comparing timestamps etc.
 	if util.FileExist(SandboxPathTo("cookbooks")) {
-		return p.copyThisCookbook()
+		return p.resolveWithRsync()
 	}
 	if util.FileExist("Berksfile") {
 		return p.resolveWithBerkshelf()
@@ -85,7 +71,7 @@ func (p Provisoner) prepareCookbooks() error {
 	}
 
 	log.Error("Berksfile or Cheffile must exist in current directory")
-	return errors.New("Cookbooks could not be found")
+	return errors.New("cookbooks could not be found")
 }
 
 func (p Provisoner) CreateSandbox() error {
