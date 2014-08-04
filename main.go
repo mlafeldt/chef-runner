@@ -112,9 +112,6 @@ func main() {
 	if err != nil {
 		abort(err)
 	}
-	if cb.Name == "" {
-		abort("unknown cookbook name")
-	}
 	log.Debugf("Cookbook = %s\n", cb)
 
 	recipes := flag.Args()

@@ -1,6 +1,7 @@
 package cookbook
 
 import (
+	"errors"
 	"path"
 	"path/filepath"
 
@@ -15,10 +16,16 @@ type Cookbook struct {
 
 func NewCookbook(cookbookPath string) (*Cookbook, error) {
 	metadataPath := path.Join(cookbookPath, metadata.Filename)
+
 	metadata, err := metadata.ParseFile(metadataPath)
 	if err != nil {
 		return nil, err
 	}
+
+	if metadata.Name == "" {
+		return nil, errors.New(metadataPath + " does not define 'name' key")
+	}
+
 	cb := Cookbook{
 		Path:    cookbookPath,
 		Name:    metadata.Name,
