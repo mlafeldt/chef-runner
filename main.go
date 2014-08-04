@@ -158,10 +158,7 @@ func main() {
 	}
 
 	log.Infof("Running Chef using %s\n", drv)
-
 	cmd := strings.Join(prov.Command(), " ")
-	log.Debug(cmd)
-
 	if err := drv.RunCommand(cmd); err != nil {
 		abort(err)
 	}
