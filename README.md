@@ -54,6 +54,15 @@ work well with chef-runner.
 
 ## Installation
 
+### Download
+
+There are [pre-built binaries] of chef-runner for Mac OS X, Linux, FreeBSD, and
+OpenBSD. Please download the proper package for your operating system and
+architecture, then unzip the `chef-runner` binary to a location included in
+`$PATH`.
+
+### Source build
+
 First, make sure you have [Go] version 1.2 or higher.
 
 This single line will download, compile, and install the `chef-runner`
@@ -271,6 +280,7 @@ Please see `CONTRIBUTING.md` for details.
 [Librarian-Chef]: https://github.com/applicationsonline/librarian-chef
 [pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
+[pre-built binaries]: https://github.com/mlafeldt/chef-runner/releases/latest
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 [Test Kitchen]: https://github.com/test-kitchen/test-kitchen
