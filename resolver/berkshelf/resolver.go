@@ -1,3 +1,5 @@
+// Package berkshelf implements a cookbook dependency resolver based on
+// Berkshelf.
 package berkshelf
 
 import (

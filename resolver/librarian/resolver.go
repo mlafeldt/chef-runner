@@ -1,3 +1,5 @@
+// Package librarian implements a cookbook dependency resolver based on
+// Librarian-Chef.
 package librarian
 
 import (
