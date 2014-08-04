@@ -7,11 +7,11 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/mlafeldt/chef-runner/berkshelf"
 	"github.com/mlafeldt/chef-runner/cookbook"
-	"github.com/mlafeldt/chef-runner/librarian"
 	"github.com/mlafeldt/chef-runner/log"
 	. "github.com/mlafeldt/chef-runner/provisioner"
+	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
+	"github.com/mlafeldt/chef-runner/resolver/librarian"
 	"github.com/mlafeldt/chef-runner/rsync"
 	"github.com/mlafeldt/chef-runner/util"
 )

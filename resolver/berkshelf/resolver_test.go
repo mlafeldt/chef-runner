@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/berkshelf"
+	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
 	"github.com/stretchr/testify/assert"
 )
 

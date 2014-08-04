@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/librarian"
+	"github.com/mlafeldt/chef-runner/resolver/librarian"
 	"github.com/stretchr/testify/assert"
 )
 
