@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/mlafeldt/chef-runner/cookbook/metadata"
+	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/log"
 	. "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
@@ -65,10 +65,12 @@ func (p Provisoner) resolveWithRsync() error {
 }
 
 func (p Provisoner) prepareCookbooks() error {
+	cb, _ := cookbook.NewCookbook(".")
+
 	// If the current folder is a cookbook and its dependencies have
 	// already been resolved, only update this cookbook with rsync.
 	// TODO: improve this check by comparing timestamps etc.
-	if util.FileExist(metadata.Filename) && util.FileExist(CookbookPath) {
+	if cb.Name != "" && util.FileExist(CookbookPath) {
 		return p.resolveWithRsync()
 	}
 
@@ -80,7 +82,7 @@ func (p Provisoner) prepareCookbooks() error {
 		return p.resolveWithLibrarian()
 	}
 
-	if util.FileExist(metadata.Filename) {
+	if cb.Name != "" {
 		return p.resolveWithRsync()
 	}
 
