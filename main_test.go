@@ -33,17 +33,65 @@ func TestBuildRunList(t *testing.T) {
 		cookbookName string
 		recipes      []string
 		runList      []string
+		errString    string
 	}{
-		{"cats", []string{}, []string{"cats::default"}},
-		{"cats", []string{"recipes/foo.rb"}, []string{"cats::foo"}},
-		{"cats", []string{"./recipes//foo.rb"}, []string{"cats::foo"}},
-		{"cats", []string{"foo"}, []string{"cats::foo"}},
-		{"cats", []string{"dogs::bar"}, []string{"dogs::bar"}},
-		{"cats", []string{"recipes/foo.rb", "bar", "dogs::baz"},
-			[]string{"cats::foo", "cats::bar", "dogs::baz"}},
+		{
+			cookbookName: "cats",
+			recipes:      []string{},
+			runList:      []string{"cats::default"},
+		},
+		{
+			cookbookName: "cats",
+			recipes:      []string{"recipes/foo.rb"},
+			runList:      []string{"cats::foo"},
+		},
+		{
+			cookbookName: "cats",
+			recipes:      []string{"./recipes//foo.rb"},
+			runList:      []string{"cats::foo"},
+		},
+		{
+			cookbookName: "cats",
+			recipes:      []string{"foo"},
+			runList:      []string{"cats::foo"},
+		},
+		{
+			cookbookName: "",
+			recipes:      []string{"dogs::bar"},
+			runList:      []string{"dogs::bar"},
+		},
+		{
+			cookbookName: "cats",
+			recipes:      []string{"recipes/foo.rb", "bar", "dogs::baz"},
+			runList:      []string{"cats::foo", "cats::bar", "dogs::baz"},
+		},
+		// Check for errors
+		{
+			cookbookName: "",
+			recipes:      []string{},
+			runList:      nil,
+			errString:    "cookbook name required",
+		},
+		{
+			cookbookName: "",
+			recipes:      []string{"foo"},
+			runList:      nil,
+			errString:    "cookbook name required",
+		},
+		{
+			cookbookName: "",
+			recipes:      []string{"recipes/foo.rb"},
+			runList:      nil,
+			errString:    "cookbook name required",
+		},
 	}
 	for _, test := range tests {
-		runList := buildRunList(test.cookbookName, test.recipes)
+		runList, err := buildRunList(test.cookbookName, test.recipes)
+		if test.errString == "" {
+			assert.NoError(t, err)
+		} else {
+			assert.EqualError(t, err, test.errString)
+		}
 		assert.Equal(t, test.runList, runList)
 	}
 }

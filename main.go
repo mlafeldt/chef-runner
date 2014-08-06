@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -62,9 +63,9 @@ func abort(v ...interface{}) {
 	os.Exit(1)
 }
 
-func buildRunList(cookbookName string, recipes []string) []string {
+func buildRunList(cookbookName string, recipes []string) ([]string, error) {
 	if len(recipes) == 0 {
-		return []string{cookbookName + "::default"}
+		recipes = []string{"default"}
 	}
 
 	var runList []string
@@ -72,14 +73,20 @@ func buildRunList(cookbookName string, recipes []string) []string {
 		var recipeName string
 		if strings.Contains(r, "::") {
 			recipeName = r
-		} else if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
-			recipeName = cookbookName + "::" + util.BaseName(r, ".rb")
 		} else {
-			recipeName = cookbookName + "::" + r
+			if cookbookName == "" {
+				log.Errorf("cannot add recipe `%s` to run list\n", r)
+				return nil, errors.New("cookbook name required")
+			}
+			if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
+				recipeName = cookbookName + "::" + util.BaseName(r, ".rb")
+			} else {
+				recipeName = cookbookName + "::" + r
+			}
 		}
 		runList = append(runList, recipeName)
 	}
-	return runList
+	return runList, nil
 }
 
 func main() {
@@ -112,13 +119,12 @@ func main() {
 	if err != nil {
 		abort(err)
 	}
-	if cb.Name == "" {
-		abort("cookbook name required")
-	}
 	log.Debugf("Cookbook = %s\n", cb)
 
-	recipes := flag.Args()
-	runList := buildRunList(cb.Name, recipes)
+	runList, err := buildRunList(cb.Name, flag.Args())
+	if err != nil {
+		abort(err)
+	}
 
 	var attributes string
 	if *jsonFile != "" {
