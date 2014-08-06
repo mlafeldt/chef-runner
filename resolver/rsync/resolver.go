@@ -4,6 +4,7 @@
 package rsync
 
 import (
+	"errors"
 	"os"
 	"path"
 
@@ -15,6 +16,10 @@ func InstallCookbook(dst, src string) error {
 	cb, err := cookbook.NewCookbook(src)
 	if err != nil {
 		return err
+	}
+
+	if cb.Name == "" {
+		return errors.New("cookbook name required")
 	}
 
 	files, err := cb.Files()

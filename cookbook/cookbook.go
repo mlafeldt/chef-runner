@@ -1,11 +1,11 @@
 package cookbook
 
 import (
-	"errors"
 	"path"
 	"path/filepath"
 
 	"github.com/mlafeldt/chef-runner/cookbook/metadata"
+	"github.com/mlafeldt/chef-runner/util"
 )
 
 type Cookbook struct {
@@ -15,22 +15,18 @@ type Cookbook struct {
 }
 
 func NewCookbook(cookbookPath string) (*Cookbook, error) {
+	cb := Cookbook{Path: cookbookPath}
+
 	metadataPath := path.Join(cookbookPath, metadata.Filename)
-
-	metadata, err := metadata.ParseFile(metadataPath)
-	if err != nil {
-		return nil, err
+	if util.FileExist(metadataPath) {
+		metadata, err := metadata.ParseFile(metadataPath)
+		if err != nil {
+			return nil, err
+		}
+		cb.Name = metadata.Name
+		cb.Version = metadata.Version
 	}
 
-	if metadata.Name == "" {
-		return nil, errors.New(metadataPath + " does not define 'name' key")
-	}
-
-	cb := Cookbook{
-		Path:    cookbookPath,
-		Name:    metadata.Name,
-		Version: metadata.Version,
-	}
 	return &cb, nil
 }
 

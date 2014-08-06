@@ -17,6 +17,16 @@ func TestNewCookbook(t *testing.T) {
 	}
 }
 
+func TestNewCookbook_WithoutMetadata(t *testing.T) {
+	cb, err := cookbook.NewCookbook(".")
+	assert.NoError(t, err)
+	if assert.NotNil(t, cb) {
+		assert.Equal(t, ".", cb.Path)
+		assert.Equal(t, "", cb.Name)
+		assert.Equal(t, "", cb.Version)
+	}
+}
+
 func TestString(t *testing.T) {
 	cb := cookbook.Cookbook{Name: "cats", Version: "1.2.3"}
 	assert.Equal(t, "cats 1.2.3", cb.String())

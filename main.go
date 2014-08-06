@@ -112,6 +112,9 @@ func main() {
 	if err != nil {
 		abort(err)
 	}
+	if cb.Name == "" {
+		abort("cookbook name required")
+	}
 	log.Debugf("Cookbook = %s\n", cb)
 
 	recipes := flag.Args()
