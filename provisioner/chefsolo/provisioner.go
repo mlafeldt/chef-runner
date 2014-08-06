@@ -45,6 +45,7 @@ func (p Provisoner) prepareJSON() error {
 func (p Provisoner) prepareSoloConfig() error {
 	log.Debug("Preparing Chef Solo config")
 	data := fmt.Sprintf("cookbook_path \"%s\"\n", RootPathTo("cookbooks"))
+	data += "ssl_verify_mode :verify_peer\n"
 	return ioutil.WriteFile(SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
 

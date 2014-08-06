@@ -35,7 +35,8 @@ var createSandboxTests = []struct {
 		provisioner:     chefsolo.Provisoner{},
 		fakeCookbooks:   false,
 		writeAttributes: "{}\n",
-		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
+		writeConfig: "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
+			"ssl_verify_mode :verify_peer\n",
 		runCmd: []string{"bundle", "exec", "berks", "install",
 			"--path", ".chef-runner/sandbox/cookbooks"},
 	},
@@ -43,7 +44,8 @@ var createSandboxTests = []struct {
 		provisioner:     chefsolo.Provisoner{},
 		fakeCookbooks:   true,
 		writeAttributes: "{}\n",
-		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
+		writeConfig: "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
+			"ssl_verify_mode :verify_peer\n",
 		runCmd: []string{"rsync", "--archive", "--delete", "--compress", "--verbose",
 			"README.md", "metadata.rb", "attributes", "recipes",
 			".chef-runner/sandbox/cookbooks/practicingruby"},
@@ -52,7 +54,8 @@ var createSandboxTests = []struct {
 		provisioner:     chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},
 		fakeCookbooks:   false,
 		writeAttributes: `{"foo": "bar"}`,
-		writeConfig:     "cookbook_path \"/tmp/chef-runner/cookbooks\"\n",
+		writeConfig: "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
+			"ssl_verify_mode :verify_peer\n",
 		runCmd: []string{"bundle", "exec", "berks", "install",
 			"--path", ".chef-runner/sandbox/cookbooks"},
 	},
