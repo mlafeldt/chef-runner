@@ -9,7 +9,7 @@ FEATURES:
 * Use [Librarian-Chef] to install cookbook dependencies if `Cheffile` exists.
   (Also removes temporary Librarian-Chef files from cookbooks before
   transferring them.)
-* New option `-version` shows the current program version as well as target OS
+* New option `--version` shows the current program version as well as target OS
   and architecture.
 
 IMPROVEMENTS:

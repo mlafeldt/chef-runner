@@ -41,7 +41,7 @@ func usage() {
 	text := `Usage: chef-runner [options] [--] [<recipe>...]
 
     -h              Show help text
-    -version        Show program version
+    --version       Show program version
 
     -H <name>       Set hostname for direct SSH access
     -M <name>       Set name/UUID of Vagrant virtual machine
