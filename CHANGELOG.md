@@ -1,3 +1,18 @@
+## v0.5.0 (unreleased)
+
+FEATURES:
+
+* Many improvements to how cookbook dependencies are resolved tbc.
+
+IMPROVEMENTS:
+
+* Configure Chef to verify all HTTPS connections. This removes the SSL warning
+  message printed at the start of every Chef run. (Internally, `ssl_verify_mode`
+  is set to `:verify_peer`, which is going to be the new default someday.)
+* Add `script/coverage` to generate code coverage statistics for Go packages.
+* Log most executed commands in debug mode.
+* Link to downloads in README.
+
 ## v0.4.0 (Aug 4 2014)
 
 FEATURES:
