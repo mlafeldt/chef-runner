@@ -1,7 +1,7 @@
-chef-runner
-===========
+# chef-runner - The fastest way to run Chef cookbooks
 
 [![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
+[![GoDoc](https://godoc.org/github.com/mlafeldt/chef-runner?status.svg)](https://godoc.org/github.com/mlafeldt/chef-runner)
 
 The purpose of chef-runner explained in one tweet:
 
