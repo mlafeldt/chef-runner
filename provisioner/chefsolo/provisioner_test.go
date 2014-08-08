@@ -8,6 +8,7 @@ import (
 	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
+	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,70 +24,132 @@ func init() {
 	log.SetLevel(log.LevelWarn)
 }
 
-var createSandboxTests = []struct {
-	provisioner   chefsolo.Provisoner
-	fakeCookbooks bool
+func inTestDir(f func()) {
+	testDir, err := util.TempDir()
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(testDir)
 
-	writeAttributes string
-	writeConfig     string
-	runCmd          []string
-}{
-	{
-		provisioner:     chefsolo.Provisoner{},
-		fakeCookbooks:   false,
-		writeAttributes: "{}\n",
-		writeConfig: "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
-			"ssl_verify_mode :verify_peer\n",
-		runCmd: []string{"bundle", "exec", "berks", "install",
-			"--path", ".chef-runner/sandbox/cookbooks"},
-	},
-	{
-		provisioner:     chefsolo.Provisoner{},
-		fakeCookbooks:   true,
-		writeAttributes: "{}\n",
-		writeConfig: "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
-			"ssl_verify_mode :verify_peer\n",
-		runCmd: []string{"rsync", "--archive", "--delete", "--compress", "--verbose",
-			"README.md", "metadata.rb", "attributes", "recipes",
-			".chef-runner/sandbox/cookbooks/practicingruby"},
-	},
-	{
-		provisioner:     chefsolo.Provisoner{Attributes: `{"foo": "bar"}`},
-		fakeCookbooks:   false,
-		writeAttributes: `{"foo": "bar"}`,
-		writeConfig: "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
-			"ssl_verify_mode :verify_peer\n",
-		runCmd: []string{"bundle", "exec", "berks", "install",
-			"--path", ".chef-runner/sandbox/cookbooks"},
-	},
-}
-
-func TestCreateSandbox(t *testing.T) {
-	if err := os.Chdir("../../testdata"); err != nil {
+	pwd, err := os.Getwd()
+	if err != nil {
 		panic(err)
 	}
 
-	defer os.RemoveAll(".chef-runner")
+	if err := os.Chdir(testDir); err != nil {
+		panic(err)
+	}
 
-	for _, test := range createSandboxTests {
-		if test.fakeCookbooks {
-			os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
-		}
+	f()
 
-		assert.NoError(t, test.provisioner.CreateSandbox())
+	if err := os.Chdir(pwd); err != nil {
+		panic(err)
+	}
+}
 
-		attributes, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
+func TestCreateSandbox_Berkshelf(t *testing.T) {
+	lastCmd = []string{}
+
+	inTestDir(func() {
+		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+
+		assert.NoError(t, chefsolo.Provisoner{}.CreateSandbox())
+	})
+
+	assert.Equal(t, []string{"berks", "install", "--path",
+		".chef-runner/sandbox/cookbooks"}, lastCmd)
+}
+
+func TestCreateSandbox_Librarian(t *testing.T) {
+	lastCmd = []string{}
+
+	inTestDir(func() {
+		ioutil.WriteFile("Cheffile", []byte{}, 0644)
+
+		assert.NoError(t, chefsolo.Provisoner{}.CreateSandbox())
+	})
+
+	assert.Equal(t, []string{"librarian-chef", "install", "--path",
+		".chef-runner/sandbox/cookbooks"}, lastCmd)
+}
+
+func TestCreateSandbox_Rsync(t *testing.T) {
+	lastCmd = []string{}
+
+	inTestDir(func() {
+		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
+
+		assert.NoError(t, chefsolo.Provisoner{}.CreateSandbox())
+	})
+
+	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
+		"--verbose", "metadata.rb", ".chef-runner/sandbox/cookbooks/cats"}, lastCmd)
+}
+
+func TestCreateSandbox_RsyncUpdate(t *testing.T) {
+	lastCmd = []string{}
+
+	inTestDir(func() {
+		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
+		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
+
+		assert.NoError(t, chefsolo.Provisoner{}.CreateSandbox())
+	})
+
+	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
+		"--verbose", "metadata.rb", ".chef-runner/sandbox/cookbooks/cats"}, lastCmd)
+}
+
+func TestCreateSandbox_NoCookbooks(t *testing.T) {
+	lastCmd = []string{}
+
+	inTestDir(func() {
+		assert.EqualError(t, chefsolo.Provisoner{}.CreateSandbox(),
+			"cookbooks could not be found")
+	})
+
+	assert.Equal(t, []string{}, lastCmd)
+}
+
+func TestCreateSandbox_DefaultJSON(t *testing.T) {
+	inTestDir(func() {
+		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+
+		assert.NoError(t, chefsolo.Provisoner{}.CreateSandbox())
+
+		config, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
 		assert.NoError(t, err)
-		assert.Equal(t, test.writeAttributes, string(attributes))
+		assert.Equal(t, "{}\n", string(config))
+	})
+}
+
+func TestCreateSandbox_CustomJSON(t *testing.T) {
+	inTestDir(func() {
+		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+
+		p := chefsolo.Provisoner{Attributes: `{"foo": "bar"}`}
+		assert.NoError(t, p.CreateSandbox())
+
+		config, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
+		assert.NoError(t, err)
+		assert.Equal(t, `{"foo": "bar"}`, string(config))
+	})
+}
+
+func TestCreateSandbox_SoloConfig(t *testing.T) {
+	inTestDir(func() {
+		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+
+		assert.NoError(t, chefsolo.Provisoner{}.CreateSandbox())
+
+		expect := "cookbook_path \"/tmp/chef-runner/cookbooks\"\n" +
+			"ssl_verify_mode :verify_peer\n"
 
 		config, err := ioutil.ReadFile(".chef-runner/sandbox/solo.rb")
 		assert.NoError(t, err)
-		assert.Equal(t, test.writeConfig, string(config))
-
-		assert.Equal(t, test.runCmd, lastCmd)
-
-		assert.NoError(t, test.provisioner.CleanupSandbox())
-	}
+		assert.Equal(t, expect, string(config))
+	})
 }
 
 var cmdPrefix = []string{"sudo", "chef-solo",
