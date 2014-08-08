@@ -1,4 +1,4 @@
-// Package chefsolo implements the provisioner.Provisoner interface using Chef
+// Package chefsolo implements the provisioner.Provisioner interface using Chef
 // Solo.
 package chefsolo
 
@@ -10,7 +10,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/log"
-	. "github.com/mlafeldt/chef-runner/provisioner"
+	base "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
 	"github.com/mlafeldt/chef-runner/resolver/librarian"
 	"github.com/mlafeldt/chef-runner/resolver/rsync"
@@ -23,48 +23,48 @@ const (
 )
 
 var (
-	CookbookPath = SandboxPathTo("cookbooks")
+	CookbookPath = base.SandboxPathTo("cookbooks")
 )
 
-type Provisoner struct {
+type Provisioner struct {
 	RunList    []string
 	Attributes string
 	Format     string
 	LogLevel   string
 }
 
-func (p Provisoner) prepareJSON() error {
+func (p Provisioner) prepareJSON() error {
 	log.Debug("Preparing JSON data")
 	data := "{}\n"
 	if p.Attributes != "" {
 		data = p.Attributes
 	}
-	return ioutil.WriteFile(SandboxPathTo("dna.json"), []byte(data), 0644)
+	return ioutil.WriteFile(base.SandboxPathTo("dna.json"), []byte(data), 0644)
 }
 
-func (p Provisoner) prepareSoloConfig() error {
+func (p Provisioner) prepareSoloConfig() error {
 	log.Debug("Preparing Chef Solo config")
-	data := fmt.Sprintf("cookbook_path \"%s\"\n", RootPathTo("cookbooks"))
+	data := fmt.Sprintf("cookbook_path \"%s\"\n", base.RootPathTo("cookbooks"))
 	data += "ssl_verify_mode :verify_peer\n"
-	return ioutil.WriteFile(SandboxPathTo("solo.rb"), []byte(data), 0644)
+	return ioutil.WriteFile(base.SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
 
-func (p Provisoner) resolveWithBerkshelf() error {
+func (p Provisioner) resolveWithBerkshelf() error {
 	log.Info("Installing cookbooks with Berkshelf")
 	return berkshelf.InstallCookbooks(CookbookPath)
 }
 
-func (p Provisoner) resolveWithLibrarian() error {
+func (p Provisioner) resolveWithLibrarian() error {
 	log.Info("Installing cookbooks with Librarian-Chef")
 	return librarian.InstallCookbooks(CookbookPath)
 }
 
-func (p Provisoner) resolveWithRsync() error {
+func (p Provisioner) resolveWithRsync() error {
 	log.Info("Installing cookbook in current directory with rsync")
 	return rsync.InstallCookbook(CookbookPath, ".")
 }
 
-func (p Provisoner) prepareCookbooks() error {
+func (p Provisioner) prepareCookbooks() error {
 	cb, _ := cookbook.NewCookbook(".")
 
 	// If the current folder is a cookbook and its dependencies have
@@ -90,8 +90,8 @@ func (p Provisoner) prepareCookbooks() error {
 	return errors.New("cookbooks could not be found")
 }
 
-func (p Provisoner) CreateSandbox() error {
-	if err := CreateSandbox(); err != nil {
+func (p Provisioner) CreateSandbox() error {
+	if err := base.CreateSandbox(); err != nil {
 		return err
 	}
 	if err := p.prepareJSON(); err != nil {
@@ -103,11 +103,11 @@ func (p Provisoner) CreateSandbox() error {
 	return p.prepareCookbooks()
 }
 
-func (p Provisoner) CleanupSandbox() error {
-	return CleanupSandbox()
+func (p Provisioner) CleanupSandbox() error {
+	return base.CleanupSandbox()
 }
 
-func (p Provisoner) Command() []string {
+func (p Provisioner) Command() []string {
 	format := p.Format
 	if format == "" {
 		format = DefaultFormat
@@ -118,8 +118,8 @@ func (p Provisoner) Command() []string {
 	}
 	return []string{
 		"sudo", "chef-solo",
-		"--config", RootPathTo("solo.rb"),
-		"--json-attributes", RootPathTo("dna.json"),
+		"--config", base.RootPathTo("solo.rb"),
+		"--json-attributes", base.RootPathTo("dna.json"),
 		"--override-runlist", strings.Join(p.RunList, ","),
 		"--format", format,
 		"--log_level", logLevel,

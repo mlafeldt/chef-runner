@@ -136,14 +136,14 @@ func main() {
 	}
 
 	var prov provisioner.Provisioner
-	prov = chefsolo.Provisoner{
+	prov = chefsolo.Provisioner{
 		RunList:    runList,
 		Attributes: attributes,
 		Format:     *format,
 		LogLevel:   *logLevel,
 	}
 
-	log.Debugf("Provisoner = %+v\n", prov)
+	log.Debugf("Provisioner = %+v\n", prov)
 
 	if err := prov.CreateSandbox(); err != nil {
 		abort(err)
