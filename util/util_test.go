@@ -2,6 +2,8 @@ package util_test
 
 import (
 	"os"
+	"path"
+	"strings"
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/util"
@@ -35,4 +37,16 @@ func TestBaseName(t *testing.T) {
 	for _, test := range tests {
 		assert.Equal(t, test.out, util.BaseName(test.in, test.suffix))
 	}
+}
+
+func TestTempDir(t *testing.T) {
+	dir, err := util.TempDir()
+	assert.NoError(t, err)
+	defer os.RemoveAll(dir)
+
+	assert.True(t, strings.HasPrefix(path.Base(dir), "chef-runner-"))
+
+	m, err := os.Stat(dir)
+	assert.NoError(t, err)
+	assert.True(t, m.IsDir())
 }

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -17,4 +18,8 @@ func BaseName(s, suffix string) string {
 		base = strings.TrimSuffix(base, suffix)
 	}
 	return base
+}
+
+func TempDir() (string, error) {
+	return ioutil.TempDir("", "chef-runner-")
 }
