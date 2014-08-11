@@ -11,7 +11,7 @@ import (
 	"github.com/mlafeldt/chef-runner/rsync"
 )
 
-func InstallCookbook(dst, src string) error {
+func installCookbook(dst, src string) error {
 	cb, err := cookbook.NewCookbook(src)
 	if err != nil {
 		return err
@@ -37,4 +37,9 @@ func InstallCookbook(dst, src string) error {
 		Verbose:  true,
 	}
 	return c.Copy(path.Join(dst, cb.Name), files...)
+}
+
+// Resolve copies the cookbook in the current directory to dst.
+func Resolve(dst string) error {
+	return installCookbook(dst, ".")
 }

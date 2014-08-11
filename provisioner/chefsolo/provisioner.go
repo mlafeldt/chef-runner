@@ -51,17 +51,17 @@ func (p Provisioner) prepareSoloConfig() error {
 
 func (p Provisioner) resolveWithBerkshelf() error {
 	log.Info("Installing cookbooks with Berkshelf")
-	return berkshelf.InstallCookbooks(CookbookPath)
+	return berkshelf.Resolve(CookbookPath)
 }
 
 func (p Provisioner) resolveWithLibrarian() error {
 	log.Info("Installing cookbooks with Librarian-Chef")
-	return librarian.InstallCookbooks(CookbookPath)
+	return librarian.Resolve(CookbookPath)
 }
 
 func (p Provisioner) resolveWithRsync() error {
 	log.Info("Installing cookbook in current directory with rsync")
-	return dir.InstallCookbook(CookbookPath, ".")
+	return dir.Resolve(CookbookPath)
 }
 
 func (p Provisioner) prepareCookbooks() error {

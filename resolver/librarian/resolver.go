@@ -11,6 +11,7 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
+// Command returns the command that will be executed by Resolve.
 func Command(dst string) []string {
 	var cmd []string
 	if util.FileExist("Gemfile") {
@@ -33,7 +34,9 @@ func removeTempFiles(dst string) error {
 	return nil
 }
 
-func InstallCookbooks(dst string) error {
+// Resolve runs Librarian-Chef to install cookbook dependencies to dst. It also
+// removes temporary Librarian-Chef files from the installed cookbooks.
+func Resolve(dst string) error {
 	if err := exec.RunCommand(Command(dst)); err != nil {
 		return err
 	}

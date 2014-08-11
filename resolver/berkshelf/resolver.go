@@ -7,6 +7,7 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
+// Command returns the command that will be executed by Resolve.
 func Command(dst string) []string {
 	var cmd []string
 	if util.FileExist("Gemfile") {
@@ -16,6 +17,7 @@ func Command(dst string) []string {
 	return cmd
 }
 
-func InstallCookbooks(dst string) error {
+// Resolve runs Berkshelf to install cookbook dependencies to dst.
+func Resolve(dst string) error {
 	return exec.RunCommand(Command(dst))
 }
