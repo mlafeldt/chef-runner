@@ -12,8 +12,8 @@ import (
 	"github.com/mlafeldt/chef-runner/log"
 	base "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
+	"github.com/mlafeldt/chef-runner/resolver/dir"
 	"github.com/mlafeldt/chef-runner/resolver/librarian"
-	"github.com/mlafeldt/chef-runner/resolver/rsync"
 	"github.com/mlafeldt/chef-runner/util"
 )
 
@@ -61,7 +61,7 @@ func (p Provisioner) resolveWithLibrarian() error {
 
 func (p Provisioner) resolveWithRsync() error {
 	log.Info("Installing cookbook in current directory with rsync")
-	return rsync.InstallCookbook(CookbookPath, ".")
+	return dir.InstallCookbook(CookbookPath, ".")
 }
 
 func (p Provisioner) prepareCookbooks() error {

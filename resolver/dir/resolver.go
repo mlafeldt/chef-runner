@@ -1,7 +1,6 @@
-// Package rsync implements a cookbook dependency resolver based on rsync. This
-// resolver is pretty basic in that it only copies a cookbook from one location
-// to another.
-package rsync
+// Package dir implements a cookbook dependency resolver based on rsync. This
+// resolver is pretty basic in that it only copies cookbook directories.
+package dir
 
 import (
 	"errors"
