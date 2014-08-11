@@ -3,18 +3,13 @@
 package chefsolo
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"strings"
 
-	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/log"
 	base "github.com/mlafeldt/chef-runner/provisioner"
-	"github.com/mlafeldt/chef-runner/resolver/berkshelf"
-	"github.com/mlafeldt/chef-runner/resolver/dir"
-	"github.com/mlafeldt/chef-runner/resolver/librarian"
-	"github.com/mlafeldt/chef-runner/util"
+	"github.com/mlafeldt/chef-runner/resolver"
 )
 
 const (
@@ -49,45 +44,9 @@ func (p Provisioner) prepareSoloConfig() error {
 	return ioutil.WriteFile(base.SandboxPathTo("solo.rb"), []byte(data), 0644)
 }
 
-func (p Provisioner) resolveWithBerkshelf() error {
-	log.Info("Installing cookbooks with Berkshelf")
-	return berkshelf.Resolve(CookbookPath)
-}
-
-func (p Provisioner) resolveWithLibrarian() error {
-	log.Info("Installing cookbooks with Librarian-Chef")
-	return librarian.Resolve(CookbookPath)
-}
-
-func (p Provisioner) resolveWithRsync() error {
-	log.Info("Installing cookbook in current directory with rsync")
-	return dir.Resolve(CookbookPath)
-}
-
 func (p Provisioner) prepareCookbooks() error {
-	cb, _ := cookbook.NewCookbook(".")
-
-	// If the current folder is a cookbook and its dependencies have
-	// already been resolved, only update this cookbook with rsync.
-	// TODO: improve this check by comparing timestamps etc.
-	if cb.Name != "" && util.FileExist(CookbookPath) {
-		return p.resolveWithRsync()
-	}
-
-	if util.FileExist("Berksfile") {
-		return p.resolveWithBerkshelf()
-	}
-
-	if util.FileExist("Cheffile") {
-		return p.resolveWithLibrarian()
-	}
-
-	if cb.Name != "" {
-		return p.resolveWithRsync()
-	}
-
-	log.Error("Berksfile, Cheffile, or metadata.rb must exist in current directory")
-	return errors.New("cookbooks could not be found")
+	log.Debug("Preparing cookbooks")
+	return resolver.AutoResolve(CookbookPath)
 }
 
 func (p Provisioner) CreateSandbox() error {

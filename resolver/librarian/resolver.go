@@ -11,6 +11,9 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
+// Resolver is a cookbook dependency resolver based on Librarian-Chef.
+type Resolver struct{}
+
 // Command returns the command that will be executed by Resolve.
 func Command(dst string) []string {
 	var cmd []string
@@ -36,9 +39,14 @@ func removeTempFiles(dst string) error {
 
 // Resolve runs Librarian-Chef to install cookbook dependencies to dst. It also
 // removes temporary Librarian-Chef files from the installed cookbooks.
-func Resolve(dst string) error {
+func (r Resolver) Resolve(dst string) error {
 	if err := exec.RunCommand(Command(dst)); err != nil {
 		return err
 	}
 	return removeTempFiles(dst)
+}
+
+// String returns the resolver's name.
+func (r Resolver) String() string {
+	return "Librarian-Chef resolver"
 }

@@ -7,6 +7,9 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
+// Resolver is a cookbook dependency resolver based on Berkshelf.
+type Resolver struct{}
+
 // Command returns the command that will be executed by Resolve.
 func Command(dst string) []string {
 	var cmd []string
@@ -18,6 +21,11 @@ func Command(dst string) []string {
 }
 
 // Resolve runs Berkshelf to install cookbook dependencies to dst.
-func Resolve(dst string) error {
+func (r Resolver) Resolve(dst string) error {
 	return exec.RunCommand(Command(dst))
+}
+
+// String returns the resolver's name.
+func (r Resolver) String() string {
+	return "Berkshelf resolver"
 }

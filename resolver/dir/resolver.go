@@ -1,5 +1,5 @@
-// Package dir implements a cookbook dependency resolver based on rsync. This
-// resolver is pretty basic in that it only copies cookbook directories.
+// Package dir implements a cookbook dependency resolver that merely copies
+// cookbook directories to the right place.
 package dir
 
 import (
@@ -10,6 +10,10 @@ import (
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/rsync"
 )
+
+// Resolver is a cookbook dependency resolver that copies cookbook directories
+// to the right place.
+type Resolver struct{}
 
 func installCookbook(dst, src string) error {
 	cb, err := cookbook.NewCookbook(src)
@@ -40,6 +44,11 @@ func installCookbook(dst, src string) error {
 }
 
 // Resolve copies the cookbook in the current directory to dst.
-func Resolve(dst string) error {
+func (r Resolver) Resolve(dst string) error {
 	return installCookbook(dst, ".")
+}
+
+// String returns the resolver's name.
+func (r Resolver) String() string {
+	return "Directory resolver"
 }
