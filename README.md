@@ -31,7 +31,7 @@ To use chef-runner, you need the following software:
 
 * [ssh] command-line tool
 * [rsync] command-line tool
-* [Chef] must be pre-installed on the target machine
+* [Chef] must be pre-installed on the target system
 
 When using chef-runner with [Vagrant], make sure you have a recent version of
 Vagrant installed.
@@ -201,7 +201,7 @@ There's no Vim plugin (yet). For now, you can just stick this one-liner in your
 nnoremap <leader>r :w\|!chef-runner %<cr>
 ```
 
-With this key mapping in place, make sure that the target machine is up and open
+With this key mapping in place, make sure that the target system is up and open
 a recipe in Vim:
 
 ```sh
@@ -209,8 +209,8 @@ $ vim recipes/default.rb
 ```
 
 Now whenever you type `<leader>r` (your [leader key] then `r`), chef-runner will
-run the *current* recipe on the target machine, giving you fast feedback on
-local code changes. (As a bonus, the mapping will also save the file for you.)
+run the *current* recipe on the target system, giving you fast feedback on local
+code changes. (As a bonus, the mapping will also save the file for you.)
 
 Of course, you can also change the key mapping to include whatever chef-runner
 options you need. For example, I like using a Chef output format that is less
