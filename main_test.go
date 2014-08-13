@@ -95,3 +95,11 @@ func TestBuildRunList(t *testing.T) {
 		assert.Equal(t, test.runList, runList)
 	}
 }
+
+func TestVersionString(t *testing.T) {
+	GitVersion = ""
+	assert.Equal(t, Version, VersionString())
+
+	GitVersion = "some-git-version"
+	assert.Equal(t, GitVersion, VersionString())
+}
