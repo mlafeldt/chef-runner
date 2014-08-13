@@ -34,13 +34,7 @@ func installCookbook(dst, src string) error {
 		return err
 	}
 
-	c := rsync.Client{
-		Archive:  true,
-		Delete:   true,
-		Compress: true,
-		Verbose:  true,
-	}
-	return c.Copy(path.Join(dst, cb.Name), files...)
+	return rsync.MirrorClient.Copy(path.Join(dst, cb.Name), files...)
 }
 
 // Resolve copies the cookbook in the current directory to dst.

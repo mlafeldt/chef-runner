@@ -35,6 +35,14 @@ type Client struct {
 // DefaultClient is a usable rsync client without any options enabled.
 var DefaultClient = &Client{}
 
+// MirrorClient is an rsync client configured to mirror files and directories.
+var MirrorClient = &Client{
+	Archive:  true,
+	Delete:   true,
+	Compress: true,
+	Verbose:  true,
+}
+
 // Command returns the rsync command that will be executed when Copy is called.
 func (c Client) Command(dst string, src ...string) ([]string, error) {
 	if len(src) == 0 {
