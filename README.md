@@ -23,15 +23,6 @@ chef-runner][blog post]*.
   while hacking on recipes.
 * Allows you to change infrastructure code and get **immediate feedback**.
 
-## How does it work?
-
-* Prepares Chef configuration and cookbooks in local `.chef-runner` folder.
-* Installs cookbook dependencies with Berkshelf or Librarian-Chef, and updates
-  changes with rsync.
-* Uploads data to target machine using rsync over SSH.
-* Directly executes Chef Solo over SSH.
-* Overrides Chef run list to selectively run recipes.
-
 ## Requirements
 
 To use chef-runner, you need the following software:
