@@ -43,7 +43,7 @@ var MirrorClient = &Client{
 	Verbose:  true,
 }
 
-// Command returns the rsync command that will be executed when Copy is called.
+// Command returns the rsync command that will be executed by Copy.
 func (c Client) Command(dst string, src ...string) ([]string, error) {
 	if len(src) == 0 {
 		return nil, errors.New("no source given")

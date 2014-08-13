@@ -1,3 +1,5 @@
+// Package openssh provides a wrapper around the ssh command-line tool,
+// allowing to run commands on remote machines.
 package openssh
 
 import (
@@ -9,6 +11,7 @@ import (
 	"github.com/mlafeldt/chef-runner/exec"
 )
 
+// A Client is an OpenSSH client.
 type Client struct {
 	Host        string
 	User        string
@@ -18,8 +21,8 @@ type Client struct {
 	ConfigFile  string
 }
 
-// NewClient creates an OpenSSH client from the given host string. The host
-// string has the format [user@]hostname[:port]
+// NewClient creates a new Client from the given host string. The host string
+// has the format [user@]hostname[:port]
 func NewClient(host string) (*Client, error) {
 	var user string
 	a := strings.Split(host, "@")
@@ -46,6 +49,7 @@ func NewClient(host string) (*Client, error) {
 	return &c, nil
 }
 
+// Command returns the ssh command that will be executed by Copy.
 func (c Client) Command(command string) []string {
 	cmd := []string{"ssh"}
 
@@ -86,6 +90,7 @@ func (c Client) Command(command string) []string {
 	return cmd
 }
 
+// RunCommand uses ssh to execute a command on a remote machine.
 func (c Client) RunCommand(command string) error {
 	if command == "" {
 		return errors.New("no command given")
@@ -96,6 +101,7 @@ func (c Client) RunCommand(command string) error {
 	return exec.RunCommand(c.Command(command))
 }
 
+// Shell returns a connection string that can be used by tools like rsync.
 func (c Client) Shell() []string {
 	cmd := c.Command("")
 	return cmd[:len(cmd)-1]
