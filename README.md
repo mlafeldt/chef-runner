@@ -36,18 +36,18 @@ chef-runner][blog post]*.
 
 To use chef-runner, you need the following software:
 
-* `ssh` command-line tool (OpenSSH)
-* `rsync` command-line tool
-* [Berkshelf] or [Librarian-Chef] - installable via `gem install` or Bundler
-* Chef must be pre-installed on the target machine
-
-Additionally, your cookbook must have the following files:
-
-* `metadata.rb` - must define the cookbook's name
-* `Berksfile` or `Cheffile` - must define all required cookbook dependencies
+* [ssh] command-line tool
+* [rsync] command-line tool
+* [Chef] must be pre-installed on the target machine
 
 When using chef-runner with [Vagrant], make sure you have a recent version of
 Vagrant installed.
+
+The directory you execute chef-runner from must either:
+
+* Include a `Berksfile` so that cookbooks are managed by [Berkshelf]
+* Include a `Cheffile` so that cookbooks are managed [Librarian-Chef]
+* Be a cookbook with a `metadata.rb` file that defines the cookbook's name
 
 To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
 work well with chef-runner.
@@ -274,6 +274,7 @@ Please see `CONTRIBUTING.md` for details.
 
 [Berkshelf]: http://berkshelf.com/
 [blog post]: http://mlafeldt.github.io/blog/telling-people-about-chef-runner/
+[Chef]: http://www.getchef.com/
 [demo video]: http://vimeo.com/78769511
 [Go]: http://golang.org/doc/install
 [leader key]: http://usevim.com/2012/07/20/vim101-leader/
@@ -281,7 +282,9 @@ Please see `CONTRIBUTING.md` for details.
 [pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
 [pre-built binaries]: https://github.com/mlafeldt/chef-runner/releases/latest
+[rsync]: http://rsync.samba.org/
 [run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
+[ssh]: http://www.openssh.com/
 [Test Kitchen]: https://github.com/test-kitchen/test-kitchen
 [Vagrant]: http://vagrantup.com/
