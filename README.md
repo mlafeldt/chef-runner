@@ -3,25 +3,27 @@
 [![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
 [![GoDoc](https://godoc.org/github.com/mlafeldt/chef-runner?status.svg)](https://godoc.org/github.com/mlafeldt/chef-runner)
 
-The purpose of chef-runner explained in one tweet:
+chef-runner is a tool that speeds up your Chef development and testing workflow.
+
+chef-runner tries hard to provision a target system as fast as possible. It
+thereby allows you to change infrastructure code and get *immediate feedback*.
+
+The tool was originally developed as a fast alternative to the painfully slow
+`vagrant provision`.
 
 > When it comes to dev/testing, fast feedback is everything. Vagrant needs >5s
 > before it even starts provisioning. Each time. Let's fix that. -- [@mlafeldt
 > (1 Nov 2013)](https://twitter.com/mlafeldt/status/396299646425137152)
 
+chef-runner has since evolved and can now be used to rapidly provision not only
+local Vagrant machines but also remote hosts like EC2 instances.
+
+To further shorten the feedback loop, chef-runner [integrates with
+Vim](#use-with-vim) so you don't have to leave your editor while hacking on
+recipes.
+
 For more background, check out my blog post *[Telling people about
 chef-runner][blog post]*.
-
-## What is chef-runner?
-
-* A command-line tool that speeds up your Chef development and testing workflow.
-* A fast alternative to the painfully slow `vagrant provision` ([demo video]
-  comparing both tools).
-* Rapidly provisions local Vagrant machines as well as remote machines like EC2
-  instances.
-* [Integrates with Vim](#use-with-vim) so you don't have to leave your editor
-  while hacking on recipes.
-* Allows you to change infrastructure code and get **immediate feedback**.
 
 ## Requirements
 
@@ -170,7 +172,7 @@ Among other things, this allows you to provision Vagrant machines managed by
 
 ### SSH
 
-chef-runner can also provision remote machines like EC2 instances, or basically
+chef-runner can also provision remote hosts like EC2 instances, or basically
 any systems reachable over SSH.
 
 Use the `-H` option to specify the name of a host that was configured for direct
