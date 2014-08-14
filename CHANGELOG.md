@@ -1,4 +1,4 @@
-## v0.5.0 (unreleased)
+## v0.5.0 (Aug 14 2014)
 
 This release brings a couple of improvements to how cookbook dependencies are
 resolved, making it possible to use chef-runner as a "general purpose Chef

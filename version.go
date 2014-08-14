@@ -3,7 +3,7 @@ package main
 import "runtime"
 
 // The current version of chef-runner.
-const Version = "v0.5.0.dev"
+const Version = "v0.5.0"
 
 // The Git version that is being compiled. This string contains tag and commit
 // information. It will be filled in by the compiler.
