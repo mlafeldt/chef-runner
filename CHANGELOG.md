@@ -1,17 +1,33 @@
 ## v0.5.0 (unreleased)
 
-FEATURES:
+This release brings a couple of improvements to how cookbook dependencies are
+resolved, making it possible to use chef-runner as a "general purpose Chef
+provisioner" outside of a cookbook directory. (Thanks to @guilhem for the idea!)
 
-* Many improvements to how cookbook dependencies are resolved tbc.
+For this, chef-runner now follows these rules:
 
-IMPROVEMENTS:
+* If the current directory contains a `Berksfile`, Berkshelf is used to manage
+  cookbooks.
+* If the current directory contains a `Cheffile`, Librarian-Chef is used to
+  manage cookbooks.
+* If the current directory is a cookbook with a `metadata.rb` file that defines
+  the cookbook's name, only this cookbook is copied to the right place.
+* The same is done when dependencies have already been resolved with Berkshelf
+  or Librarian-Chef to reduce overall provisioning time.
+* `metadata.rb` is only required when defining recipes in a format other than
+  `cookbook::recipe`. The standard syntax `cookbook::recipe` should always work.
+* chef-runner fails if no cookbooks can be found.
+
+Other improvements:
 
 * Configure Chef to verify all HTTPS connections. This removes the SSL warning
   message printed at the start of every Chef run. (Internally, `ssl_verify_mode`
   is set to `:verify_peer`, which is going to be the new default someday.)
 * Add `script/coverage` to generate code coverage statistics for Go packages.
-* Log most executed commands in debug mode.
-* Link to downloads in README.
+* Test dependency handling and provisioning more thoughtfully.
+* Log most executed commands when log level is set to debug.
+* Improve many parts of the README.
+* Add Go documentation to some packages.
 
 ## v0.4.0 (Aug 4 2014)
 
