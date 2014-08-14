@@ -99,7 +99,7 @@ Options that will be passed to Chef Solo:
 
 chef-runner executes one or more recipes you pass on the command line, in the
 exact order given. The tool has a flexible recipe syntax allowing you to compose
-your [run list] in multiple ways.
+your run list in multiple ways.
 
 1) Run default recipe when passing no arguments:
 
@@ -121,8 +121,11 @@ your [run list] in multiple ways.
 
     $ chef-runner recipes/foo.rb bar dogs::baz
 
-Moreover, chef-runner allows you to load node attributes from a JSON file (that
-is located inside your cookbook):
+**Note: When defining recipes in a format other than `cookbook::recipe`, you
+must be inside a cookbook directory with a `metadata.rb` file for chef-runner to
+know the cookbook's name.**
+
+Moreover, chef-runner allows you to load node attributes from a local JSON file:
 
     $ chef-runner -j chef.json
 
@@ -144,10 +147,10 @@ the background. You can check the status with `vagrant status`. If the machine
 isn't up yet, run `vagrant up`.
 
 If your `Vagrantfile` only defines a single machine, simply run `chef-runner`
-and it should work. In a multi-machine environment, you need to specify what
-Vagrant machine you want to use. Use the `-M` option to set the name of the
-Vagrant machine. The machine name is the name you have defined in your
-`Vagrantfile`. To get a list of all machine names, run `vagrant status`.
+and it should work. In a multi-machine environment, use the `-M` option to
+specify what Vagrant machine you want to provision. The machine name is the name
+you have defined in your `Vagrantfile`. To get a list of all machine names, run
+`vagrant status`.
 
 Example:
 
@@ -173,7 +176,7 @@ Among other things, this allows you to provision Vagrant machines managed by
 ### SSH
 
 chef-runner can also provision remote hosts like EC2 instances, or basically
-any systems reachable over SSH.
+any system reachable over SSH.
 
 Use the `-H` option to specify the name of a host that was configured for direct
 SSH access. The argument passed to `-H` has the format `[user@]hostname[:port]`,
@@ -276,7 +279,6 @@ Please see `CONTRIBUTING.md` for details.
 [pr-recipes]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook/tree/master/recipes
 [pre-built binaries]: https://github.com/mlafeldt/chef-runner/releases/latest
 [rsync]: http://rsync.samba.org/
-[run list]: http://docs.opscode.com/essentials_node_object_run_lists.html
 [ssh-speedup]: http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 [ssh]: http://www.openssh.com/
 [Test Kitchen]: https://github.com/test-kitchen/test-kitchen
