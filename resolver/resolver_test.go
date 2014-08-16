@@ -58,7 +58,7 @@ func TestAutoResolve_Berkshelf(t *testing.T) {
 		assert.NoError(t, resolver.AutoResolve(CookbookPath))
 	})
 
-	assert.Equal(t, []string{"berks", "install", "--path", CookbookPath}, lastCmd)
+	assert.Equal(t, []string{"berks", "vendor", CookbookPath}, lastCmd)
 }
 
 func TestAutoResolve_Librarian(t *testing.T) {

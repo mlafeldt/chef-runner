@@ -16,7 +16,7 @@ func Command(dst string) []string {
 	if util.FileExist("Gemfile") {
 		cmd = []string{"bundle", "exec"}
 	}
-	cmd = append(cmd, "berks", "install", "--path", dst)
+	cmd = append(cmd, "berks", "vendor", dst)
 	return cmd
 }
 
