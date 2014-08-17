@@ -3,6 +3,9 @@
 package berkshelf
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/mlafeldt/chef-runner/util"
 )
@@ -16,7 +19,16 @@ func Command(dst string) []string {
 	if util.FileExist("Gemfile") {
 		cmd = []string{"bundle", "exec"}
 	}
-	cmd = append(cmd, "berks", "install", "--path", dst)
+
+	code := []string{
+		`require "berkshelf";`,
+		`b = Berkshelf::Berksfile.from_file("Berksfile");`,
+		`Berkshelf::Berksfile.method_defined?(:vendor)`, `?`,
+		fmt.Sprintf(`b.vendor("%s")`, dst), `:`,
+		fmt.Sprintf(`b.install(:path => "%s")`, dst),
+	}
+
+	cmd = append(cmd, "ruby", "-e", strings.Join(code, " "))
 	return cmd
 }
 
