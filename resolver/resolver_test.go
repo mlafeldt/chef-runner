@@ -1,8 +1,10 @@
 package resolver_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/exec"
@@ -58,7 +60,10 @@ func TestAutoResolve_Berkshelf(t *testing.T) {
 		assert.NoError(t, resolver.AutoResolve(CookbookPath))
 	})
 
-	assert.Equal(t, []string{"berks", "vendor", CookbookPath}, lastCmd)
+	assert.Equal(t, []string{"ruby", "-e"}, lastCmd[:2])
+	assert.True(t, strings.Contains(lastCmd[2], `require "berkshelf"`))
+	assert.True(t, strings.Contains(lastCmd[2],
+		fmt.Sprintf(`.vendor("%s")`, CookbookPath)))
 }
 
 func TestAutoResolve_Librarian(t *testing.T) {
