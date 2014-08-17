@@ -1,5 +1,7 @@
 ## v0.6.0 (unreleased)
 
+* Add support for Berkshelf v3 in addition to v2. (Thanks to @arosenhagen for
+  the original pull request!)
 * Re-add ability to install chef-runner using Homebrew.
 
 ## v0.5.0 (Aug 14 2014)
