@@ -1,3 +1,7 @@
+## v0.6.0 (unreleased)
+
+* Re-add ability to install chef-runner using Homebrew.
+
 ## v0.5.0 (Aug 14 2014)
 
 This release brings a couple of improvements to how cookbook dependencies are

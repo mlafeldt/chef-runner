@@ -54,6 +54,13 @@ OpenBSD. Please download the proper package for your operating system and
 architecture, then unzip the `chef-runner` binary to a location included in
 `$PATH`.
 
+### Homebrew
+
+If you're on Mac OS X, the easiest way to get chef-runner is via [Homebrew]:
+
+    $ brew tap mlafeldt/formulas
+    $ brew install chef-runner
+
 ### Source build
 
 First, make sure you have [Go] version 1.2 or higher.
@@ -273,6 +280,7 @@ Please see `CONTRIBUTING.md` for details.
 [Chef]: http://www.getchef.com/
 [demo video]: http://vimeo.com/78769511
 [Go]: http://golang.org/doc/install
+[Homebrew]: http://brew.sh/
 [leader key]: http://usevim.com/2012/07/20/vim101-leader/
 [Librarian-Chef]: https://github.com/applicationsonline/librarian-chef
 [pr-cookbook]: https://github.com/elm-city-craftworks/practicing-ruby-cookbook#readme
