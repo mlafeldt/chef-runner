@@ -1,3 +1,5 @@
+// Package metadata parses Chef cookbook metadata. It can currently retrieve
+// the cookbook's name and version.
 package metadata
 
 import (
@@ -8,15 +10,16 @@ import (
 	"strings"
 )
 
-const (
-	Filename = "metadata.rb"
-)
+// Filename is the name of the cookbook file that stores metadata.
+const Filename = "metadata.rb"
 
+// Metadata stores metadata about a cookbook.
 type Metadata struct {
 	Name    string
 	Version string
 }
 
+// Parse parses cookbook metadata from an io.Reader. It returns Metadata.
 func Parse(r io.Reader) (*Metadata, error) {
 	metadata := Metadata{}
 	scanner := bufio.NewScanner(r)
@@ -46,6 +49,7 @@ func Parse(r io.Reader) (*Metadata, error) {
 	return &metadata, nil
 }
 
+// ParseFile parses a cookbook metadata file. It returns Metadata.
 func ParseFile(name string) (*Metadata, error) {
 	f, err := os.Open(name)
 	if err != nil {

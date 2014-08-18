@@ -1,3 +1,6 @@
+// Package cookbook reads data from Chef cookbooks stored on disk. It can
+// currently retrieve the cookbook's name and version as well as a list of all
+// cookbook files.
 package cookbook
 
 import (
@@ -8,12 +11,14 @@ import (
 	"github.com/mlafeldt/chef-runner/util"
 )
 
+// A Cookbook is a Chef cookbook stored on disk.
 type Cookbook struct {
 	Path    string
 	Name    string
 	Version string
 }
 
+// NewCookbook returns a Cookbook that is located at cookbookPath.
 func NewCookbook(cookbookPath string) (*Cookbook, error) {
 	cb := Cookbook{Path: cookbookPath}
 
@@ -30,11 +35,13 @@ func NewCookbook(cookbookPath string) (*Cookbook, error) {
 	return &cb, nil
 }
 
+// String returns the cookbook's name and version.
 func (cb Cookbook) String() string {
 	// TODO: check if fields are actually set
 	return cb.Name + " " + cb.Version
 }
 
+// Files returns the names of all cookbook files. Other files are ignored.
 func (cb Cookbook) Files() ([]string, error) {
 	filesGlob := []string{
 		"README.*",
