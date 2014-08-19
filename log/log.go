@@ -14,8 +14,10 @@ import (
 	"github.com/mitchellh/colorstring"
 )
 
+// The Level type is the type of all log levels.
 type Level int
 
+// The different log levels.
 const (
 	LevelDebug Level = iota
 	LevelInfo
@@ -40,10 +42,12 @@ var levelColor = [...]string{
 var level = LevelDebug
 var useColor = true
 
+// SetLevel changes the current log level to l.
 func SetLevel(l Level) {
 	level = l
 }
 
+// DisableColor disables any color output.
 func DisableColor() {
 	useColor = false
 }
@@ -71,34 +75,42 @@ func outputf(w io.Writer, l Level, format string, v ...interface{}) error {
 	return err
 }
 
+// Debug logs a debug message to stdout.
 func Debug(v ...interface{}) error {
 	return output(os.Stdout, LevelDebug, v...)
 }
 
+// Debugf logs a formatted debug message to stdout.
 func Debugf(format string, v ...interface{}) error {
 	return outputf(os.Stdout, LevelDebug, format, v...)
 }
 
+// Info logs an informational message to stdout.
 func Info(v ...interface{}) error {
 	return output(os.Stdout, LevelInfo, v...)
 }
 
+// Infof logs a formatted informational message to stdout.
 func Infof(format string, v ...interface{}) error {
 	return outputf(os.Stdout, LevelInfo, format, v...)
 }
 
+// Warn logs a warning message to stdout.
 func Warn(v ...interface{}) error {
 	return output(os.Stdout, LevelWarn, v...)
 }
 
+// Warnf logs a formatted warning message to stdout.
 func Warnf(format string, v ...interface{}) error {
 	return outputf(os.Stdout, LevelWarn, format, v...)
 }
 
+// Error logs an error message to stderr.
 func Error(v ...interface{}) error {
 	return output(os.Stderr, LevelError, v...)
 }
 
+// Errorf logs a formatted error message to stderr.
 func Errorf(format string, v ...interface{}) error {
 	return outputf(os.Stderr, LevelError, format, v...)
 }
