@@ -2,15 +2,16 @@ package main
 
 import "runtime"
 
-// The current version of chef-runner.
+// The current version of chef-runner. A ".dev" suffix denotes that the version
+// is currently being developed.
 const Version = "v0.6.0.dev"
 
-// The Git version that is being compiled. This string contains tag and commit
-// information. It will be filled in by the compiler.
+// GitVersion is the Git version that is being compiled. This string contains
+// tag and commit information. It will be filled in by the compiler.
 var GitVersion string
 
-// The current program version, which is either the Git version if available or
-// the static version defined above.
+// VersionString returns the current program version, which is either the Git
+// version if available or the static version defined above.
 func VersionString() string {
 	if GitVersion != "" {
 		return GitVersion
@@ -18,7 +19,7 @@ func VersionString() string {
 	return Version
 }
 
-// The target operating system and architecture.
+// TargetString returns the target operating system and architecture.
 func TargetString() string {
 	return runtime.GOOS + "/" + runtime.GOARCH
 }
