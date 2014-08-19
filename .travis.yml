@@ -10,6 +10,7 @@ install: script/bootstrap
 script:
   - PATH="$HOME/gopath/bin:$PATH"
   - script/test
+  - script/lint
 
 branches:
   only:

@@ -3,6 +3,11 @@
 * Add support for Berkshelf v3 in addition to v2. (Thanks to @arosenhagen for
   the original pull request!)
 * Re-add ability to install chef-runner using Homebrew.
+* Add Godoc documentation to all parts of the source code. As a result, [golint]
+  no longer reports any coding style issues.
+* Run golint style checks on Travis CI.
+
+[golint]: https://github.com/golang/lint
 
 ## v0.5.0 (Aug 14 2014)
 

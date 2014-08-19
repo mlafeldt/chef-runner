@@ -1,0 +1,13 @@
+#!/bin/sh
+# Run golint style checks and exit with a proper status code.
+# Usage: script/lint
+
+set -e
+
+go get github.com/golang/lint/golint
+
+output=$(golint .)
+if test -n "$output"; then
+    echo "$output"
+    exit 1
+fi

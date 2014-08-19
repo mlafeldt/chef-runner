@@ -14,8 +14,8 @@ func FileExist(name string) bool {
 	return err == nil
 }
 
-// BaseName, as the basename Unix tool, deletes any prefix ending with the last
-// slash character present in a string, and a suffix, if given.
+// BaseName - as the basename Unix tool - deletes any prefix ending with the
+// last slash character present in a string, and a suffix, if given.
 func BaseName(s, suffix string) string {
 	base := path.Base(s)
 	if suffix != "" {

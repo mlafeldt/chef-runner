@@ -1,6 +1,4 @@
-// Package vagrant implements the driver.Driver interface. Under the hood
-// `vagrant ssh-config` is executed to get a working SSH configuration for the
-// current Vagrant machine.
+// Package vagrant implements a driver based on Vagrant.
 package vagrant
 
 import (
@@ -18,10 +16,15 @@ import (
 )
 
 const (
+	// DefaultMachine is the name of the default Vagrant machine.
 	DefaultMachine = "default"
-	ConfigPath     = ".chef-runner/vagrant"
+
+	// ConfigPath is the path to the local directory where chef-runner
+	// stores Vagrant-specific information.
+	ConfigPath = ".chef-runner/vagrant"
 )
 
+// Driver is a driver based on Vagrant.
 type Driver struct {
 	machine     string
 	sshClient   *openssh.Client
@@ -32,6 +35,9 @@ func init() {
 	os.Setenv("VAGRANT_NO_PLUGINS", "1")
 }
 
+// NewDriver creates a new Vagrant driver that communicates with the given
+// Vagrant machine. Under the hood `vagrant ssh-config` is executed to get a
+// working SSH configuration for the machine.
 func NewDriver(machine string) (*Driver, error) {
 	if machine == "" {
 		machine = DefaultMachine
@@ -66,14 +72,17 @@ func NewDriver(machine string) (*Driver, error) {
 	return &Driver{machine, sshClient, rsyncClient}, nil
 }
 
+// RunCommand runs the specified command on the Vagrant machine.
 func (drv Driver) RunCommand(command string) error {
 	return drv.sshClient.RunCommand(command)
 }
 
+// Upload copies files to the Vagrant machine.
 func (drv Driver) Upload(dst string, src ...string) error {
 	return drv.rsyncClient.Copy(dst, src...)
 }
 
+// String returns the driver's name.
 func (drv Driver) String() string {
 	return fmt.Sprintf("Vagrant driver (machine: %s)", drv.machine)
 }
