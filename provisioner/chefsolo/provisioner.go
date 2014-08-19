@@ -1,5 +1,4 @@
-// Package chefsolo implements the provisioner.Provisioner interface using Chef
-// Solo.
+// Package chefsolo implements a provisioner using Chef Solo.
 package chefsolo
 
 import (
@@ -13,14 +12,17 @@ import (
 )
 
 const (
-	DefaultFormat   = "null"
+	// DefaultFormat is the default output format of Chef.
+	DefaultFormat = "null"
+
+	// DefaultLogLevel is the default log level of Chef.
 	DefaultLogLevel = "info"
 )
 
-var (
-	CookbookPath = base.SandboxPathTo("cookbooks")
-)
+// CookbookPath is the path to the sandbox directory where cookbooks are stored.
+var CookbookPath = base.SandboxPathTo("cookbooks")
 
+// Provisioner is a provisioner based on Chef Solo.
 type Provisioner struct {
 	RunList    []string
 	Attributes string
@@ -49,6 +51,8 @@ func (p Provisioner) prepareCookbooks() error {
 	return resolver.AutoResolve(CookbookPath)
 }
 
+// CreateSandbox creates the sandbox directory. This includes preparing Chef
+// configuration data and cookbooks.
 func (p Provisioner) CreateSandbox() error {
 	if err := base.CreateSandbox(); err != nil {
 		return err
@@ -62,10 +66,13 @@ func (p Provisioner) CreateSandbox() error {
 	return p.prepareCookbooks()
 }
 
+// CleanupSandbox deletes the sandbox directory.
 func (p Provisioner) CleanupSandbox() error {
 	return base.CleanupSandbox()
 }
 
+// Command returns the command string which will invoke the provisioner on the
+// prepared machine.
 func (p Provisioner) Command() []string {
 	format := p.Format
 	if format == "" {
