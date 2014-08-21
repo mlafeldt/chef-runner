@@ -13,7 +13,7 @@ import (
 
 const (
 	// DefaultFormat is the default output format of Chef.
-	DefaultFormat = "null"
+	DefaultFormat = "doc"
 
 	// DefaultLogLevel is the default log level of Chef.
 	DefaultLogLevel = "info"

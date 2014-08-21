@@ -96,7 +96,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
 Options that will be passed to Chef Solo:
 
     -F <format>     Set output format (null, doc, minimal, min)
-                    default: null
+                    default: doc
     -l <level>      Set log level (debug, info, warn, error, fatal)
                     default: info
     -j <file>       Load attributes from a JSON file

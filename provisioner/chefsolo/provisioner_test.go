@@ -95,19 +95,19 @@ var commandTests = []struct {
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
 			"--json-attributes", "/tmp/chef-runner/dna.json",
 			"--override-runlist", "cats::foo",
-			"--format", "null", "--log_level", "info",
+			"--format", "doc", "--log_level", "info",
 		},
 	},
 	{
 		chefsolo.Provisioner{
 			RunList: []string{"cats::foo"},
-			Format:  "doc",
+			Format:  "null",
 		},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
 			"--json-attributes", "/tmp/chef-runner/dna.json",
 			"--override-runlist", "cats::foo",
-			"--format", "doc", "--log_level", "info",
+			"--format", "null", "--log_level", "info",
 		},
 	},
 	{
@@ -119,7 +119,7 @@ var commandTests = []struct {
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
 			"--json-attributes", "/tmp/chef-runner/dna.json",
 			"--override-runlist", "cats::foo",
-			"--format", "null", "--log_level", "error",
+			"--format", "doc", "--log_level", "error",
 		},
 	},
 	{
@@ -144,7 +144,7 @@ var commandTests = []struct {
 			"sudo", "chef-solo", "--config", "/tmp/chef-runner/solo.rb",
 			"--json-attributes", "/tmp/chef-runner/dna.json",
 			"--override-runlist", "cats::foo",
-			"--format", "null", "--log_level", "info",
+			"--format", "doc", "--log_level", "info",
 		},
 	},
 }
