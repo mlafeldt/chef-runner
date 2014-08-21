@@ -54,16 +54,18 @@ func (p Provisioner) prepareCookbooks() error {
 // CreateSandbox creates the sandbox directory. This includes preparing Chef
 // configuration data and cookbooks.
 func (p Provisioner) CreateSandbox() error {
-	if err := base.CreateSandbox(); err != nil {
-		return err
+	funcs := []func() error{
+		base.CreateSandbox,
+		p.prepareJSON,
+		p.prepareSoloConfig,
+		p.prepareCookbooks,
 	}
-	if err := p.prepareJSON(); err != nil {
-		return err
+	for _, f := range funcs {
+		if err := f(); err != nil {
+			return err
+		}
 	}
-	if err := p.prepareSoloConfig(); err != nil {
-		return err
-	}
-	return p.prepareCookbooks()
+	return nil
 }
 
 // CleanupSandbox deletes the sandbox directory.
