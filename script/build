@@ -17,6 +17,9 @@ go get -v -t ./...
 echo "Running all tests..."
 go test -race ./...
 
+echo "Running style checks..."
+script/lint
+
 echo "Cross-compiling binaries..."
 rm -rf "$build_dir"
 gox \
