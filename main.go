@@ -37,27 +37,6 @@ func logLevel() log.Level {
 	return l
 }
 
-func usage() {
-	text := `Usage: chef-runner [options] [--] [<recipe>...]
-
-    -h              Show help text
-    --version       Show program version
-
-    -H <name>       Set hostname for direct SSH access
-    -M <name>       Set name/UUID of Vagrant virtual machine
-
-Options that will be passed to Chef Solo:
-
-    -F <format>     Set output format (null, doc, minimal, min)
-                    default: doc
-    -l <level>      Set log level (debug, info, warn, error, fatal)
-                    default: info
-    -j <file>       Load attributes from a JSON file
-`
-	fmt.Fprintf(os.Stderr, text)
-	os.Exit(2)
-}
-
 func abort(v ...interface{}) {
 	log.Error(v...)
 	os.Exit(1)
@@ -101,7 +80,7 @@ func main() {
 		jsonFile    = flag.String("j", "", "")
 		showVersion = flag.Bool("version", false, "")
 	)
-	flag.Usage = usage
+	flag.Usage = Usage
 	flag.Parse()
 
 	if *showVersion {
