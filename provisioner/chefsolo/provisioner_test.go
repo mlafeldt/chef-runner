@@ -83,11 +83,6 @@ func TestCreateSandbox_CustomJSON(t *testing.T) {
 	})
 }
 
-var cmdPrefix = []string{"sudo", "chef-solo",
-	"--config", "/tmp/chef-runner/solo.rb",
-	"--json-attributes", "/tmp/chef-runner/dna.json",
-}
-
 var commandTests = []struct {
 	provisioner chefsolo.Provisioner
 	cmd         []string
@@ -96,24 +91,36 @@ var commandTests = []struct {
 		chefsolo.Provisioner{
 			RunList: []string{"cats::foo"},
 		},
-		append(cmdPrefix, "--override-runlist", "cats::foo",
-			"--format", "null", "--log_level", "info"),
+		[]string{
+			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
+			"--json-attributes", "/tmp/chef-runner/dna.json",
+			"--override-runlist", "cats::foo",
+			"--format", "null", "--log_level", "info",
+		},
 	},
 	{
 		chefsolo.Provisioner{
 			RunList: []string{"cats::foo"},
 			Format:  "doc",
 		},
-		append(cmdPrefix, "--override-runlist", "cats::foo",
-			"--format", "doc", "--log_level", "info"),
+		[]string{
+			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
+			"--json-attributes", "/tmp/chef-runner/dna.json",
+			"--override-runlist", "cats::foo",
+			"--format", "doc", "--log_level", "info",
+		},
 	},
 	{
 		chefsolo.Provisioner{
 			RunList:  []string{"cats::foo"},
 			LogLevel: "error",
 		},
-		append(cmdPrefix, "--override-runlist", "cats::foo",
-			"--format", "null", "--log_level", "error"),
+		[]string{
+			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
+			"--json-attributes", "/tmp/chef-runner/dna.json",
+			"--override-runlist", "cats::foo",
+			"--format", "null", "--log_level", "error",
+		},
 	},
 	{
 		chefsolo.Provisioner{
@@ -121,8 +128,24 @@ var commandTests = []struct {
 			Format:   "min",
 			LogLevel: "warn",
 		},
-		append(cmdPrefix, "--override-runlist", "cats::foo,dogs::bar",
-			"--format", "min", "--log_level", "warn"),
+		[]string{
+			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
+			"--json-attributes", "/tmp/chef-runner/dna.json",
+			"--override-runlist", "cats::foo,dogs::bar",
+			"--format", "min", "--log_level", "warn",
+		},
+	},
+	{
+		chefsolo.Provisioner{
+			RunList: []string{"cats::foo"},
+			UseSudo: true,
+		},
+		[]string{
+			"sudo", "chef-solo", "--config", "/tmp/chef-runner/solo.rb",
+			"--json-attributes", "/tmp/chef-runner/dna.json",
+			"--override-runlist", "cats::foo",
+			"--format", "null", "--log_level", "info",
+		},
 	},
 }
 

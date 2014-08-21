@@ -141,6 +141,7 @@ func main() {
 		Attributes: attributes,
 		Format:     *format,
 		LogLevel:   *logLevel,
+		UseSudo:    true,
 	}
 
 	log.Debugf("Provisioner = %+v\n", prov)

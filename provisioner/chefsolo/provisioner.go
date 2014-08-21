@@ -28,6 +28,7 @@ type Provisioner struct {
 	Attributes string
 	Format     string
 	LogLevel   string
+	UseSudo    bool
 }
 
 func (p Provisioner) prepareJSON() error {
@@ -73,6 +74,14 @@ func (p Provisioner) CleanupSandbox() error {
 	return base.CleanupSandbox()
 }
 
+func (p Provisioner) sudo(cmd []string) []string {
+	if !p.UseSudo {
+		return cmd
+	}
+	sudoCmd := []string{"sudo"}
+	return append(sudoCmd, cmd...)
+}
+
 // Command returns the command string which will invoke the provisioner on the
 // prepared machine.
 func (p Provisioner) Command() []string {
@@ -80,16 +89,19 @@ func (p Provisioner) Command() []string {
 	if format == "" {
 		format = DefaultFormat
 	}
+
 	logLevel := p.LogLevel
 	if logLevel == "" {
 		logLevel = DefaultLogLevel
 	}
-	return []string{
-		"sudo", "chef-solo",
+
+	cmd := []string{
+		"chef-solo",
 		"--config", base.RootPathTo("solo.rb"),
 		"--json-attributes", base.RootPathTo("dna.json"),
 		"--override-runlist", strings.Join(p.RunList, ","),
 		"--format", format,
 		"--log_level", logLevel,
 	}
+	return p.sudo(cmd)
 }
