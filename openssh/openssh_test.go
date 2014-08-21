@@ -30,45 +30,45 @@ func TestNewClient_InvalidPort(t *testing.T) {
 
 var commandTests = []struct {
 	client openssh.Client
-	cmd    string
+	args   []string
 	result []string
 }{
 	{
 		client: openssh.Client{},
-		cmd:    "",
+		args:   []string{},
 		result: []string{"ssh"},
 	},
 	{
 		client: openssh.Client{
 			Host: "some-host",
 		},
-		cmd:    "uname -a",
-		result: []string{"ssh", "some-host", "uname -a"},
+		args:   []string{"uname", "-a"},
+		result: []string{"ssh", "some-host", "uname", "-a"},
 	},
 	{
 		client: openssh.Client{
 			Host: "some-host",
 			User: "some-user",
 		},
-		cmd:    "uname -a",
-		result: []string{"ssh", "-l", "some-user", "some-host", "uname -a"},
+		args:   []string{"uname", "-a"},
+		result: []string{"ssh", "-l", "some-user", "some-host", "uname", "-a"},
 	},
 	{
 		client: openssh.Client{
 			Host: "some-host",
 			Port: 1234,
 		},
-		cmd:    "uname -a",
-		result: []string{"ssh", "-p", "1234", "some-host", "uname -a"},
+		args:   []string{"uname", "-a"},
+		result: []string{"ssh", "-p", "1234", "some-host", "uname", "-a"},
 	},
 	{
 		client: openssh.Client{
 			Host:        "some-host",
 			PrivateKeys: []string{"some-key", "another-key"},
 		},
-		cmd: "uname -a",
+		args: []string{"uname", "-a"},
 		result: []string{"ssh", "-i", "some-key", "-i", "another-key",
-			"some-host", "uname -a"},
+			"some-host", "uname", "-a"},
 	},
 	{
 		client: openssh.Client{
@@ -78,9 +78,9 @@ var commandTests = []struct {
 				"AnotherOption": "no",
 			},
 		},
-		cmd: "uname -a",
+		args: []string{"uname", "-a"},
 		result: []string{"ssh", "-o", "AnotherOption=no",
-			"-o", "SomeOption=yes", "some-host", "uname -a"},
+			"-o", "SomeOption=yes", "some-host", "uname", "-a"},
 	},
 	{
 		client: openssh.Client{
@@ -90,36 +90,36 @@ var commandTests = []struct {
 			PrivateKeys: []string{"some-key"},
 			Options:     map[string]string{"SomeOption": "yes"},
 		},
-		cmd: "uname -a",
+		args: []string{"uname", "-a"},
 		result: []string{"ssh", "-l", "some-user", "-p", "1234",
 			"-i", "some-key", "-o", "SomeOption=yes", "some-host",
-			"uname -a"},
+			"uname", "-a"},
 	},
 	{
 		client: openssh.Client{
 			Host:       "some-host",
 			ConfigFile: "some/config/file",
 		},
-		cmd: "uname -a",
+		args: []string{"uname", "-a"},
 		result: []string{"ssh", "-F", "some/config/file", "some-host",
-			"uname -a"},
+			"uname", "-a"},
 	},
 }
 
 func TestCommand(t *testing.T) {
 	for _, test := range commandTests {
-		result := test.client.Command(test.cmd)
+		result := test.client.Command(test.args)
 		assert.Equal(t, test.result, result)
 	}
 }
 
 func TestRunCommand_MissingCommand(t *testing.T) {
-	err := openssh.Client{Host: "some-host"}.RunCommand("")
+	err := openssh.Client{Host: "some-host"}.RunCommand([]string{})
 	assert.EqualError(t, err, "no command given")
 }
 
 func TestRunCommand_MissingHost(t *testing.T) {
-	err := openssh.Client{}.RunCommand("uname -a")
+	err := openssh.Client{}.RunCommand([]string{"uname", "-a"})
 	assert.EqualError(t, err, "no host given")
 }
 

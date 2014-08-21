@@ -74,12 +74,11 @@ func (p Provisioner) CleanupSandbox() error {
 	return base.CleanupSandbox()
 }
 
-func (p Provisioner) sudo(cmd []string) []string {
+func (p Provisioner) sudo(args []string) []string {
 	if !p.UseSudo {
-		return cmd
+		return args
 	}
-	sudoCmd := []string{"sudo"}
-	return append(sudoCmd, cmd...)
+	return append([]string{"sudo"}, args...)
 }
 
 // Command returns the command string which will invoke the provisioner on the

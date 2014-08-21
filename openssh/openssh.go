@@ -50,7 +50,7 @@ func NewClient(host string) (*Client, error) {
 }
 
 // Command returns the ssh command that will be executed by Copy.
-func (c Client) Command(command string) []string {
+func (c Client) Command(args []string) []string {
 	cmd := []string{"ssh"}
 
 	if c.User != "" {
@@ -83,26 +83,26 @@ func (c Client) Command(command string) []string {
 		cmd = append(cmd, c.Host)
 	}
 
-	if command != "" {
-		cmd = append(cmd, command)
+	if len(args) > 0 {
+		cmd = append(cmd, args...)
 	}
 
 	return cmd
 }
 
 // RunCommand uses ssh to execute a command on a remote machine.
-func (c Client) RunCommand(command string) error {
-	if command == "" {
+func (c Client) RunCommand(args []string) error {
+	if len(args) == 0 {
 		return errors.New("no command given")
 	}
 	if c.Host == "" {
 		return errors.New("no host given")
 	}
-	return exec.RunCommand(c.Command(command))
+	return exec.RunCommand(c.Command(args))
 }
 
 // Shell returns a connection string that can be used by tools like rsync.
 func (c Client) Shell() []string {
-	cmd := c.Command("")
+	cmd := c.Command([]string{})
 	return cmd[:len(cmd)-1]
 }

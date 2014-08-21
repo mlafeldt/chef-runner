@@ -73,8 +73,8 @@ func NewDriver(machine string) (*Driver, error) {
 }
 
 // RunCommand runs the specified command on the Vagrant machine.
-func (drv Driver) RunCommand(command string) error {
-	return drv.sshClient.RunCommand(command)
+func (drv Driver) RunCommand(args []string) error {
+	return drv.sshClient.RunCommand(args)
 }
 
 // Upload copies files to the Vagrant machine.
