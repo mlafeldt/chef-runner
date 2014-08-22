@@ -1,15 +1,24 @@
 ## v0.6.0 (unreleased)
 
+FEATURES:
+
 * Add support for Berkshelf v3 in addition to v2. (Thanks to @arosenhagen for
   the original pull request!)
 * Re-add ability to install chef-runner using Homebrew.
-* Add Godoc documentation to all parts of the source code. As a result, [golint]
-  no longer reports any coding style issues.
+
+IMPROVEMENTS:
+
+* Add basic [Godoc documentation] to all parts of the source code. As a result,
+  [golint] no longer reports any coding style issues.
 * Run golint style checks on Travis CI.
-* Change default output format of Chef from `null` to `doc`. The former is the
-  default used by Vagrant, while the latter is the actual default of Chef Solo.
 * Add Quick Start guide to README.
 
+BREAKING CHANGES:
+
+* Change default output format of Chef from `null` to `doc`. The former is the
+  default used by Vagrant, while the latter is the actual default of Chef Solo.
+
+[Godoc documentation]: https://godoc.org/github.com/mlafeldt/chef-runner
 [golint]: https://github.com/golang/lint
 
 ## v0.5.0 (Aug 14 2014)
