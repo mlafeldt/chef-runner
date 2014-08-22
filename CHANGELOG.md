@@ -8,6 +8,7 @@
 * Run golint style checks on Travis CI.
 * Change default output format of Chef from `null` to `doc`. The former is the
   default used by Vagrant, while the latter is the actual default of Chef Solo.
+* Add Quick Start guide to README.
 
 [golint]: https://github.com/golang/lint
 

@@ -25,6 +25,44 @@ recipes.
 For more background, check out my blog post *[Telling people about
 chef-runner][blog post]*.
 
+## Quick Start
+
+Install chef-runner by either downloading a pre-built binary, using Homebrew, or
+running `go get`.
+
+Use chef-runner for local cookbook development with Vagrant:
+
+    $ cd my-awesome-cookook/
+    $ vagrant up
+    $ chef-runner # will run recipes/default.rb inside the Vagrant machine
+
+Compose Chef run list using flexible recipe syntax:
+
+    $ chef-runner recipes/foo.rb
+    $ chef-runner foo # same as above
+    $ chef-runner dogs::bar
+    $ chef-runner recipes/foo.rb bar dogs::baz # will run recipes in given order
+
+Provision a specific Vagrant machine in a multi-machine environment:
+
+    $ chef-runner -M db ...
+
+Provision any Vagrant machine by specifying the machine's UUID:
+
+    $ chef-runner -M a748337 ...
+
+Use chef-runner as a general purpose Chef provisioner for any system reachable
+over SSH:
+
+    $ cd directory-with-berksfile/
+    $ chef-runner -H user@example.local apt::default dogs::bar
+
+chef-runner automatically resolves cookbook dependencies using tools like
+Berkshelf or Librarian-Chef.
+
+To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
+work well with chef-runner.
+
 ## Requirements
 
 To use chef-runner, you need the following software:
@@ -41,9 +79,6 @@ The directory you execute chef-runner from must either:
 * Include a `Berksfile` so that cookbooks are managed by [Berkshelf]
 * Include a `Cheffile` so that cookbooks are managed [Librarian-Chef]
 * Be a cookbook with a `metadata.rb` file that defines the cookbook's name
-
-To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
-work well with chef-runner.
 
 ## Installation
 
