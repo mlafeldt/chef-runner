@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/mlafeldt/chef-runner/bundler"
 	"github.com/mlafeldt/chef-runner/exec"
-	"github.com/mlafeldt/chef-runner/util"
 )
 
 // Resolver is a cookbook dependency resolver based on Berkshelf.
@@ -15,11 +15,6 @@ type Resolver struct{}
 
 // Command returns the command that will be executed by Resolve.
 func Command(dst string) []string {
-	var cmd []string
-	if util.FileExist("Gemfile") {
-		cmd = []string{"bundle", "exec"}
-	}
-
 	code := []string{
 		`require "berkshelf";`,
 		`b = Berkshelf::Berksfile.from_file("Berksfile");`,
@@ -27,9 +22,8 @@ func Command(dst string) []string {
 		fmt.Sprintf(`b.vendor("%s")`, dst), `:`,
 		fmt.Sprintf(`b.install(:path => "%s")`, dst),
 	}
-
-	cmd = append(cmd, "ruby", "-e", strings.Join(code, " "))
-	return cmd
+	cmd := append([]string{"ruby", "-e"}, strings.Join(code, " "))
+	return bundler.Command(cmd)
 }
 
 // Resolve runs Berkshelf to install cookbook dependencies to dst.
