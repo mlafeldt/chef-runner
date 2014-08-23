@@ -2,9 +2,17 @@
 // environment indicates that Bundler should be used.
 package bundler
 
-import "github.com/mlafeldt/chef-runner/util"
+import (
+	"os/exec"
+
+	"github.com/mlafeldt/chef-runner/util"
+)
 
 func useBundler() bool {
+	if _, err := exec.LookPath("bundle"); err != nil {
+		// Bundler not installed
+		return false
+	}
 	if !util.FileExist("Gemfile") {
 		// No Gemfile found
 		return false
