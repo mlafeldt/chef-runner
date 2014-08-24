@@ -7,8 +7,8 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/mlafeldt/chef-runner/bundler"
 	"github.com/mlafeldt/chef-runner/exec"
-	"github.com/mlafeldt/chef-runner/util"
 )
 
 // Resolver is a cookbook dependency resolver based on Librarian-Chef.
@@ -16,12 +16,8 @@ type Resolver struct{}
 
 // Command returns the command that will be executed by Resolve.
 func Command(dst string) []string {
-	var cmd []string
-	if util.FileExist("Gemfile") {
-		cmd = []string{"bundle", "exec"}
-	}
-	cmd = append(cmd, "librarian-chef", "install", "--path", dst)
-	return cmd
+	cmd := []string{"librarian-chef", "install", "--path", dst}
+	return bundler.Command(cmd)
 }
 
 func removeTempFiles(dst string) error {

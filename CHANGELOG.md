@@ -8,6 +8,8 @@ FEATURES:
 
 IMPROVEMENTS:
 
+* Only prepend `bundle exec` to Ruby commands if Bundler is actually installed.
+  A Gemfile alone is no longer enough.
 * Add basic [Godoc documentation] to all parts of the source code. As a result,
   [golint] no longer reports any coding style issues.
 * Run golint style checks on Travis CI.
