@@ -25,12 +25,12 @@ Options that will be passed to Chef Solo:
 
 // Flags stores the flags passed on the command line.
 type Flags struct {
-	host        string
-	machine     string
-	format      string
-	logLevel    string
-	jsonFile    string
-	showVersion bool
+	Host        string
+	Machine     string
+	Format      string
+	LogLevel    string
+	JSONFile    string
+	ShowVersion bool
 }
 
 // ParseFlags parses the command line and returns flags and recipes.
@@ -39,12 +39,12 @@ func ParseFlags(args []string) (*Flags, []string) {
 	f.Usage = func() { fmt.Fprintf(os.Stderr, usage) }
 
 	var flags Flags
-	f.StringVar(&flags.host, "H", "", "")
-	f.StringVar(&flags.machine, "M", "", "")
-	f.StringVar(&flags.format, "F", "", "")
-	f.StringVar(&flags.logLevel, "l", "", "")
-	f.StringVar(&flags.jsonFile, "j", "", "")
-	f.BoolVar(&flags.showVersion, "version", false, "")
+	f.StringVar(&flags.Host, "H", "", "")
+	f.StringVar(&flags.Machine, "M", "", "")
+	f.StringVar(&flags.Format, "F", "", "")
+	f.StringVar(&flags.LogLevel, "l", "", "")
+	f.StringVar(&flags.JSONFile, "j", "", "")
+	f.BoolVar(&flags.ShowVersion, "version", false, "")
 
 	f.Parse(args)
 	return &flags, f.Args()

@@ -71,11 +71,11 @@ func main() {
 	log.SetLevel(logLevel())
 
 	flags, recipes := ParseFlags(os.Args[1:])
-	if flags.showVersion {
+	if flags.ShowVersion {
 		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
 		os.Exit(0)
 	}
-	if flags.host != "" && flags.machine != "" {
+	if flags.Host != "" && flags.Machine != "" {
 		abort("-H and -M cannot be used together")
 	}
 
@@ -93,8 +93,8 @@ func main() {
 	}
 
 	var attributes string
-	if flags.jsonFile != "" {
-		data, err := ioutil.ReadFile(flags.jsonFile)
+	if flags.JSONFile != "" {
+		data, err := ioutil.ReadFile(flags.JSONFile)
 		if err != nil {
 			abort(err)
 		}
@@ -105,8 +105,8 @@ func main() {
 	prov = chefsolo.Provisioner{
 		RunList:    runList,
 		Attributes: attributes,
-		Format:     flags.format,
-		LogLevel:   flags.logLevel,
+		Format:     flags.Format,
+		LogLevel:   flags.LogLevel,
 		UseSudo:    true,
 	}
 
@@ -117,10 +117,10 @@ func main() {
 	}
 
 	var drv driver.Driver
-	if flags.host != "" {
-		drv, err = ssh.NewDriver(flags.host)
+	if flags.Host != "" {
+		drv, err = ssh.NewDriver(flags.Host)
 	} else {
-		drv, err = vagrant.NewDriver(flags.machine)
+		drv, err = vagrant.NewDriver(flags.Machine)
 	}
 	if err != nil {
 		abort(err)

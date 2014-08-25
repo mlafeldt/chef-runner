@@ -117,32 +117,32 @@ func TestParseFlags(t *testing.T) {
 		},
 		{
 			args:    []string{"-H", "some-host"},
-			flags:   &Flags{host: "some-host"},
+			flags:   &Flags{Host: "some-host"},
 			recipes: []string{},
 		},
 		{
 			args:    []string{"-M", "some-machine"},
-			flags:   &Flags{machine: "some-machine"},
+			flags:   &Flags{Machine: "some-machine"},
 			recipes: []string{},
 		},
 		{
 			args:    []string{"-F", "some-format"},
-			flags:   &Flags{format: "some-format"},
+			flags:   &Flags{Format: "some-format"},
 			recipes: []string{},
 		},
 		{
 			args:    []string{"-l", "some-level"},
-			flags:   &Flags{logLevel: "some-level"},
+			flags:   &Flags{LogLevel: "some-level"},
 			recipes: []string{},
 		},
 		{
 			args:    []string{"-j", "some-file"},
-			flags:   &Flags{jsonFile: "some-file"},
+			flags:   &Flags{JSONFile: "some-file"},
 			recipes: []string{},
 		},
 		{
 			args:    []string{"--version"},
-			flags:   &Flags{showVersion: true},
+			flags:   &Flags{ShowVersion: true},
 			recipes: []string{},
 		},
 		{
@@ -152,7 +152,7 @@ func TestParseFlags(t *testing.T) {
 		},
 		{
 			args:    []string{"-M", "some-machine", "-l", "some-level", "some-recipe"},
-			flags:   &Flags{machine: "some-machine", logLevel: "some-level"},
+			flags:   &Flags{Machine: "some-machine", LogLevel: "some-level"},
 			recipes: []string{"some-recipe"},
 		},
 	}
