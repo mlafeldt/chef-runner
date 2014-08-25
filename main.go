@@ -71,24 +71,30 @@ func buildRunList(cookbookName string, recipes []string) ([]string, error) {
 func main() {
 	log.SetLevel(logLevel())
 
-	// usage() prints out flag documentation. No need to duplicate it here.
-	var (
-		host        = flag.String("H", "", "")
-		machine     = flag.String("M", "", "")
-		format      = flag.String("F", "", "")
-		logLevel    = flag.String("l", "", "")
-		jsonFile    = flag.String("j", "", "")
-		showVersion = flag.Bool("version", false, "")
-	)
+	var flags struct {
+		host        string
+		machine     string
+		format      string
+		logLevel    string
+		jsonFile    string
+		showVersion bool
+	}
+	// Usage prints out flag documentation. No need to duplicate it here.
 	flag.Usage = Usage
+	flag.StringVar(&flags.host, "H", "", "")
+	flag.StringVar(&flags.machine, "M", "", "")
+	flag.StringVar(&flags.format, "F", "", "")
+	flag.StringVar(&flags.logLevel, "l", "", "")
+	flag.StringVar(&flags.jsonFile, "j", "", "")
+	flag.BoolVar(&flags.showVersion, "version", false, "")
 	flag.Parse()
 
-	if *showVersion {
+	if flags.showVersion {
 		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
 		os.Exit(0)
 	}
 
-	if *host != "" && *machine != "" {
+	if flags.host != "" && flags.machine != "" {
 		abort("-H and -M cannot be used together")
 	}
 
@@ -106,8 +112,8 @@ func main() {
 	}
 
 	var attributes string
-	if *jsonFile != "" {
-		data, err := ioutil.ReadFile(*jsonFile)
+	if flags.jsonFile != "" {
+		data, err := ioutil.ReadFile(flags.jsonFile)
 		if err != nil {
 			abort(err)
 		}
@@ -118,8 +124,8 @@ func main() {
 	prov = chefsolo.Provisioner{
 		RunList:    runList,
 		Attributes: attributes,
-		Format:     *format,
-		LogLevel:   *logLevel,
+		Format:     flags.format,
+		LogLevel:   flags.logLevel,
 		UseSudo:    true,
 	}
 
@@ -130,10 +136,10 @@ func main() {
 	}
 
 	var drv driver.Driver
-	if *host != "" {
-		drv, err = ssh.NewDriver(*host)
+	if flags.host != "" {
+		drv, err = ssh.NewDriver(flags.host)
 	} else {
-		drv, err = vagrant.NewDriver(*machine)
+		drv, err = vagrant.NewDriver(flags.machine)
 	}
 	if err != nil {
 		abort(err)
