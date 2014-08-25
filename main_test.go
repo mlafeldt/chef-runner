@@ -103,3 +103,62 @@ func TestVersionString(t *testing.T) {
 	GitVersion = "some-git-version"
 	assert.Equal(t, GitVersion, VersionString())
 }
+
+func TestParseFlags(t *testing.T) {
+	tests := []struct {
+		args    []string
+		flags   *Flags
+		recipes []string
+	}{
+		{
+			args:    []string{},
+			flags:   &Flags{},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"-H", "some-host"},
+			flags:   &Flags{host: "some-host"},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"-M", "some-machine"},
+			flags:   &Flags{machine: "some-machine"},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"-F", "some-format"},
+			flags:   &Flags{format: "some-format"},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"-l", "some-level"},
+			flags:   &Flags{logLevel: "some-level"},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"-j", "some-file"},
+			flags:   &Flags{jsonFile: "some-file"},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"--version"},
+			flags:   &Flags{showVersion: true},
+			recipes: []string{},
+		},
+		{
+			args:    []string{"some-recipe", "another-recipe"},
+			flags:   &Flags{},
+			recipes: []string{"some-recipe", "another-recipe"},
+		},
+		{
+			args:    []string{"-M", "some-machine", "-l", "some-level", "some-recipe"},
+			flags:   &Flags{machine: "some-machine", logLevel: "some-level"},
+			recipes: []string{"some-recipe"},
+		},
+	}
+	for _, test := range tests {
+		flags, recipes := ParseFlags(test.args)
+		assert.Equal(t, test.flags, flags)
+		assert.Equal(t, test.recipes, recipes)
+	}
+}

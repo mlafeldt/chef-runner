@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 )
@@ -22,8 +23,29 @@ Options that will be passed to Chef Solo:
     -j <file>       Load attributes from a JSON file
 `
 
-// Usage prints the usage text to stderr. It is called by the flag package when
-// either an invalid flag or -h is passed on the command line.
-func Usage() {
-	fmt.Fprintf(os.Stderr, usage)
+// Flags stores the flags passed on the command line.
+type Flags struct {
+	host        string
+	machine     string
+	format      string
+	logLevel    string
+	jsonFile    string
+	showVersion bool
+}
+
+// ParseFlags parses the command line and returns flags and recipes.
+func ParseFlags(args []string) (*Flags, []string) {
+	f := flag.NewFlagSet("chef-runner", flag.ExitOnError)
+	f.Usage = func() { fmt.Fprintf(os.Stderr, usage) }
+
+	var flags Flags
+	f.StringVar(&flags.host, "H", "", "")
+	f.StringVar(&flags.machine, "M", "", "")
+	f.StringVar(&flags.format, "F", "", "")
+	f.StringVar(&flags.logLevel, "l", "", "")
+	f.StringVar(&flags.jsonFile, "j", "", "")
+	f.BoolVar(&flags.showVersion, "version", false, "")
+
+	f.Parse(args)
+	return &flags, f.Args()
 }

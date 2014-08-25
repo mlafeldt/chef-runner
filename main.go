@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -71,29 +70,11 @@ func buildRunList(cookbookName string, recipes []string) ([]string, error) {
 func main() {
 	log.SetLevel(logLevel())
 
-	var flags struct {
-		host        string
-		machine     string
-		format      string
-		logLevel    string
-		jsonFile    string
-		showVersion bool
-	}
-	// Usage prints out flag documentation. No need to duplicate it here.
-	flag.Usage = Usage
-	flag.StringVar(&flags.host, "H", "", "")
-	flag.StringVar(&flags.machine, "M", "", "")
-	flag.StringVar(&flags.format, "F", "", "")
-	flag.StringVar(&flags.logLevel, "l", "", "")
-	flag.StringVar(&flags.jsonFile, "j", "", "")
-	flag.BoolVar(&flags.showVersion, "version", false, "")
-	flag.Parse()
-
+	flags, recipes := ParseFlags(os.Args[1:])
 	if flags.showVersion {
 		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
 		os.Exit(0)
 	}
-
 	if flags.host != "" && flags.machine != "" {
 		abort("-H and -M cannot be used together")
 	}
@@ -106,7 +87,7 @@ func main() {
 	}
 	log.Debugf("Cookbook = %s\n", cb)
 
-	runList, err := buildRunList(cb.Name, flag.Args())
+	runList, err := buildRunList(cb.Name, recipes)
 	if err != nil {
 		abort(err)
 	}
