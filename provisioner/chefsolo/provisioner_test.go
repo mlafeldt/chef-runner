@@ -97,7 +97,7 @@ func TestInstallCommand(t *testing.T) {
 	}
 }
 
-var commandTests = []struct {
+var provisionCommandTests = []struct {
 	provisioner chefsolo.Provisioner
 	cmd         []string
 }{
@@ -163,8 +163,8 @@ var commandTests = []struct {
 	},
 }
 
-func TestCommand(t *testing.T) {
-	for _, test := range commandTests {
-		assert.Equal(t, test.cmd, test.provisioner.Command())
+func TestProvisionCommand(t *testing.T) {
+	for _, test := range provisionCommandTests {
+		assert.Equal(t, test.cmd, test.provisioner.ProvisionCommand())
 	}
 }

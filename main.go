@@ -67,7 +67,7 @@ func buildRunList(cookbookName string, recipes []string) ([]string, error) {
 	return runList, nil
 }
 
-func upload(drv driver.Driver) error {
+func uploadFiles(drv driver.Driver) error {
 	log.Info("Uploading local files to machine. This may take a while...")
 	log.Debugf("Uploading files from %s to %s on machine\n",
 		provisioner.SandboxPath, provisioner.RootPath)
@@ -84,9 +84,9 @@ func installChef(drv driver.Driver, p provisioner.Provisioner) error {
 	return drv.RunCommand(installCmd)
 }
 
-func provision(drv driver.Driver, p provisioner.Provisioner) error {
+func runChef(drv driver.Driver, p provisioner.Provisioner) error {
 	log.Infof("Running Chef using %s\n", drv)
-	return drv.RunCommand(p.Command())
+	return drv.RunCommand(p.ProvisionCommand())
 }
 
 func main() {
@@ -149,7 +149,7 @@ func main() {
 		abort(err)
 	}
 
-	if err := upload(drv); err != nil {
+	if err := uploadFiles(drv); err != nil {
 		abort(err)
 	}
 
@@ -157,7 +157,7 @@ func main() {
 		abort(err)
 	}
 
-	if err := provision(drv, p); err != nil {
+	if err := runChef(drv, p); err != nil {
 		abort(err)
 	}
 
