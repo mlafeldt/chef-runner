@@ -14,6 +14,9 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
     -H, --host <name>            Set hostname for direct SSH access
     -M, --machine <name>         Set name/UUID of Vagrant virtual machine
 
+    -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
+                                 default: false
+
 Options that will be passed to Chef Solo:
 
     -F, --format <format>        Set output format (null, doc, minimal, min)
@@ -31,6 +34,7 @@ type Flags struct {
 	LogLevel    string
 	JSONFile    string
 	ShowVersion bool
+	ChefVersion string
 }
 
 // ParseFlags parses the command line and returns flags and recipes.
@@ -56,6 +60,9 @@ func ParseFlags(args []string) (*Flags, []string) {
 
 	f.StringVar(&flags.JSONFile, "j", "", "")
 	f.StringVar(&flags.JSONFile, "json-attributes", "", "")
+
+	f.StringVar(&flags.ChefVersion, "i", "", "")
+	f.StringVar(&flags.ChefVersion, "install-chef", "", "")
 
 	f.Parse(args)
 	return &flags, f.Args()

@@ -74,6 +74,16 @@ func upload(drv driver.Driver) error {
 	return drv.Upload(provisioner.RootPath, provisioner.SandboxPath+"/")
 }
 
+func installChef(drv driver.Driver, p provisioner.Provisioner) error {
+	installCmd := p.InstallCommand()
+	if len(installCmd) == 0 {
+		log.Info("Skipping installation of Chef")
+		return nil
+	}
+	log.Info("Installing Chef")
+	return drv.RunCommand(installCmd)
+}
+
 func provision(drv driver.Driver, p provisioner.Provisioner) error {
 	log.Infof("Running Chef using %s\n", drv)
 	return drv.RunCommand(p.Command())
@@ -115,11 +125,12 @@ func main() {
 
 	var p provisioner.Provisioner
 	p = chefsolo.Provisioner{
-		RunList:    runList,
-		Attributes: attributes,
-		Format:     flags.Format,
-		LogLevel:   flags.LogLevel,
-		UseSudo:    true,
+		RunList:     runList,
+		Attributes:  attributes,
+		Format:      flags.Format,
+		LogLevel:    flags.LogLevel,
+		UseSudo:     true,
+		ChefVersion: flags.ChefVersion,
 	}
 
 	log.Debugf("Provisioner = %+v\n", p)
@@ -139,6 +150,10 @@ func main() {
 	}
 
 	if err := upload(drv); err != nil {
+		abort(err)
+	}
+
+	if err := installChef(drv, p); err != nil {
 		abort(err)
 	}
 

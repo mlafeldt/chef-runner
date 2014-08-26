@@ -13,6 +13,7 @@ import (
 type Provisioner interface {
 	CreateSandbox() error
 	CleanupSandbox() error
+	InstallCommand() []string
 	Command() []string
 }
 

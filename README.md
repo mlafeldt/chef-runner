@@ -128,6 +128,9 @@ Usage: chef-runner [options] [--] [<recipe>...]
     -H, --host <name>            Set hostname for direct SSH access
     -M, --machine <name>         Set name/UUID of Vagrant virtual machine
 
+    -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
+                                 default: false
+
 Options that will be passed to Chef Solo:
 
     -F, --format <format>        Set output format (null, doc, minimal, min)
