@@ -122,19 +122,19 @@ chef-runner is a simple command-line tool that has a couple of options:
 ```
 Usage: chef-runner [options] [--] [<recipe>...]
 
-    -h              Show help text
-    --version       Show program version
+    -h, --help                   Show help text
+    --version                    Show program version
 
-    -H <name>       Set hostname for direct SSH access
-    -M <name>       Set name/UUID of Vagrant virtual machine
+    -H, --host <name>            Set hostname for direct SSH access
+    -M, --machine <name>         Set name/UUID of Vagrant virtual machine
 
 Options that will be passed to Chef Solo:
 
-    -F <format>     Set output format (null, doc, minimal, min)
-                    default: doc
-    -l <level>      Set log level (debug, info, warn, error, fatal)
-                    default: info
-    -j <file>       Load attributes from a JSON file
+    -F, --format <format>        Set output format (null, doc, minimal, min)
+                                 default: doc
+    -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
+                                 default: info
+    -j, --json-attributes <file> Load attributes from a JSON file
 ```
 
 ### Running Chef Recipes
@@ -189,10 +189,10 @@ the background. You can check the status with `vagrant status`. If the machine
 isn't up yet, run `vagrant up`.
 
 If your `Vagrantfile` only defines a single machine, simply run `chef-runner`
-and it should work. In a multi-machine environment, use the `-M` option to
-specify what Vagrant machine you want to provision. The machine name is the name
-you have defined in your `Vagrantfile`. To get a list of all machine names, run
-`vagrant status`.
+and it should work. In a multi-machine environment, use the `-M` option (or
+`--machine`) to specify what Vagrant machine you want to provision. The machine
+name is the name you have defined in your `Vagrantfile`. To get a list of all
+machine names, run `vagrant status`.
 
 Example:
 
@@ -220,10 +220,11 @@ Among other things, this allows you to provision Vagrant machines managed by
 chef-runner can also provision remote hosts like EC2 instances, or basically
 any system reachable over SSH.
 
-Use the `-H` option to specify the name of a host that was configured for direct
-SSH access. The argument passed to `-H` has the format `[user@]hostname[:port]`,
-allowing you to optionally change SSH user and port. If you need to change other
-SSH settings, add a host-specific configuration section to your `~/.ssh/config`.
+Use the `-H` option (or `--host`) to specify the name of a host that was
+configured for direct SSH access. The argument passed to `-H` has the format
+`[user@]hostname[:port]`, allowing you to optionally change SSH user and port.
+If you need to change other SSH settings, add a host-specific configuration
+section to your `~/.ssh/config`.
 
 Examples:
 

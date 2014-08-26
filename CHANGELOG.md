@@ -5,6 +5,8 @@ FEATURES:
 * Add support for Berkshelf v3 in addition to v2. (Thanks to @arosenhagen for
   the original pull request!)
 * Re-add ability to install chef-runner using Homebrew.
+* Re-add long option names like `--host` and `--json-attributes`. Those were
+  removed when porting chef-runner to Go (v0.2.0).
 
 IMPROVEMENTS:
 
