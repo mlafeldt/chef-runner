@@ -2,7 +2,10 @@
 package util
 
 import (
+	"errors"
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"strings"
@@ -27,4 +30,26 @@ func BaseName(s, suffix string) string {
 // TempDir creates a new temporary directory to be used by chef-runner.
 func TempDir() (string, error) {
 	return ioutil.TempDir("", "chef-runner-")
+}
+
+// DownloadFile downloads a file from url and writes it to filename.
+func DownloadFile(filename, url string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("HTTP error: " + resp.Status)
+	}
+
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = io.Copy(f, resp.Body)
+	return err
 }
