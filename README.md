@@ -57,8 +57,12 @@ over SSH:
     $ cd directory-with-berksfile/
     $ chef-runner -H user@example.local apt::default dogs::bar
 
-chef-runner automatically resolves cookbook dependencies using tools like
-Berkshelf or Librarian-Chef.
+(chef-runner automatically resolves cookbook dependencies using tools like
+Berkshelf or Librarian-Chef.)
+
+If required, install a specific version of Chef before provisioning:
+
+    $ chef-runner -i 11.12.8 ...
 
 To give you an example, the [Practicing Ruby cookbook][pr-cookbook] is known to
 work well with chef-runner.
@@ -69,7 +73,6 @@ To use chef-runner, you need the following software:
 
 * [ssh] command-line tool
 * [rsync] command-line tool
-* [Chef] must be pre-installed on the target machine
 
 When using chef-runner with [Vagrant], make sure you have a recent version of
 Vagrant installed.
@@ -235,6 +238,20 @@ Examples:
     $ chef-runner -H user@example.local
     $ chef-runner -H example.local:1234
 
+### Installing Chef
+
+You can tell chef-runner to install Chef on the target machine before
+provisioning it. This allows you to, for example, provision bare servers that
+have nothing installed but the base operating system.
+
+To install Chef, use the `-i` option (or `--install-chef`), which accepts the
+following values:
+
+    $ chef-runner -i 11.12.8 ... # install a specific Chef version
+    $ chef-runner -i latest ...  # always install the latest version
+    $ chef-runner -i true ...    # install Chef if not already installed
+    $ chef-runner -i false ...   # do nothing (the default)
+
 ### Use with Vim
 
 As a matter of fact, I primarily wrote chef-runner for use with Vim. Instead of
@@ -316,7 +333,6 @@ Please see `CONTRIBUTING.md` for details.
 
 [Berkshelf]: http://berkshelf.com/
 [blog post]: http://mlafeldt.github.io/blog/telling-people-about-chef-runner/
-[Chef]: http://www.getchef.com/
 [demo video]: http://vimeo.com/78769511
 [Go]: http://golang.org/doc/install
 [Homebrew]: http://brew.sh/
