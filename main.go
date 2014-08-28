@@ -67,16 +67,26 @@ func buildRunList(cookbookName string, recipes []string) ([]string, error) {
 	return runList, nil
 }
 
-func upload(drv driver.Driver) error {
+func uploadFiles(drv driver.Driver) error {
 	log.Info("Uploading local files to machine. This may take a while...")
 	log.Debugf("Uploading files from %s to %s on machine\n",
 		provisioner.SandboxPath, provisioner.RootPath)
 	return drv.Upload(provisioner.RootPath, provisioner.SandboxPath+"/")
 }
 
-func provision(drv driver.Driver, p provisioner.Provisioner) error {
+func installChef(drv driver.Driver, p provisioner.Provisioner) error {
+	installCmd := p.InstallCommand()
+	if len(installCmd) == 0 {
+		log.Info("Skipping installation of Chef")
+		return nil
+	}
+	log.Info("Installing Chef")
+	return drv.RunCommand(installCmd)
+}
+
+func runChef(drv driver.Driver, p provisioner.Provisioner) error {
 	log.Infof("Running Chef using %s\n", drv)
-	return drv.RunCommand(p.Command())
+	return drv.RunCommand(p.ProvisionCommand())
 }
 
 func main() {
@@ -115,11 +125,12 @@ func main() {
 
 	var p provisioner.Provisioner
 	p = chefsolo.Provisioner{
-		RunList:    runList,
-		Attributes: attributes,
-		Format:     flags.Format,
-		LogLevel:   flags.LogLevel,
-		UseSudo:    true,
+		RunList:     runList,
+		Attributes:  attributes,
+		Format:      flags.Format,
+		LogLevel:    flags.LogLevel,
+		UseSudo:     true,
+		ChefVersion: flags.ChefVersion,
 	}
 
 	log.Debugf("Provisioner = %+v\n", p)
@@ -138,11 +149,15 @@ func main() {
 		abort(err)
 	}
 
-	if err := upload(drv); err != nil {
+	if err := uploadFiles(drv); err != nil {
 		abort(err)
 	}
 
-	if err := provision(drv, p); err != nil {
+	if err := installChef(drv, p); err != nil {
+		abort(err)
+	}
+
+	if err := runChef(drv, p); err != nil {
 		abort(err)
 	}
 

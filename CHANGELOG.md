@@ -2,6 +2,9 @@
 
 FEATURES:
 
+* Add ability to install Chef before provisioning. This allows you to, for
+  example, provision bare servers that have nothing installed but the base
+  operating system. For this, use the new `-i` option (or `--install-chef`).
 * Add support for Berkshelf v3 in addition to v2. (Thanks to @arosenhagen for
   the original pull request!)
 * Re-add ability to install chef-runner using Homebrew.
