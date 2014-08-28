@@ -12,6 +12,7 @@ import (
 	"github.com/mlafeldt/chef-runner/driver"
 	"github.com/mlafeldt/chef-runner/driver/ssh"
 	"github.com/mlafeldt/chef-runner/driver/vagrant"
+	"github.com/mlafeldt/chef-runner/driver/local"
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
@@ -142,8 +143,10 @@ func main() {
 	var drv driver.Driver
 	if flags.Host != "" {
 		drv, err = ssh.NewDriver(flags.Host)
-	} else {
+	} else if util.FileExist("Vagrantfile") {
 		drv, err = vagrant.NewDriver(flags.Machine)
+	} else {
+		drv, err = local.NewDriver()
 	}
 	if err != nil {
 		abort(err)
