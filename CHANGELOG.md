@@ -1,4 +1,4 @@
-## v0.6.0 (unreleased)
+## v0.6.0 (Aug 28 2014)
 
 FEATURES:
 
@@ -7,18 +7,18 @@ FEATURES:
   operating system. For this, use the new `-i` option (or `--install-chef`).
 * Add support for Berkshelf v3 in addition to v2. (Thanks to @arosenhagen for
   the original pull request!)
-* Re-add ability to install chef-runner using Homebrew.
 * Re-add long option names like `--host` and `--json-attributes`. Those were
   removed when porting chef-runner to Go (v0.2.0).
+* Re-add ability to install chef-runner via Homebrew.
 
 IMPROVEMENTS:
 
+* Add Quick Start guide to README.
 * Only prepend `bundle exec` to Ruby commands if Bundler is actually installed.
   A Gemfile alone is no longer enough.
 * Add basic [Godoc documentation] to all parts of the source code. As a result,
   [golint] no longer reports any coding style issues.
 * Run golint style checks on Travis CI.
-* Add Quick Start guide to README.
 
 BREAKING CHANGES:
 
