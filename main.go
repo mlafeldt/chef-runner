@@ -42,11 +42,7 @@ func abort(v ...interface{}) {
 }
 
 func buildRunList(cookbookName string, recipes []string) ([]string, error) {
-	if len(recipes) == 0 {
-		recipes = []string{"default"}
-	}
-
-	var runList []string
+	runList := []string{}
 	for _, r := range recipes {
 		var recipeName string
 		if strings.Contains(r, "::") {
@@ -109,11 +105,6 @@ func main() {
 	}
 	log.Debugf("Cookbook = %s\n", cb)
 
-	runList, err := buildRunList(cb.Name, recipes)
-	if err != nil {
-		abort(err)
-	}
-
 	var attributes string
 	if flags.JSONFile != "" {
 		data, err := ioutil.ReadFile(flags.JSONFile)
@@ -121,6 +112,15 @@ func main() {
 			abort(err)
 		}
 		attributes = string(data)
+	}
+
+	if len(recipes) == 0 && !strings.Contains(attributes, "run_list") {
+		recipes = []string{"default"}
+	}
+
+	runList, err := buildRunList(cb.Name, recipes)
+	if err != nil {
+		abort(err)
 	}
 
 	var p provisioner.Provisioner

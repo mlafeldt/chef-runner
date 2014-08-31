@@ -38,7 +38,7 @@ func TestBuildRunList(t *testing.T) {
 		{
 			cookbookName: "cats",
 			recipes:      []string{},
-			runList:      []string{"cats::default"},
+			runList:      []string{},
 		},
 		{
 			cookbookName: "cats",
@@ -66,12 +66,6 @@ func TestBuildRunList(t *testing.T) {
 			runList:      []string{"cats::foo", "cats::bar", "dogs::baz"},
 		},
 		// Check for errors
-		{
-			cookbookName: "",
-			recipes:      []string{},
-			runList:      nil,
-			errString:    "cookbook name required",
-		},
 		{
 			cookbookName: "",
 			recipes:      []string{"foo"},
