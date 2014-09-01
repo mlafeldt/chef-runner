@@ -99,12 +99,6 @@ func main() {
 
 	log.Infof("Starting chef-runner (%s %s)\n", VersionString(), TargetString())
 
-	cb, err := cookbook.NewCookbook(".")
-	if err != nil {
-		abort(err)
-	}
-	log.Debugf("Cookbook = %s\n", cb)
-
 	var attributes string
 	if flags.JSONFile != "" {
 		data, err := ioutil.ReadFile(flags.JSONFile)
@@ -114,13 +108,30 @@ func main() {
 		attributes = string(data)
 	}
 
-	if len(recipes) == 0 && !strings.Contains(attributes, "run_list") {
-		recipes = []string{"default"}
+	// 1) Run default recipe if no recipes are passed
+	// 2) Use run list from JSON file if present, overriding 1)
+	// 3) Use run list from command line if present, overriding 1) and 2)
+	if len(recipes) == 0 {
+		// TODO: parse actual JSON data
+		if strings.Contains(attributes, "run_list") {
+			log.Infof("Using run list from %s\n", flags.JSONFile)
+		} else {
+			recipes = []string{"default"}
+		}
 	}
 
-	runList, err := buildRunList(cb.Name, recipes)
-	if err != nil {
-		abort(err)
+	var runList []string
+	if len(recipes) > 0 {
+		cb, err := cookbook.NewCookbook(".")
+		if err != nil {
+			abort(err)
+		}
+		log.Debugf("Cookbook = %s\n", cb)
+
+		if runList, err = buildRunList(cb.Name, recipes); err != nil {
+			abort(err)
+		}
+		log.Infof("Run list is %s\n", runList)
 	}
 
 	var p provisioner.Provisioner
@@ -140,6 +151,7 @@ func main() {
 	}
 
 	var drv driver.Driver
+	var err error
 	if flags.Host != "" {
 		drv, err = ssh.NewDriver(flags.Host)
 	} else {
