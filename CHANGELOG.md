@@ -1,5 +1,9 @@
 ## v0.7.0 (unreleased)
 
+* Use run list from JSON file if it contains the `run_list` attribute. Recipes
+  passed on the command line will still override this list, and
+  `recipes/default.rb` is still the default. (Thanks to @arosenhagen who
+  requested this feature.)
 * Extend `script/build` to auto-generate chef-runner's [Homebrew formula] when
   building a new release with `--release`.
 
