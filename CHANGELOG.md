@@ -1,3 +1,10 @@
+## v0.7.0 (unreleased)
+
+* Extend `script/build` to auto-generate chef-runner's [Homebrew formula] when
+  building a new release with `--release`.
+
+[Homebrew formula]: https://github.com/mlafeldt/homebrew-formulas/blob/master/Formula/chef-runner.rb
+
 ## v0.6.0 (Aug 28 2014)
 
 FEATURES:
