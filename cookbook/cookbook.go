@@ -5,7 +5,6 @@ package cookbook
 
 import (
 	"path"
-	"path/filepath"
 
 	"github.com/mlafeldt/chef-runner/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner/util"
@@ -42,10 +41,11 @@ func (cb Cookbook) String() string {
 }
 
 // Files returns the names of all cookbook files. Other files are ignored.
-func (cb Cookbook) Files() ([]string, error) {
-	filesGlob := []string{
-		"README.*",
-		"metadata.*",
+func (cb Cookbook) Files() []string {
+	fileList := [...]string{
+		"README.md",
+		"metadata.json",
+		"metadata.rb",
 		"attributes",
 		"definitions",
 		"files",
@@ -55,13 +55,14 @@ func (cb Cookbook) Files() ([]string, error) {
 		"resources",
 		"templates",
 	}
+
 	var files []string
-	for _, glob := range filesGlob {
-		matches, err := filepath.Glob(path.Join(cb.Path, glob))
-		if err != nil {
-			return nil, err
+	for _, f := range fileList {
+		name := path.Join(cb.Path, f)
+		if util.FileExist(name) {
+			files = append(files, name)
 		}
-		files = append(files, matches...)
 	}
-	return files, nil
+
+	return files
 }

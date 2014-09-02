@@ -40,8 +40,5 @@ func TestFiles(t *testing.T) {
 		"../testdata/attributes",
 		"../testdata/recipes",
 	}
-	actual, err := cb.Files()
-	if assert.NoError(t, err) {
-		assert.Equal(t, expect, actual)
-	}
+	assert.Equal(t, expect, cb.Files())
 }
