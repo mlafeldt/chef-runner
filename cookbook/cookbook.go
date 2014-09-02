@@ -1,9 +1,10 @@
-// Package cookbook reads data from Chef cookbooks stored on disk. It can
-// currently retrieve the cookbook's name and version as well as a list of all
-// cookbook files.
+// Package cookbook reads and manipulates data from Chef cookbooks stored on
+// disk.
 package cookbook
 
 import (
+	"io/ioutil"
+	"os"
 	"path"
 
 	"github.com/mlafeldt/chef-runner/cookbook/metadata"
@@ -65,4 +66,28 @@ func (cb Cookbook) Files() []string {
 	}
 
 	return files
+}
+
+// Strip removes all non-cookbook files from the cookbook.
+func (cb Cookbook) Strip() error {
+	cbFiles := make(map[string]bool)
+	for _, f := range cb.Files() {
+		cbFiles[f] = true
+	}
+
+	files, err := ioutil.ReadDir(cb.Path)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		name := path.Join(cb.Path, f.Name())
+		if _, keep := cbFiles[name]; !keep {
+			if err := os.RemoveAll(name); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
