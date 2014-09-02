@@ -147,9 +147,13 @@ func (p Provisioner) ProvisionCommand() []string {
 		"chef-solo",
 		"--config", base.RootPathTo("solo.rb"),
 		"--json-attributes", base.RootPathTo("dna.json"),
-		"--override-runlist", strings.Join(p.RunList, ","),
 		"--format", format,
 		"--log_level", logLevel,
 	}
+
+	if len(p.RunList) > 0 {
+		cmd = append(cmd, "--override-runlist", strings.Join(p.RunList, ","))
+	}
+
 	return p.sudo(cmd)
 }
