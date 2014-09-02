@@ -1,6 +1,6 @@
 #!/bin/sh
 # Build project for multiple architectures. With --release, also create
-# download archives.
+# download archives and other release artifacts.
 # Usage: script/build [-r|--release]
 
 set -e
@@ -33,8 +33,36 @@ case "$1" in
     echo "Creating zip archives..."
     cd "$build_dir"
     for i in *; do zip -r "$i.zip" "$i"; done
+
     echo "Creating SHA256SUMS file..."
     shasum -a256 *.zip > SHA256SUMS
+
+    echo "Creating Homebrew formula..."
+    cat > chef-runner.rb <<EOF
+require "formula"
+
+class ChefRunner < Formula
+  homepage "https://github.com/mlafeldt/chef-runner"
+  version "$version"
+
+  if Hardware.is_64_bit?
+    url "https://github.com/mlafeldt/chef-runner/releases/download/v#{version}/chef-runner_#{version}_darwin_amd64.zip"
+    sha256 "$(grep darwin_amd64 SHA256SUMS | cut -d" " -f1)"
+
+  else
+    url "https://github.com/mlafeldt/chef-runner/releases/download/v#{version}/chef-runner_#{version}_darwin_386.zip"
+    sha256 "$(grep darwin_386 SHA256SUMS | cut -d" " -f1)"
+  end
+
+  def install
+    bin.install "chef-runner"
+  end
+
+  def test
+    system "#{bin}/chef-runner --version"
+  end
+end
+EOF
 esac
 
 echo "Done."
