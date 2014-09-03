@@ -47,6 +47,7 @@ func inTestDir(f func()) {
 func TestCreateSandbox(t *testing.T) {
 	inTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
 
 		assert.NoError(t, chefsolo.Provisioner{}.CreateSandbox())
 
@@ -66,6 +67,7 @@ func TestCreateSandbox(t *testing.T) {
 func TestCreateSandbox_CustomJSON(t *testing.T) {
 	inTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
 
 		p := chefsolo.Provisioner{Attributes: `{"foo": "bar"}`}
 		assert.NoError(t, p.CreateSandbox())

@@ -3,6 +3,8 @@ package resolver
 
 import (
 	"errors"
+	"io/ioutil"
+	"path"
 
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/log"
@@ -46,8 +48,25 @@ func findResolver(dst string) (Resolver, error) {
 	return nil, errors.New("cookbooks could not be found")
 }
 
+func stripCookbooks(dst string) error {
+	cookbookDirs, err := ioutil.ReadDir(dst)
+	if err != nil {
+		return err
+	}
+
+	for _, dir := range cookbookDirs {
+		cb := cookbook.Cookbook{Path: path.Join(dst, dir.Name())}
+		if err := cb.Strip(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // AutoResolve automatically resolves cookbook dependencies based on the files
-// present in the current directory.
+// present in the current directory. After resolving dependencies, it also
+// deletes all non-cookbook files.
 func AutoResolve(dst string) error {
 	r, err := findResolver(dst)
 	if err != nil {
@@ -55,5 +74,10 @@ func AutoResolve(dst string) error {
 	}
 
 	log.Infof("Installing cookbook dependencies with %s\n", r)
-	return r.Resolve(dst)
+	if err := r.Resolve(dst); err != nil {
+		return err
+	}
+
+	log.Info("Stripping non-cookbook files")
+	return stripCookbooks(dst)
 }

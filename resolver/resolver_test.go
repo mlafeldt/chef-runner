@@ -56,6 +56,7 @@ func TestAutoResolve_Berkshelf(t *testing.T) {
 
 	inTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
+		os.MkdirAll(CookbookPath, 0755)
 
 		assert.NoError(t, resolver.AutoResolve(CookbookPath))
 	})
@@ -71,6 +72,7 @@ func TestAutoResolve_Librarian(t *testing.T) {
 
 	inTestDir(func() {
 		ioutil.WriteFile("Cheffile", []byte{}, 0644)
+		os.MkdirAll(CookbookPath, 0755)
 
 		assert.NoError(t, resolver.AutoResolve(CookbookPath))
 	})
