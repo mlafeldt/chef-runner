@@ -28,33 +28,10 @@ func init() {
 	log.SetLevel(log.LevelWarn)
 }
 
-func inTestDir(f func()) {
-	testDir, err := util.TempDir()
-	if err != nil {
-		panic(err)
-	}
-	defer os.RemoveAll(testDir)
-
-	pwd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	if err := os.Chdir(testDir); err != nil {
-		panic(err)
-	}
-
-	f()
-
-	if err := os.Chdir(pwd); err != nil {
-		panic(err)
-	}
-}
-
 func TestAutoResolve_Berkshelf(t *testing.T) {
 	lastCmd = []string{}
 
-	inTestDir(func() {
+	util.InTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
 
@@ -70,7 +47,7 @@ func TestAutoResolve_Berkshelf(t *testing.T) {
 func TestAutoResolve_Librarian(t *testing.T) {
 	lastCmd = []string{}
 
-	inTestDir(func() {
+	util.InTestDir(func() {
 		ioutil.WriteFile("Cheffile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
 
@@ -83,7 +60,7 @@ func TestAutoResolve_Librarian(t *testing.T) {
 func TestAutoResolve_Dir(t *testing.T) {
 	lastCmd = []string{}
 
-	inTestDir(func() {
+	util.InTestDir(func() {
 		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
 
 		assert.NoError(t, resolver.AutoResolve(CookbookPath))
@@ -96,7 +73,7 @@ func TestAutoResolve_Dir(t *testing.T) {
 func TestAutoResolve_DirUpdate(t *testing.T) {
 	lastCmd = []string{}
 
-	inTestDir(func() {
+	util.InTestDir(func() {
 		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
@@ -111,7 +88,7 @@ func TestAutoResolve_DirUpdate(t *testing.T) {
 func TestAutoResolve_NoCookbooks(t *testing.T) {
 	lastCmd = []string{}
 
-	inTestDir(func() {
+	util.InTestDir(func() {
 		assert.EqualError(t, resolver.AutoResolve(CookbookPath),
 			"cookbooks could not be found")
 	})

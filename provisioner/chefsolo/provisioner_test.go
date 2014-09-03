@@ -20,32 +20,9 @@ func init() {
 	log.SetLevel(log.LevelWarn)
 }
 
-func inTestDir(f func()) {
-	testDir, err := util.TempDir()
-	if err != nil {
-		panic(err)
-	}
-	defer os.RemoveAll(testDir)
-
-	pwd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	if err := os.Chdir(testDir); err != nil {
-		panic(err)
-	}
-
-	f()
-
-	if err := os.Chdir(pwd); err != nil {
-		panic(err)
-	}
-}
-
 // Note: Setup of cookbook dependencies is tested in the resolver package.
 func TestCreateSandbox(t *testing.T) {
-	inTestDir(func() {
+	util.InTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
 
@@ -65,7 +42,7 @@ func TestCreateSandbox(t *testing.T) {
 }
 
 func TestCreateSandbox_CustomJSON(t *testing.T) {
-	inTestDir(func() {
+	util.InTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
 
