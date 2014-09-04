@@ -1,6 +1,9 @@
 package util_test
 
 import (
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path"
 	"strings"
@@ -49,4 +52,16 @@ func TestTempDir(t *testing.T) {
 	m, err := os.Stat(dir)
 	assert.NoError(t, err)
 	assert.True(t, m.IsDir())
+}
+
+func TestDownloadFile(t *testing.T) {
+	ts := httptest.NewServer(http.FileServer(http.Dir("../testdata")))
+	defer ts.Close()
+
+	filename := "download.md"
+	assert.NoError(t, util.DownloadFile(filename, ts.URL+"/README.md"))
+	defer os.Remove(filename)
+
+	data, _ := ioutil.ReadFile(filename)
+	assert.Equal(t, "# Test Cookbook\n", string(data))
 }
