@@ -1,11 +1,11 @@
-// Package cookbook reads data from Chef cookbooks stored on disk. It can
-// currently retrieve the cookbook's name and version as well as a list of all
-// cookbook files.
+// Package cookbook reads and manipulates data from Chef cookbooks stored on
+// disk.
 package cookbook
 
 import (
+	"io/ioutil"
+	"os"
 	"path"
-	"path/filepath"
 
 	"github.com/mlafeldt/chef-runner/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner/util"
@@ -42,10 +42,11 @@ func (cb Cookbook) String() string {
 }
 
 // Files returns the names of all cookbook files. Other files are ignored.
-func (cb Cookbook) Files() ([]string, error) {
-	filesGlob := []string{
-		"README.*",
-		"metadata.*",
+func (cb Cookbook) Files() []string {
+	fileList := [...]string{
+		"README.md",
+		"metadata.json",
+		"metadata.rb",
 		"attributes",
 		"definitions",
 		"files",
@@ -55,13 +56,38 @@ func (cb Cookbook) Files() ([]string, error) {
 		"resources",
 		"templates",
 	}
+
 	var files []string
-	for _, glob := range filesGlob {
-		matches, err := filepath.Glob(path.Join(cb.Path, glob))
-		if err != nil {
-			return nil, err
+	for _, f := range fileList {
+		name := path.Join(cb.Path, f)
+		if util.FileExist(name) {
+			files = append(files, name)
 		}
-		files = append(files, matches...)
 	}
-	return files, nil
+
+	return files
+}
+
+// Strip removes all non-cookbook files from the cookbook.
+func (cb Cookbook) Strip() error {
+	cbFiles := make(map[string]bool)
+	for _, f := range cb.Files() {
+		cbFiles[f] = true
+	}
+
+	files, err := ioutil.ReadDir(cb.Path)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		name := path.Join(cb.Path, f.Name())
+		if _, keep := cbFiles[name]; !keep {
+			if err := os.RemoveAll(name); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }

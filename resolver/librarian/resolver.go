@@ -3,10 +3,6 @@
 package librarian
 
 import (
-	"os"
-	"path"
-	"path/filepath"
-
 	"github.com/mlafeldt/chef-runner/bundler"
 	"github.com/mlafeldt/chef-runner/exec"
 )
@@ -20,26 +16,9 @@ func Command(dst string) []string {
 	return bundler.Command(cmd)
 }
 
-func removeTempFiles(dst string) error {
-	tmpDirs, err := filepath.Glob(path.Join(dst, "*", "tmp", "librarian"))
-	if err != nil {
-		return err
-	}
-	for _, dir := range tmpDirs {
-		if err := os.RemoveAll(dir); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// Resolve runs Librarian-Chef to install cookbook dependencies to dst. It also
-// removes temporary Librarian-Chef files from the installed cookbooks.
+// Resolve runs Librarian-Chef to install cookbook dependencies to dst.
 func (r Resolver) Resolve(dst string) error {
-	if err := exec.RunCommand(Command(dst)); err != nil {
-		return err
-	}
-	return removeTempFiles(dst)
+	return exec.RunCommand(Command(dst))
 }
 
 // String returns the resolver's name.

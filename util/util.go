@@ -32,6 +32,31 @@ func TempDir() (string, error) {
 	return ioutil.TempDir("", "chef-runner-")
 }
 
+// InTestDir runs the passed function inside a temporary directory, which will
+// be removed afterwards. Use it for isolated testing.
+func InTestDir(f func()) {
+	testDir, err := TempDir()
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(testDir)
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	if err := os.Chdir(testDir); err != nil {
+		panic(err)
+	}
+
+	f()
+
+	if err := os.Chdir(pwd); err != nil {
+		panic(err)
+	}
+}
+
 // DownloadFile downloads a file from url and writes it to filename.
 func DownloadFile(filename, url string) error {
 	resp, err := http.Get(url)
