@@ -54,6 +54,21 @@ func TestTempDir(t *testing.T) {
 	assert.True(t, m.IsDir())
 }
 
+func TestInTestDir(t *testing.T) {
+	wd, _ := os.Getwd()
+	var testDir string
+
+	util.InTestDir(func() {
+		testDir, _ = os.Getwd()
+		assert.NotEqual(t, testDir, wd)
+		assert.NoError(t, ioutil.WriteFile("some-test-file", []byte{}, 0644))
+	})
+
+	wd2, _ := os.Getwd()
+	assert.Equal(t, wd, wd2)
+	assert.False(t, util.FileExist(testDir))
+}
+
 func TestDownloadFile(t *testing.T) {
 	ts := httptest.NewServer(http.FileServer(http.Dir("../testdata")))
 	defer ts.Close()
