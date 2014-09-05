@@ -125,5 +125,5 @@ func TestRunCommand_MissingHost(t *testing.T) {
 
 func TestShell(t *testing.T) {
 	c, _ := openssh.NewClient("some-user@some-host:1234")
-	assert.Equal(t, []string{"ssh", "-l", "some-user", "-p", "1234"}, c.Shell())
+	assert.Equal(t, "ssh -l some-user -p 1234", c.Shell())
 }

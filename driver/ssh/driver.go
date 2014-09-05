@@ -3,7 +3,6 @@ package ssh
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/rsync"
@@ -25,7 +24,7 @@ func NewDriver(host string) (*Driver, error) {
 
 	rsyncClient := rsync.MirrorClient
 	rsyncClient.RemoteHost = sshClient.Host
-	rsyncClient.RemoteShell = strings.Join(sshClient.Shell(), " ")
+	rsyncClient.RemoteShell = sshClient.Shell()
 
 	return &Driver{host, sshClient, rsyncClient}, nil
 }

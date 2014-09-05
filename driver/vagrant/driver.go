@@ -8,7 +8,6 @@ import (
 	"os"
 	goexec "os/exec"
 	"path"
-	"strings"
 
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/openssh"
@@ -67,7 +66,7 @@ func NewDriver(machine string) (*Driver, error) {
 
 	rsyncClient := rsync.MirrorClient
 	rsyncClient.RemoteHost = "default"
-	rsyncClient.RemoteShell = strings.Join(sshClient.Shell(), " ")
+	rsyncClient.RemoteShell = sshClient.Shell()
 
 	return &Driver{machine, sshClient, rsyncClient}, nil
 }

@@ -102,7 +102,7 @@ func (c Client) RunCommand(args []string) error {
 }
 
 // Shell returns a connection string that can be used by tools like rsync.
-func (c Client) Shell() []string {
+func (c Client) Shell() string {
 	cmd := c.Command([]string{})
-	return cmd[:len(cmd)-1]
+	return strings.Join(cmd[:len(cmd)-1], " ")
 }
