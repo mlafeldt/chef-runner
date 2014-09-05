@@ -9,15 +9,7 @@ import (
 	"github.com/mlafeldt/chef-runner/log"
 )
 
-// A Provisioner is responsible for provisioning a machine with Chef.
-type Provisioner interface {
-	CreateSandbox() error
-	CleanupSandbox() error
-	InstallCommand() []string
-	ProvisionCommand() []string
-}
-
-var (
+const (
 	// SandboxPath is the path to the local sandbox directory where
 	// chef-runner stores files that will be uploaded to a machine.
 	SandboxPath = ".chef-runner/sandbox"
@@ -26,6 +18,14 @@ var (
 	// will be uploaded to.
 	RootPath = "/tmp/chef-runner"
 )
+
+// A Provisioner is responsible for provisioning a machine with Chef.
+type Provisioner interface {
+	CreateSandbox() error
+	CleanupSandbox() error
+	InstallCommand() []string
+	ProvisionCommand() []string
+}
 
 // SandboxPathTo returns a path relative to SandboxPath.
 func SandboxPathTo(elem ...string) string {
