@@ -22,11 +22,11 @@ func NewDriver(host string) (*Driver, error) {
 		return nil, err
 	}
 
-	rsyncClient := rsync.MirrorClient
+	rsyncClient := *rsync.MirrorClient
 	rsyncClient.RemoteHost = sshClient.Host
 	rsyncClient.RemoteShell = sshClient.Shell()
 
-	return &Driver{host, sshClient, rsyncClient}, nil
+	return &Driver{host, sshClient, &rsyncClient}, nil
 }
 
 // RunCommand runs the specified command on the host.

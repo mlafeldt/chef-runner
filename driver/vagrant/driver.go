@@ -59,16 +59,13 @@ func NewDriver(machine string) (*Driver, error) {
 		return nil, err
 	}
 
-	sshClient := &openssh.Client{
-		Host:       "default",
-		ConfigFile: configFile,
-	}
+	sshClient := &openssh.Client{Host: "default", ConfigFile: configFile}
 
-	rsyncClient := rsync.MirrorClient
+	rsyncClient := *rsync.MirrorClient
 	rsyncClient.RemoteHost = "default"
 	rsyncClient.RemoteShell = sshClient.Shell()
 
-	return &Driver{machine, sshClient, rsyncClient}, nil
+	return &Driver{machine, sshClient, &rsyncClient}, nil
 }
 
 // RunCommand runs the specified command on the Vagrant machine.
