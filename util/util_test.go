@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -52,6 +53,21 @@ func TestTempDir(t *testing.T) {
 	m, err := os.Stat(dir)
 	assert.NoError(t, err)
 	assert.True(t, m.IsDir())
+}
+
+func TestInDir(t *testing.T) {
+	var wd1, wd2, wd3 string
+	wd1, _ = os.Getwd()
+
+	util.InDir("../testdata", func() {
+		wd2, _ = os.Getwd()
+	})
+
+	abs, _ := filepath.Abs("../testdata")
+	assert.Equal(t, abs, wd2)
+
+	wd3, _ = os.Getwd()
+	assert.Equal(t, wd3, wd1)
 }
 
 func TestInTestDir(t *testing.T) {
