@@ -91,13 +91,14 @@ func main() {
 
 	log.SetLevel(logLevel())
 
-	flags, recipes := ParseFlags(os.Args[1:])
+	flags, err := ParseFlags(os.Args[1:])
+	if err != nil {
+		abort(err)
+	}
+
 	if flags.ShowVersion {
 		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
 		os.Exit(0)
-	}
-	if flags.Host != "" && flags.Machine != "" {
-		abort("-H and -M cannot be used together")
 	}
 
 	log.Infof("Starting chef-runner (%s %s)\n", VersionString(), TargetString())
@@ -114,6 +115,7 @@ func main() {
 	// 1) Run default recipe if no recipes are passed
 	// 2) Use run list from JSON file if present, overriding 1)
 	// 3) Use run list from command line if present, overriding 1) and 2)
+	recipes := flags.Recipes
 	if len(recipes) == 0 {
 		// TODO: parse actual JSON data
 		if strings.Contains(attributes, "run_list") {
@@ -154,7 +156,6 @@ func main() {
 	}
 
 	var drv driver.Driver
-	var err error
 	if flags.Host != "" {
 		drv, err = ssh.NewDriver(flags.Host)
 	} else {

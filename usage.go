@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -26,7 +27,7 @@ Options that will be passed to Chef Solo:
     -j, --json-attributes <file> Load attributes from a JSON file
 `
 
-// Flags stores the flags passed on the command line.
+// Flags stores the options and arguments passed on the command line.
 type Flags struct {
 	Host        string
 	Machine     string
@@ -35,10 +36,12 @@ type Flags struct {
 	JSONFile    string
 	ShowVersion bool
 	ChefVersion string
+
+	Recipes []string
 }
 
-// ParseFlags parses the command line and returns flags and recipes.
-func ParseFlags(args []string) (*Flags, []string) {
+// ParseFlags parses the command line and returns the result.
+func ParseFlags(args []string) (*Flags, error) {
 	f := flag.NewFlagSet("chef-runner", flag.ExitOnError)
 	f.Usage = func() { fmt.Fprintf(os.Stderr, usage) }
 
@@ -64,6 +67,17 @@ func ParseFlags(args []string) (*Flags, []string) {
 	f.StringVar(&flags.ChefVersion, "i", "", "")
 	f.StringVar(&flags.ChefVersion, "install-chef", "", "")
 
-	f.Parse(args)
-	return &flags, f.Args()
+	if err := f.Parse(args); err != nil {
+		return nil, err
+	}
+
+	if flags.Host != "" && flags.Machine != "" {
+		return nil, errors.New("-H and -M cannot be used together")
+	}
+
+	if len(f.Args()) > 0 {
+		flags.Recipes = f.Args()
+	}
+
+	return &flags, nil
 }
