@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/driver"
@@ -86,6 +87,8 @@ func runChef(drv driver.Driver, p provisioner.Provisioner) error {
 }
 
 func main() {
+	startTime := time.Now()
+
 	log.SetLevel(logLevel())
 
 	flags, recipes := ParseFlags(os.Args[1:])
@@ -173,5 +176,5 @@ func main() {
 		abort(err)
 	}
 
-	log.Info("chef-runner finished.")
+	log.Info("chef-runner finished in", time.Now().Sub(startTime))
 }

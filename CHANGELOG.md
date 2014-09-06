@@ -7,6 +7,7 @@
 * Strip all non-cookbook files after resolving dependencies. This ensures that
   only essential cookbook files are copied to target machines, further saving
   time.
+* Report overall duration when chef-runner is done.
 * Extend `script/build` to auto-generate chef-runner's [Homebrew formula] when
   building a new release with `--release`.
 
