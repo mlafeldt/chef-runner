@@ -130,6 +130,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
 
     -H, --host <name>            Set hostname for direct SSH access
     -M, --machine <name>         Set name/UUID of Vagrant virtual machine
+    -K, --kitchen <name>         Set name of Test Kitchen instance
 
     -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                  default: false

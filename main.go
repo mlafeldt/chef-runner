@@ -11,6 +11,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/driver"
+	"github.com/mlafeldt/chef-runner/driver/kitchen"
 	"github.com/mlafeldt/chef-runner/driver/ssh"
 	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
@@ -158,6 +159,8 @@ func main() {
 	var drv driver.Driver
 	if flags.Host != "" {
 		drv, err = ssh.NewDriver(flags.Host)
+	} else if flags.Kitchen != "" {
+		drv, err = kitchen.NewDriver(flags.Kitchen)
 	} else {
 		drv, err = vagrant.NewDriver(flags.Machine)
 	}
