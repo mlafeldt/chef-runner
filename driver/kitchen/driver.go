@@ -11,6 +11,7 @@ import (
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/rsync"
+	"github.com/mlafeldt/chef-runner/util"
 	"gopkg.in/yaml.v1"
 )
 
@@ -63,6 +64,10 @@ func readInstanceConfig(instance string) (*instanceConfig, error) {
 // Test Kitchen instance. Under the hood the instance's YAML configuration is
 // parsed to get a working SSH configuration.
 func NewDriver(instance string) (*Driver, error) {
+	if !util.FileExist(".kitchen.yml") {
+		return nil, errors.New("Kitchen YAML file not found")
+	}
+
 	config, err := readInstanceConfig(instance)
 	if err != nil {
 		return nil, err
