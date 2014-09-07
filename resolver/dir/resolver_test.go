@@ -10,24 +10,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const CookbookPath = "test-cookbooks"
-
 func TestResolve(t *testing.T) {
-	if err := os.Chdir("../../testdata"); err != nil {
-		panic(err)
-	}
+	util.InDir("../../testdata", func() {
+		cookbookPath := "test-cookbooks"
+		defer os.RemoveAll(cookbookPath)
 
-	defer os.RemoveAll(CookbookPath)
+		assert.NoError(t, dir.Resolver{}.Resolve(cookbookPath))
 
-	assert.NoError(t, dir.Resolver{}.Resolve(CookbookPath))
-
-	expectFiles := []string{
-		"practicingruby/README.md",
-		"practicingruby/attributes",
-		"practicingruby/metadata.rb",
-		"practicingruby/recipes",
-	}
-	for _, f := range expectFiles {
-		assert.True(t, util.FileExist(path.Join(CookbookPath, f)))
-	}
+		expectFiles := []string{
+			"practicingruby/README.md",
+			"practicingruby/attributes",
+			"practicingruby/metadata.rb",
+			"practicingruby/recipes",
+		}
+		for _, f := range expectFiles {
+			assert.True(t, util.FileExist(path.Join(cookbookPath, f)))
+		}
+	})
 }
