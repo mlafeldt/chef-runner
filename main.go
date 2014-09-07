@@ -43,6 +43,16 @@ func abort(v ...interface{}) {
 	os.Exit(1)
 }
 
+func findDriver(flags *Flags) (driver.Driver, error) {
+	if flags.Host != "" {
+		return ssh.NewDriver(flags.Host)
+	}
+	if flags.Kitchen != "" {
+		return kitchen.NewDriver(flags.Kitchen)
+	}
+	return vagrant.NewDriver(flags.Machine)
+}
+
 func buildRunList(cookbookName string, recipes []string) ([]string, error) {
 	runList := []string{}
 	for _, r := range recipes {
@@ -156,14 +166,7 @@ func main() {
 		abort(err)
 	}
 
-	var drv driver.Driver
-	if flags.Host != "" {
-		drv, err = ssh.NewDriver(flags.Host)
-	} else if flags.Kitchen != "" {
-		drv, err = kitchen.NewDriver(flags.Kitchen)
-	} else {
-		drv, err = vagrant.NewDriver(flags.Machine)
-	}
+	drv, err := findDriver(flags)
 	if err != nil {
 		abort(err)
 	}
