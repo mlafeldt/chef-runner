@@ -92,11 +92,11 @@ func NewDriver(instance string) (*Driver, error) {
 		Options:     sshOpts,
 	}
 
-	rsyncClient := rsync.MirrorClient
+	rsyncClient := *rsync.MirrorClient
 	rsyncClient.RemoteHost = config.Hostname
 	rsyncClient.RemoteShell = sshClient.Shell()
 
-	return &Driver{instance, sshClient, rsyncClient}, nil
+	return &Driver{instance, sshClient, &rsyncClient}, nil
 }
 
 // RunCommand runs the specified command on the Test Kitchen instance.
