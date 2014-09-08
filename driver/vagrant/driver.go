@@ -2,12 +2,14 @@
 package vagrant
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	goexec "os/exec"
 	"path"
+	"strings"
 
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/openssh"
@@ -42,11 +44,14 @@ func NewDriver(machine string) (*Driver, error) {
 		machine = DefaultMachine
 	}
 
-	// TODO: reuse existing config file, but make sure it's still valid
 	log.Debug("Asking Vagrant for SSH config")
-	out, err := goexec.Command("vagrant", "ssh-config", machine).CombinedOutput()
-	if err != nil {
-		msg := fmt.Sprintf("`vagrant ssh-config` failed with output:\n\n%s", out)
+	cmd := goexec.Command("vagrant", "ssh-config", machine)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		msg := fmt.Sprintf("`vagrant ssh-config` failed with output:\n\n%s",
+			strings.TrimSpace(stderr.String()))
 		return nil, errors.New(msg)
 	}
 
@@ -55,7 +60,7 @@ func NewDriver(machine string) (*Driver, error) {
 	if err := os.MkdirAll(path.Dir(configFile), 0755); err != nil {
 		return nil, err
 	}
-	if err := ioutil.WriteFile(configFile, out, 0644); err != nil {
+	if err := ioutil.WriteFile(configFile, stdout.Bytes(), 0644); err != nil {
 		return nil, err
 	}
 
