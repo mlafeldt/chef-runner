@@ -3,55 +3,55 @@ package log_test
 import (
 	"os"
 
-	"github.com/mlafeldt/chef-runner/log"
+	. "github.com/mlafeldt/chef-runner/log"
 )
 
 func init() {
-	log.DisableColor()
+	DisableColor()
 }
 
 func ExampleDebug() {
-	log.Debug("some debug message")
+	Debug("some debug message")
 	// Output:
 	// DEBUG: some debug message
 }
 
 func ExampleDebugf() {
 	s := "debug"
-	log.Debugf("some %s message", s)
+	Debugf("some %s message", s)
 	// Output:
 	// DEBUG: some debug message
 }
 
 func ExampleInfo() {
-	log.Info("some info message")
+	Info("some info message")
 	// Output:
 	// INFO: some info message
 }
 
 func ExampleInfof() {
 	s := "info"
-	log.Infof("some %s message", s)
+	Infof("some %s message", s)
 	// Output:
 	// INFO: some info message
 }
 
 func ExampleWarn() {
-	log.Warn("some warning message")
+	Warn("some warning message")
 	// Output:
 	// WARNING: some warning message
 }
 
 func ExampleWarnf() {
 	s := "warning"
-	log.Warnf("some %s message", s)
+	Warnf("some %s message", s)
 	// Output:
 	// WARNING: some warning message
 }
 
 func ExampleError() {
 	os.Stderr = os.Stdout
-	log.Error("some error message")
+	Error("some error message")
 	// Output:
 	// ERROR: some error message
 }
@@ -59,18 +59,18 @@ func ExampleError() {
 func ExampleErrorf() {
 	os.Stderr = os.Stdout
 	s := "error"
-	log.Errorf("some %s message", s)
+	Errorf("some %s message", s)
 	// Output:
 	// ERROR: some error message
 }
 
 func ExampleSetLevel() {
-	defer log.SetLevel(log.LevelDebug)
-	log.SetLevel(log.LevelInfo)
+	defer SetLevel(LevelDebug)
+	SetLevel(LevelInfo)
 
-	log.Debug("some debug message")
-	log.Info("some info message")
-	log.Warn("some warning message")
+	Debug("some debug message")
+	Info("some info message")
+	Warn("some warning message")
 	// Output:
 	// INFO: some info message
 	// WARNING: some warning message

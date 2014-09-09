@@ -10,18 +10,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/util"
+	. "github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFileExist(t *testing.T) {
 	filename := "some-file"
-	assert.False(t, util.FileExist(filename))
+	assert.False(t, FileExist(filename))
 
 	f, _ := os.Create(filename)
 	f.Close()
 	defer os.Remove(filename)
-	assert.True(t, util.FileExist(filename))
+	assert.True(t, FileExist(filename))
 }
 
 func TestBaseName(t *testing.T) {
@@ -39,12 +39,12 @@ func TestBaseName(t *testing.T) {
 		{"a/b.x", ".y", "b.x"},
 	}
 	for _, test := range tests {
-		assert.Equal(t, test.out, util.BaseName(test.in, test.suffix))
+		assert.Equal(t, test.out, BaseName(test.in, test.suffix))
 	}
 }
 
 func TestTempDir(t *testing.T) {
-	dir, err := util.TempDir()
+	dir, err := TempDir()
 	assert.NoError(t, err)
 	defer os.RemoveAll(dir)
 
@@ -59,7 +59,7 @@ func TestInDir(t *testing.T) {
 	var wd1, wd2, wd3 string
 	wd1, _ = os.Getwd()
 
-	util.InDir("../testdata", func() {
+	InDir("../testdata", func() {
 		wd2, _ = os.Getwd()
 	})
 
@@ -74,7 +74,7 @@ func TestInTestDir(t *testing.T) {
 	wd, _ := os.Getwd()
 	var testDir string
 
-	util.InTestDir(func() {
+	InTestDir(func() {
 		testDir, _ = os.Getwd()
 		assert.NotEqual(t, testDir, wd)
 		assert.NoError(t, ioutil.WriteFile("some-test-file", []byte{}, 0644))
@@ -82,7 +82,7 @@ func TestInTestDir(t *testing.T) {
 
 	wd2, _ := os.Getwd()
 	assert.Equal(t, wd, wd2)
-	assert.False(t, util.FileExist(testDir))
+	assert.False(t, FileExist(testDir))
 }
 
 func TestDownloadFile(t *testing.T) {
@@ -90,7 +90,7 @@ func TestDownloadFile(t *testing.T) {
 	defer ts.Close()
 
 	filename := "download.md"
-	assert.NoError(t, util.DownloadFile(filename, ts.URL+"/README.md"))
+	assert.NoError(t, DownloadFile(filename, ts.URL+"/README.md"))
 	defer os.Remove(filename)
 
 	data, _ := ioutil.ReadFile(filename)

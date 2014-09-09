@@ -5,13 +5,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/cookbook"
+	. "github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewCookbook(t *testing.T) {
-	cb, err := cookbook.NewCookbook("../testdata")
+	cb, err := NewCookbook("../testdata")
 	assert.NoError(t, err)
 	if assert.NotNil(t, cb) {
 		assert.Equal(t, "../testdata", cb.Path)
@@ -21,7 +21,7 @@ func TestNewCookbook(t *testing.T) {
 }
 
 func TestNewCookbook_WithoutMetadata(t *testing.T) {
-	cb, err := cookbook.NewCookbook(".")
+	cb, err := NewCookbook(".")
 	assert.NoError(t, err)
 	if assert.NotNil(t, cb) {
 		assert.Equal(t, ".", cb.Path)
@@ -31,12 +31,12 @@ func TestNewCookbook_WithoutMetadata(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	cb := cookbook.Cookbook{Name: "cats", Version: "1.2.3"}
+	cb := Cookbook{Name: "cats", Version: "1.2.3"}
 	assert.Equal(t, "cats 1.2.3", cb.String())
 }
 
 func TestFiles(t *testing.T) {
-	cb, _ := cookbook.NewCookbook("../testdata")
+	cb, _ := NewCookbook("../testdata")
 	expect := []string{
 		"../testdata/README.md",
 		"../testdata/metadata.rb",
@@ -55,7 +55,7 @@ func TestStrip(t *testing.T) {
 			os.Mkdir(d, 0755)
 		}
 
-		cb, _ := cookbook.NewCookbook(".")
+		cb, _ := NewCookbook(".")
 		assert.NoError(t, cb.Strip())
 
 		expect := []string{

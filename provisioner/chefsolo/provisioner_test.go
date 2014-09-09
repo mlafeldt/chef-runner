@@ -7,7 +7,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
+	. "github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +26,7 @@ func TestCreateSandbox(t *testing.T) {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
 
-		assert.NoError(t, chefsolo.Provisioner{}.CreateSandbox())
+		assert.NoError(t, Provisioner{}.CreateSandbox())
 
 		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
 		assert.NoError(t, err)
@@ -46,7 +46,7 @@ func TestCreateSandbox_CustomJSON(t *testing.T) {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
 
-		p := chefsolo.Provisioner{Attributes: `{"foo": "bar"}`}
+		p := Provisioner{Attributes: `{"foo": "bar"}`}
 		assert.NoError(t, p.CreateSandbox())
 
 		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
@@ -71,17 +71,17 @@ func TestInstallCommand(t *testing.T) {
 		"1.2.3":  []string{`test "$(head -n1 /opt/chef/version-manifest.txt 2>/dev/null | cut -d" " -f2)" = "1.2.3" || sudo sh /tmp/chef-runner/install.sh -v 1.2.3`},
 	}
 	for version, cmd := range tests {
-		p := chefsolo.Provisioner{ChefVersion: version}
+		p := Provisioner{ChefVersion: version}
 		assert.Equal(t, cmd, p.InstallCommand())
 	}
 }
 
 var provisionCommandTests = []struct {
-	provisioner chefsolo.Provisioner
+	provisioner Provisioner
 	cmd         []string
 }{
 	{
-		chefsolo.Provisioner{},
+		Provisioner{},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
 			"--json-attributes", "/tmp/chef-runner/dna.json",
@@ -89,7 +89,7 @@ var provisionCommandTests = []struct {
 		},
 	},
 	{
-		chefsolo.Provisioner{
+		Provisioner{
 			RunList: []string{"cats::foo"},
 		},
 		[]string{
@@ -100,7 +100,7 @@ var provisionCommandTests = []struct {
 		},
 	},
 	{
-		chefsolo.Provisioner{
+		Provisioner{
 			RunList: []string{"cats::foo"},
 			Format:  "null",
 		},
@@ -112,7 +112,7 @@ var provisionCommandTests = []struct {
 		},
 	},
 	{
-		chefsolo.Provisioner{
+		Provisioner{
 			RunList:  []string{"cats::foo"},
 			LogLevel: "error",
 		},
@@ -124,7 +124,7 @@ var provisionCommandTests = []struct {
 		},
 	},
 	{
-		chefsolo.Provisioner{
+		Provisioner{
 			RunList:  []string{"cats::foo", "dogs::bar"},
 			Format:   "min",
 			LogLevel: "warn",
@@ -137,7 +137,7 @@ var provisionCommandTests = []struct {
 		},
 	},
 	{
-		chefsolo.Provisioner{
+		Provisioner{
 			RunList: []string{"cats::foo"},
 			UseSudo: true,
 		},

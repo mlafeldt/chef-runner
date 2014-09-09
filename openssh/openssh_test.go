@@ -3,50 +3,50 @@ package openssh_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/openssh"
+	. "github.com/mlafeldt/chef-runner/openssh"
 	"github.com/stretchr/testify/assert"
 )
 
-var newClientTests = map[string]*openssh.Client{
-	"some-host":                &openssh.Client{Host: "some-host"},
-	"some-user@some-host":      &openssh.Client{Host: "some-host", User: "some-user"},
-	"some-host:1234":           &openssh.Client{Host: "some-host", Port: 1234},
-	"some-user@some-host:1234": &openssh.Client{Host: "some-host", User: "some-user", Port: 1234},
+var newClientTests = map[string]*Client{
+	"some-host":                &Client{Host: "some-host"},
+	"some-user@some-host":      &Client{Host: "some-host", User: "some-user"},
+	"some-host:1234":           &Client{Host: "some-host", Port: 1234},
+	"some-user@some-host:1234": &Client{Host: "some-host", User: "some-user", Port: 1234},
 }
 
 func TestNewClient(t *testing.T) {
 	for host, client := range newClientTests {
-		result, err := openssh.NewClient(host)
+		result, err := NewClient(host)
 		assert.NoError(t, err)
 		assert.Equal(t, client, result)
 	}
 }
 
 func TestNewClient_InvalidPort(t *testing.T) {
-	c, err := openssh.NewClient("some-host:abc")
+	c, err := NewClient("some-host:abc")
 	assert.EqualError(t, err, "invalid SSH port")
 	assert.Nil(t, c)
 }
 
 var commandTests = []struct {
-	client openssh.Client
+	client Client
 	args   []string
 	result []string
 }{
 	{
-		client: openssh.Client{},
+		client: Client{},
 		args:   []string{},
 		result: []string{"ssh"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host: "some-host",
 		},
 		args:   []string{"uname", "-a"},
 		result: []string{"ssh", "some-host", "uname", "-a"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host: "some-host",
 			User: "some-user",
 		},
@@ -54,7 +54,7 @@ var commandTests = []struct {
 		result: []string{"ssh", "-l", "some-user", "some-host", "uname", "-a"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host: "some-host",
 			Port: 1234,
 		},
@@ -62,7 +62,7 @@ var commandTests = []struct {
 		result: []string{"ssh", "-p", "1234", "some-host", "uname", "-a"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host:        "some-host",
 			PrivateKeys: []string{"some-key", "another-key"},
 		},
@@ -71,7 +71,7 @@ var commandTests = []struct {
 			"some-host", "uname", "-a"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host: "some-host",
 			Options: map[string]string{
 				"SomeOption":    "yes",
@@ -83,7 +83,7 @@ var commandTests = []struct {
 			"-o", "SomeOption=yes", "some-host", "uname", "-a"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host:        "some-host",
 			User:        "some-user",
 			Port:        1234,
@@ -96,7 +96,7 @@ var commandTests = []struct {
 			"uname", "-a"},
 	},
 	{
-		client: openssh.Client{
+		client: Client{
 			Host:       "some-host",
 			ConfigFile: "some/config/file",
 		},
@@ -114,16 +114,16 @@ func TestCommand(t *testing.T) {
 }
 
 func TestRunCommand_MissingCommand(t *testing.T) {
-	err := openssh.Client{Host: "some-host"}.RunCommand([]string{})
+	err := Client{Host: "some-host"}.RunCommand([]string{})
 	assert.EqualError(t, err, "no command given")
 }
 
 func TestRunCommand_MissingHost(t *testing.T) {
-	err := openssh.Client{}.RunCommand([]string{"uname", "-a"})
+	err := Client{}.RunCommand([]string{"uname", "-a"})
 	assert.EqualError(t, err, "no host given")
 }
 
 func TestShell(t *testing.T) {
-	c, _ := openssh.NewClient("some-user@some-host:1234")
+	c, _ := NewClient("some-user@some-host:1234")
 	assert.Equal(t, "ssh -l some-user -p 1234", c.Shell())
 }

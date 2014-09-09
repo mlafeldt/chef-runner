@@ -9,7 +9,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/resolver"
+	. "github.com/mlafeldt/chef-runner/resolver"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
@@ -35,7 +35,7 @@ func TestAutoResolve_Berkshelf(t *testing.T) {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, resolver.AutoResolve(CookbookPath))
+		assert.NoError(t, AutoResolve(CookbookPath))
 	})
 
 	assert.Equal(t, []string{"ruby", "-e"}, lastCmd[:2])
@@ -51,7 +51,7 @@ func TestAutoResolve_Librarian(t *testing.T) {
 		ioutil.WriteFile("Cheffile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, resolver.AutoResolve(CookbookPath))
+		assert.NoError(t, AutoResolve(CookbookPath))
 	})
 
 	assert.Equal(t, []string{"librarian-chef", "install", "--path", CookbookPath}, lastCmd)
@@ -63,7 +63,7 @@ func TestAutoResolve_Dir(t *testing.T) {
 	util.InTestDir(func() {
 		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
 
-		assert.NoError(t, resolver.AutoResolve(CookbookPath))
+		assert.NoError(t, AutoResolve(CookbookPath))
 	})
 
 	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
@@ -78,7 +78,7 @@ func TestAutoResolve_DirUpdate(t *testing.T) {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, resolver.AutoResolve(CookbookPath))
+		assert.NoError(t, AutoResolve(CookbookPath))
 	})
 
 	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
@@ -89,7 +89,7 @@ func TestAutoResolve_NoCookbooks(t *testing.T) {
 	lastCmd = []string{}
 
 	util.InTestDir(func() {
-		assert.EqualError(t, resolver.AutoResolve(CookbookPath),
+		assert.EqualError(t, AutoResolve(CookbookPath),
 			"cookbooks could not be found")
 	})
 

@@ -3,88 +3,88 @@ package rsync_test
 import (
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/rsync"
+	. "github.com/mlafeldt/chef-runner/rsync"
 	"github.com/stretchr/testify/assert"
 )
 
 var commandTests = []struct {
-	client    rsync.Client
+	client    Client
 	src       []string
 	dst       string
 	cmd       []string
 	errString string
 }{
 	{
-		client: rsync.Client{},
+		client: Client{},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "a", "b"},
 	},
 	{
-		client: rsync.Client{},
+		client: Client{},
 		src:    []string{"a", "b"},
 		dst:    "c",
 		cmd:    []string{"rsync", "a", "b", "c"},
 	},
 	{
-		client: rsync.Client{Archive: true},
+		client: Client{Archive: true},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--archive", "a", "b"},
 	},
 	{
-		client: rsync.Client{Delete: true},
+		client: Client{Delete: true},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--delete", "a", "b"},
 	},
 	{
-		client: rsync.Client{Compress: true},
+		client: Client{Compress: true},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--compress", "a", "b"},
 	},
 	{
-		client: rsync.Client{Verbose: true},
+		client: Client{Verbose: true},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--verbose", "a", "b"},
 	},
 	{
-		client: rsync.Client{Exclude: []string{"x", "y"}},
+		client: Client{Exclude: []string{"x", "y"}},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--exclude", "x", "--exclude", "y", "a", "b"},
 	},
 	{
-		client: rsync.Client{RemoteShell: "some-shell", RemoteHost: "some-host"},
+		client: Client{RemoteShell: "some-shell", RemoteHost: "some-host"},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--rsh", "some-shell", "a", "some-host:b"},
 	},
 	{
-		client: rsync.Client{Archive: true, Compress: true, Exclude: []string{"x"}},
+		client: Client{Archive: true, Compress: true, Exclude: []string{"x"}},
 		src:    []string{"a"},
 		dst:    "b",
 		cmd:    []string{"rsync", "--archive", "--compress", "--exclude", "x", "a", "b"},
 	},
 	// Check for errors
 	{
-		client:    rsync.Client{},
+		client:    Client{},
 		src:       []string{},
 		dst:       "b",
 		cmd:       nil,
 		errString: "no source given",
 	},
 	{
-		client:    rsync.Client{},
+		client:    Client{},
 		src:       []string{"a"},
 		dst:       "",
 		cmd:       nil,
 		errString: "no destination given",
 	},
 	{
-		client:    rsync.Client{RemoteShell: "some-shell"},
+		client:    Client{RemoteShell: "some-shell"},
 		src:       []string{"a"},
 		dst:       "b",
 		cmd:       nil,

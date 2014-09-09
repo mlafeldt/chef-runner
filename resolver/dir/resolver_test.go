@@ -5,7 +5,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/mlafeldt/chef-runner/resolver/dir"
+	. "github.com/mlafeldt/chef-runner/resolver/dir"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +15,7 @@ func TestResolve(t *testing.T) {
 		cookbookPath := "test-cookbooks"
 		defer os.RemoveAll(cookbookPath)
 
-		assert.NoError(t, dir.Resolver{}.Resolve(cookbookPath))
+		assert.NoError(t, Resolver{}.Resolve(cookbookPath))
 
 		expectFiles := []string{
 			"practicingruby/README.md",
