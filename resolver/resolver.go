@@ -55,6 +55,9 @@ func stripCookbooks(dst string) error {
 	}
 
 	for _, dir := range cookbookDirs {
+		if !dir.IsDir() {
+			continue
+		}
 		cb := cookbook.Cookbook{Path: path.Join(dst, dir.Name())}
 		if err := cb.Strip(); err != nil {
 			return err
