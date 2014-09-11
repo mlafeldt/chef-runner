@@ -9,4 +9,5 @@ pkg=${1:-./...}
 go get -v -t \
     "$pkg" \
     code.google.com/p/go.tools/cmd/cover \
+    github.com/golang/lint/golint \
     github.com/mattn/goveralls

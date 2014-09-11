@@ -4,8 +4,6 @@
 
 set -e
 
-go get github.com/golang/lint/golint
-
 output=$(golint .)
 if test -n "$output"; then
     echo "$output"
