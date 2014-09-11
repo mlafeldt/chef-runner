@@ -8,4 +8,5 @@ pkg=${1:-./...}
 
 go get -v -t \
     "$pkg" \
-    code.google.com/p/go.tools/cmd/cover
+    code.google.com/p/go.tools/cmd/cover \
+    github.com/mattn/goveralls

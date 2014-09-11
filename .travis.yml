@@ -11,7 +11,13 @@ script:
   - PATH="$HOME/gopath/bin:$PATH"
   - script/test
   - script/lint
+  - script/coverage --coveralls
 
 branches:
   only:
     - master
+
+env:
+  global:
+    # Coveralls token
+    secure: cDwYA4AxTyjt+76izJ/z4cDAbu/IAbVC8ZYyrCDOJ538V8s9INGe042DJLmFSpH2A/vg6RRuqQ0PjHdWip/KLlmCVwhjMZ5+SGINqMJhfGWEqCu59vnhgtzIhzZIMgrJwhfc0qsTL/KWiNr48PeeSWCie3iRrXGi8Ony4SOx9NQ=
