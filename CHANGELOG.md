@@ -12,7 +12,7 @@
 * Report overall duration when chef-runner is done.
 * Extend `script/build` to auto-generate chef-runner's [Homebrew formula] when
   building a new release with `--release`.
-* Extend `script/coverage` to push code coverage statistics from Travis CI to
+* Extend `script/coverage` to push test coverage statistics from Travis CI to
   [Coveralls].
 
 [Homebrew formula]: https://github.com/mlafeldt/homebrew-formulas/blob/master/Formula/chef-runner.rb
