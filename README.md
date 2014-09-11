@@ -131,23 +131,21 @@ chef-runner is a simple command-line tool that has a couple of options:
 ```
 Usage: chef-runner [options] [--] [<recipe>...]
 
-    -h, --help                   Show help text
-    --version                    Show program version
+  -H, --host <name>            Name of host reachable over SSH
+  -M, --machine <name>         Name or UUID of Vagrant virtual machine
+  -K, --kitchen <name>         Set name of Test Kitchen instance
 
-    -H, --host <name>            Set hostname for direct SSH access
-    -M, --machine <name>         Set name/UUID of Vagrant virtual machine
-    -K, --kitchen <name>         Set name of Test Kitchen instance
+  -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
+                               default: false
 
-    -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
-                                 default: false
+  -F, --format <format>        Chef output format (null, doc, minimal, min)
+                               default: doc
+  -l, --log_level <level>      Chef log level (debug, info, warn, error, fatal)
+                               default: info
+  -j, --json-attributes <file> Load attributes from a JSON file
 
-Options that will be passed to Chef Solo:
-
-    -F, --format <format>        Set output format (null, doc, minimal, min)
-                                 default: doc
-    -l, --log_level <level>      Set log level (debug, info, warn, error, fatal)
-                                 default: info
-    -j, --json-attributes <file> Load attributes from a JSON file
+  -h, --help                   Show help text
+  --version                    Show program version
 ```
 
 ### Running Chef Recipes
