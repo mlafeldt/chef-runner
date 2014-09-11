@@ -5,10 +5,15 @@ import (
 	"path"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/resolver"
 	. "github.com/mlafeldt/chef-runner/resolver/dir"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestResolverInterface(t *testing.T) {
+	assert.Implements(t, (*resolver.Resolver)(nil), new(Resolver))
+}
 
 func TestResolve(t *testing.T) {
 	util.InDir("../../testdata", func() {

@@ -4,9 +4,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/resolver"
 	. "github.com/mlafeldt/chef-runner/resolver/berkshelf"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestResolverInterface(t *testing.T) {
+	assert.Implements(t, (*resolver.Resolver)(nil), new(Resolver))
+}
 
 func TestCommand(t *testing.T) {
 	cmd := Command("a/b/c")

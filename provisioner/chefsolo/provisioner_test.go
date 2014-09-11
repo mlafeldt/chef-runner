@@ -7,6 +7,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/exec"
 	"github.com/mlafeldt/chef-runner/log"
+	"github.com/mlafeldt/chef-runner/provisioner"
 	. "github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
@@ -18,6 +19,10 @@ func init() {
 
 	// Be quiet during testing
 	log.SetLevel(log.LevelWarn)
+}
+
+func TestProvisionerInterface(t *testing.T) {
+	assert.Implements(t, (*provisioner.Provisioner)(nil), new(Provisioner))
 }
 
 // Note: Setup of cookbook dependencies is tested in the resolver package.
