@@ -1,7 +1,12 @@
-## v0.7.0 (unreleased)
+## v0.7.0 (Sep 12 2014)
+
+FEATURES:
 
 * Add ability to provision Test Kitchen instances that are reachable over SSH.
   For this, specify the name of a running instance using `-K` (or `--kitchen`).
+
+IMPROVEMENTS:
+
 * Use run list from JSON file if it contains the `run_list` attribute. Recipes
   passed on the command line will still override this list, and
   `recipes/default.rb` is still the default. (Thanks to @arosenhagen who
