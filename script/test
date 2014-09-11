@@ -24,4 +24,4 @@ else
 fi
 
 script/bootstrap "$pkg"
-go test -cover $verbose "$pkg"
+go test $verbose "$pkg"
