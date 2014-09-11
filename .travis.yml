@@ -11,6 +11,7 @@ script:
   - PATH="$HOME/gopath/bin:$PATH"
   - script/test
   - script/lint
+  - script/coverage --coveralls
 
 branches:
   only:
