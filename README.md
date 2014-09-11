@@ -51,6 +51,11 @@ Provision any Vagrant machine by specifying the machine's UUID:
 
     $ chef-runner -M a748337 ...
 
+Use chef-runner for local cookbook development with Test Kitchen:
+
+    $ kitchen converge default-ubuntu-1404
+    $ chef-runner -K default-ubuntu-1404 ...
+
 Use chef-runner as a general purpose Chef provisioner for any system reachable
 over SSH:
 
@@ -130,6 +135,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
 
     -H, --host <name>            Set hostname for direct SSH access
     -M, --machine <name>         Set name/UUID of Vagrant virtual machine
+    -K, --kitchen <name>         Set name of Test Kitchen instance
 
     -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                  default: false
@@ -218,8 +224,20 @@ Then simply pass the UUID of the machine you want to use to chef-runner:
 
     $ chef-runner -M a748337 ...
 
-Among other things, this allows you to provision Vagrant machines managed by
-[Test Kitchen].
+### Test Kitchen
+
+chef-runner is able to provision [Test Kitchen] instances that are reachable
+over SSH.
+
+To get a list of all instances, run `kitchen list` inside a directory with a
+`.kitchen.yml` file. Then either use `kitchen create`, `kitchen converge`, or
+`kitchen verify` to bring up the instance you want to use. Finally, pass the
+name of that instance to chef-runner via `-K` (or `--kitchen`).
+
+Example:
+
+    $ kitchen converge default-ubuntu-1404
+    $ chef-runner -K default-ubuntu-1404 ...
 
 ### SSH
 

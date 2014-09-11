@@ -14,6 +14,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
 
     -H, --host <name>            Set hostname for direct SSH access
     -M, --machine <name>         Set name/UUID of Vagrant virtual machine
+    -K, --kitchen <name>         Set name of Test Kitchen instance
 
     -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                  default: false
@@ -29,8 +30,10 @@ Options that will be passed to Chef Solo:
 
 // Flags stores the options and arguments passed on the command line.
 type Flags struct {
-	Host        string
-	Machine     string
+	Host    string
+	Machine string
+	Kitchen string
+
 	Format      string
 	LogLevel    string
 	JSONFile    string
@@ -54,6 +57,9 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	f.StringVar(&flags.Machine, "M", "", "")
 	f.StringVar(&flags.Machine, "machine", "", "")
+
+	f.StringVar(&flags.Kitchen, "K", "", "")
+	f.StringVar(&flags.Kitchen, "kitchen", "", "")
 
 	f.StringVar(&flags.Format, "F", "", "")
 	f.StringVar(&flags.Format, "format", "", "")

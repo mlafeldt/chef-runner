@@ -11,6 +11,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/cookbook"
 	"github.com/mlafeldt/chef-runner/driver"
+	"github.com/mlafeldt/chef-runner/driver/kitchen"
 	"github.com/mlafeldt/chef-runner/driver/ssh"
 	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
@@ -40,6 +41,16 @@ func logLevel() log.Level {
 func abort(v ...interface{}) {
 	log.Error(v...)
 	os.Exit(1)
+}
+
+func findDriver(flags *Flags) (driver.Driver, error) {
+	if flags.Host != "" {
+		return ssh.NewDriver(flags.Host)
+	}
+	if flags.Kitchen != "" {
+		return kitchen.NewDriver(flags.Kitchen)
+	}
+	return vagrant.NewDriver(flags.Machine)
 }
 
 func buildRunList(cookbookName string, recipes []string) ([]string, error) {
@@ -155,12 +166,7 @@ func main() {
 		abort(err)
 	}
 
-	var drv driver.Driver
-	if flags.Host != "" {
-		drv, err = ssh.NewDriver(flags.Host)
-	} else {
-		drv, err = vagrant.NewDriver(flags.Machine)
-	}
+	drv, err := findDriver(flags)
 	if err != nil {
 		abort(err)
 	}
