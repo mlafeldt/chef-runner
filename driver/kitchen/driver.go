@@ -17,9 +17,9 @@ import (
 
 // Driver is a driver based on Test Kitchen.
 type Driver struct {
-	instance    string
-	sshClient   *openssh.Client
-	rsyncClient *rsync.Client
+	Instance    string
+	SSHClient   *openssh.Client
+	RsyncClient *rsync.Client
 }
 
 type instanceConfig struct {
@@ -101,15 +101,15 @@ func NewDriver(instance string) (*Driver, error) {
 
 // RunCommand runs the specified command on the Test Kitchen instance.
 func (drv Driver) RunCommand(args []string) error {
-	return drv.sshClient.RunCommand(args)
+	return drv.SSHClient.RunCommand(args)
 }
 
 // Upload copies files to the Test Kitchen instance.
 func (drv Driver) Upload(dst string, src ...string) error {
-	return drv.rsyncClient.Copy(dst, src...)
+	return drv.RsyncClient.Copy(dst, src...)
 }
 
 // String returns the driver's name.
 func (drv Driver) String() string {
-	return fmt.Sprintf("Test Kitchen driver (instance: %s)", drv.instance)
+	return fmt.Sprintf("Test Kitchen driver (instance: %s)", drv.Instance)
 }
