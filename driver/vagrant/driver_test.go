@@ -2,6 +2,7 @@ package vagrant_test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/driver"
@@ -23,7 +24,8 @@ func TestDriverInterface(t *testing.T) {
 func TestNewDriver(t *testing.T) {
 	util.InDir("../../testdata", func() {
 		oldPath := os.Getenv("PATH")
-		os.Setenv("PATH", "./bin:/usr/bin:/bin")
+		os.Setenv("PATH", strings.Join([]string{"bin", oldPath},
+			string(os.PathListSeparator)))
 		defer os.Setenv("PATH", oldPath)
 
 		drv, err := NewDriver("some-machine")
