@@ -70,10 +70,10 @@ func TestCreateSandbox_CustomJSON(t *testing.T) {
 func TestInstallCommand(t *testing.T) {
 	tests := map[string][]string{
 		"":       []string{},
-		"latest": []string{`sudo sh /tmp/chef-runner/install.sh`},
-		"true":   []string{`test -f /opt/chef/version-manifest.txt || sudo sh /tmp/chef-runner/install.sh`},
 		"false":  []string{},
-		"1.2.3":  []string{`test "$(head -n1 /opt/chef/version-manifest.txt 2>/dev/null | cut -d" " -f2)" = "1.2.3" || sudo sh /tmp/chef-runner/install.sh -v 1.2.3`},
+		"latest": []string{"sudo", "sh", "/tmp/chef-runner/install-wrapper.sh", "/tmp/chef-runner/install.sh", "latest"},
+		"true":   []string{"sudo", "sh", "/tmp/chef-runner/install-wrapper.sh", "/tmp/chef-runner/install.sh", "true"},
+		"1.2.3":  []string{"sudo", "sh", "/tmp/chef-runner/install-wrapper.sh", "/tmp/chef-runner/install.sh", "1.2.3"},
 	}
 	for version, cmd := range tests {
 		p := Provisioner{ChefVersion: version}

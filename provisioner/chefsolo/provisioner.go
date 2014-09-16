@@ -57,20 +57,27 @@ func (p Provisioner) prepareCookbooks() error {
 	return resolver.AutoResolve(CookbookPath)
 }
 
-func (p Provisioner) downloadOmnibusScript() error {
+func (p Provisioner) prepareInstallScripts() error {
+	log.Debug("Preparing install scripts")
+
 	if len(p.InstallCommand()) == 0 {
-		log.Debug("Skipping download of Omnibus script")
 		return nil
 	}
 
-	script := base.SandboxPathTo("install.sh")
-	if util.FileExist(script) {
-		log.Debugf("Omnibus script already downloaded to %s\n", script)
+	wrapperScript := base.SandboxPathTo("install-wrapper.sh")
+	log.Debugf("Writing install wrapper script to %s\n", wrapperScript)
+	if err := ioutil.WriteFile(wrapperScript, []byte(installWrapper), 0644); err != nil {
+		return err
+	}
+
+	omnibusScript := base.SandboxPathTo("install.sh")
+	if util.FileExist(omnibusScript) {
+		log.Debugf("Omnibus script already downloaded to %s\n", omnibusScript)
 		return nil
 	}
 
-	log.Debugf("Downloading Omnibus script to %s\n", script)
-	return util.DownloadFile(script, OmnibusScriptURL)
+	log.Debugf("Downloading Omnibus script to %s\n", omnibusScript)
+	return util.DownloadFile(omnibusScript, OmnibusScriptURL)
 }
 
 // CreateSandbox creates the sandbox directory. This includes preparing Chef
@@ -81,7 +88,7 @@ func (p Provisioner) CreateSandbox() error {
 		p.prepareJSON,
 		p.prepareSoloConfig,
 		p.prepareCookbooks,
-		p.downloadOmnibusScript,
+		p.prepareInstallScripts,
 	}
 	for _, f := range funcs {
 		if err := f(); err != nil {
@@ -99,27 +106,17 @@ func (p Provisioner) CleanupSandbox() error {
 // InstallCommand returns the command string to conditionally install a Chef
 // Omnibus package onto a machine.
 func (p Provisioner) InstallCommand() []string {
-	versionFile := "/opt/chef/version-manifest.txt"
-	installCmd := fmt.Sprintf(`sudo sh %s`, base.RootPathTo("install.sh"))
-
 	switch p.ChefVersion {
 	case "", "false":
-		// Do nothing
 		return []string{}
-	case "latest":
-		// Always install latest version of Chef
-		return []string{installCmd}
-	case "true":
-		// Only install Chef if not already installed
-		checkCmd := fmt.Sprintf(`test -f %s ||`, versionFile)
-		cmd := strings.Join([]string{checkCmd, installCmd}, " ")
-		return []string{cmd}
 	default:
-		// Install specific Chef version if that version is not already installed
-		checkCmd := fmt.Sprintf(`test "$(head -n1 %s 2>/dev/null | cut -d" " -f2)" = "%s" ||`,
-			versionFile, p.ChefVersion)
-		cmd := strings.Join([]string{checkCmd, installCmd, "-v", p.ChefVersion}, " ")
-		return []string{cmd}
+		return []string{
+			"sudo",
+			"sh",
+			base.RootPathTo("install-wrapper.sh"),
+			base.RootPathTo("install.sh"),
+			p.ChefVersion,
+		}
 	}
 }
 
