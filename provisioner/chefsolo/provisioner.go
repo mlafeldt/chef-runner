@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/mlafeldt/chef-runner/log"
+	"github.com/mlafeldt/chef-runner/omnibus"
 	base "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver"
-	"github.com/mlafeldt/chef-runner/util"
 )
 
 const (
@@ -18,9 +18,6 @@ const (
 
 	// DefaultLogLevel is the default log level of Chef.
 	DefaultLogLevel = "info"
-
-	// OmnibusScriptURL is the URL of the Omnibus install script.
-	OmnibusScriptURL = "https://www.opscode.com/chef/install.sh"
 )
 
 // CookbookPath is the path to the sandbox directory where cookbooks are stored.
@@ -58,26 +55,11 @@ func (p Provisioner) prepareCookbooks() error {
 }
 
 func (p Provisioner) prepareInstallScripts() error {
-	log.Debug("Preparing install scripts")
-
-	if len(p.InstallCommand()) == 0 {
-		return nil
+	i := omnibus.Installer{
+		ChefVersion: p.ChefVersion,
+		ScriptPath:  base.SandboxPath,
 	}
-
-	wrapperScript := base.SandboxPathTo("install-wrapper.sh")
-	log.Debugf("Writing install wrapper script to %s\n", wrapperScript)
-	if err := ioutil.WriteFile(wrapperScript, []byte(installWrapper), 0644); err != nil {
-		return err
-	}
-
-	omnibusScript := base.SandboxPathTo("install.sh")
-	if util.FileExist(omnibusScript) {
-		log.Debugf("Omnibus script already downloaded to %s\n", omnibusScript)
-		return nil
-	}
-
-	log.Debugf("Downloading Omnibus script to %s\n", omnibusScript)
-	return util.DownloadFile(omnibusScript, OmnibusScriptURL)
+	return i.PrepareScripts()
 }
 
 // CreateSandbox creates the sandbox directory. This includes preparing Chef
@@ -103,21 +85,14 @@ func (p Provisioner) CleanupSandbox() error {
 	return base.CleanupSandbox()
 }
 
-// InstallCommand returns the command string to conditionally install a Chef
-// Omnibus package onto a machine.
+// InstallCommand returns the command string to conditionally install Chef onto
+// a machine.
 func (p Provisioner) InstallCommand() []string {
-	switch p.ChefVersion {
-	case "", "false":
-		return []string{}
-	default:
-		return []string{
-			"sudo",
-			"sh",
-			base.RootPathTo("install-wrapper.sh"),
-			base.RootPathTo("install.sh"),
-			p.ChefVersion,
-		}
+	i := omnibus.Installer{
+		ChefVersion: p.ChefVersion,
+		ScriptPath:  base.RootPath,
 	}
+	return i.Command()
 }
 
 func (p Provisioner) sudo(args []string) []string {

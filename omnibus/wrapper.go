@@ -1,6 +1,9 @@
-package chefsolo
+// vi: set ft=sh :
 
-var installWrapper = `#!/bin/sh
+package omnibus
+
+// A smart wrapper around Omnibus Installer
+var wrapperScript = `#!/bin/sh
 
 set -e
 

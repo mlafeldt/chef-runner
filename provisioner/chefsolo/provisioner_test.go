@@ -67,20 +67,6 @@ func TestCreateSandbox_CustomJSON(t *testing.T) {
 	})
 }
 
-func TestInstallCommand(t *testing.T) {
-	tests := map[string][]string{
-		"":       []string{},
-		"false":  []string{},
-		"latest": []string{"sudo", "sh", "/tmp/chef-runner/install-wrapper.sh", "/tmp/chef-runner/install.sh", "latest"},
-		"true":   []string{"sudo", "sh", "/tmp/chef-runner/install-wrapper.sh", "/tmp/chef-runner/install.sh", "true"},
-		"1.2.3":  []string{"sudo", "sh", "/tmp/chef-runner/install-wrapper.sh", "/tmp/chef-runner/install.sh", "1.2.3"},
-	}
-	for version, cmd := range tests {
-		p := Provisioner{ChefVersion: version}
-		assert.Equal(t, cmd, p.InstallCommand())
-	}
-}
-
 var provisionCommandTests = []struct {
 	provisioner Provisioner
 	cmd         []string
