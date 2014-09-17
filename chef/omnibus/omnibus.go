@@ -11,7 +11,7 @@ import (
 )
 
 // ScriptURL is the URL of the Omnibus install script.
-const ScriptURL = "https://www.opscode.com/chef/install.sh"
+var ScriptURL = "https://www.opscode.com/chef/install.sh"
 
 // An Installer allows to install Chef.
 type Installer struct {
@@ -40,7 +40,7 @@ func (i Installer) downloadOmnibusScript() error {
 		log.Debugf("Omnibus script already downloaded to %s\n", script)
 		return nil
 	}
-	log.Debugf("Downloading Omnibus script to %s\n", script)
+	log.Debugf("Downloading Omnibus script from %s to %s\n", ScriptURL, script)
 	return util.DownloadFile(script, ScriptURL)
 }
 
