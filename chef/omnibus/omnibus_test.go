@@ -3,7 +3,7 @@ package omnibus_test
 import (
 	"testing"
 
-	. "github.com/mlafeldt/chef-runner/omnibus"
+	. "github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/stretchr/testify/assert"
 )
 

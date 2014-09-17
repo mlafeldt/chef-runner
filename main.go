@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/chef/cookbook"
 	"github.com/mlafeldt/chef-runner/driver"
 	"github.com/mlafeldt/chef-runner/driver/kitchen"
 	"github.com/mlafeldt/chef-runner/driver/ssh"

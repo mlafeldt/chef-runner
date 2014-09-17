@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/omnibus"
 	base "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver"
 )
