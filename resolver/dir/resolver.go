@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/mlafeldt/chef-runner/cookbook"
+	"github.com/mlafeldt/chef-runner/chef/cookbook"
 	"github.com/mlafeldt/chef-runner/rsync"
 )
 

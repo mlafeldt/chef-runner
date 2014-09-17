@@ -1,3 +1,13 @@
+## v0.8.0 (unreleased)
+
+IMPROVEMENTS:
+
+* Install Chef using a smart shell wrapper around Omnibus Installer instead of
+  running complicated shell commands over SSH. Move installer logic from Chef
+  Solo provisioner to new [omnibus package].
+
+[omnibus package]: https://godoc.org/github.com/mlafeldt/chef-runner/chef/omnibus
+
 ## v0.7.0 (Sep 12 2014)
 
 FEATURES:

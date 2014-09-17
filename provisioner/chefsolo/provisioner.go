@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/log"
 	base "github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/resolver"
-	"github.com/mlafeldt/chef-runner/util"
 )
 
 const (
@@ -18,9 +18,6 @@ const (
 
 	// DefaultLogLevel is the default log level of Chef.
 	DefaultLogLevel = "info"
-
-	// OmnibusScriptURL is the URL of the Omnibus install script.
-	OmnibusScriptURL = "https://www.opscode.com/chef/install.sh"
 )
 
 // CookbookPath is the path to the sandbox directory where cookbooks are stored.
@@ -57,20 +54,12 @@ func (p Provisioner) prepareCookbooks() error {
 	return resolver.AutoResolve(CookbookPath)
 }
 
-func (p Provisioner) downloadOmnibusScript() error {
-	if len(p.InstallCommand()) == 0 {
-		log.Debug("Skipping download of Omnibus script")
-		return nil
+func (p Provisioner) prepareInstallScripts() error {
+	i := omnibus.Installer{
+		ChefVersion: p.ChefVersion,
+		ScriptPath:  base.SandboxPath,
 	}
-
-	script := base.SandboxPathTo("install.sh")
-	if util.FileExist(script) {
-		log.Debugf("Omnibus script already downloaded to %s\n", script)
-		return nil
-	}
-
-	log.Debugf("Downloading Omnibus script to %s\n", script)
-	return util.DownloadFile(script, OmnibusScriptURL)
+	return i.PrepareScripts()
 }
 
 // CreateSandbox creates the sandbox directory. This includes preparing Chef
@@ -81,7 +70,7 @@ func (p Provisioner) CreateSandbox() error {
 		p.prepareJSON,
 		p.prepareSoloConfig,
 		p.prepareCookbooks,
-		p.downloadOmnibusScript,
+		p.prepareInstallScripts,
 	}
 	for _, f := range funcs {
 		if err := f(); err != nil {
@@ -96,31 +85,14 @@ func (p Provisioner) CleanupSandbox() error {
 	return base.CleanupSandbox()
 }
 
-// InstallCommand returns the command string to conditionally install a Chef
-// Omnibus package onto a machine.
+// InstallCommand returns the command string to conditionally install Chef onto
+// a machine.
 func (p Provisioner) InstallCommand() []string {
-	versionFile := "/opt/chef/version-manifest.txt"
-	installCmd := fmt.Sprintf(`sudo sh %s`, base.RootPathTo("install.sh"))
-
-	switch p.ChefVersion {
-	case "", "false":
-		// Do nothing
-		return []string{}
-	case "latest":
-		// Always install latest version of Chef
-		return []string{installCmd}
-	case "true":
-		// Only install Chef if not already installed
-		checkCmd := fmt.Sprintf(`test -f %s ||`, versionFile)
-		cmd := strings.Join([]string{checkCmd, installCmd}, " ")
-		return []string{cmd}
-	default:
-		// Install specific Chef version if that version is not already installed
-		checkCmd := fmt.Sprintf(`test "$(head -n1 %s 2>/dev/null | cut -d" " -f2)" = "%s" ||`,
-			versionFile, p.ChefVersion)
-		cmd := strings.Join([]string{checkCmd, installCmd, "-v", p.ChefVersion}, " ")
-		return []string{cmd}
+	i := omnibus.Installer{
+		ChefVersion: p.ChefVersion,
+		ScriptPath:  base.RootPath,
 	}
+	return i.Command()
 }
 
 func (p Provisioner) sudo(args []string) []string {

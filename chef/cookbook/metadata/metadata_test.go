@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	. "github.com/mlafeldt/chef-runner/cookbook/metadata"
+	. "github.com/mlafeldt/chef-runner/chef/cookbook/metadata"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,7 +37,7 @@ version    "2.0.0"`, "dogs", "2.0.0"},
 }
 
 func TestParseFile(t *testing.T) {
-	metadata, err := ParseFile("../../testdata/metadata.rb")
+	metadata, err := ParseFile("../../../testdata/metadata.rb")
 	assert.NoError(t, err)
 	if assert.NotNil(t, metadata) {
 		assert.Equal(t, "practicingruby", metadata.Name)

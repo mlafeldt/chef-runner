@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/mlafeldt/chef-runner/cookbook/metadata"
+	"github.com/mlafeldt/chef-runner/chef/cookbook/metadata"
 	"github.com/mlafeldt/chef-runner/util"
 )
 
