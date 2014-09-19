@@ -2,9 +2,7 @@
 # Run golint style checks and exit with a proper status code.
 # Usage: script/lint
 
-set -e
-
-output=$(golint .)
+output=$(go list ./... | xargs -n1 golint)
 if test -n "$output"; then
     echo "$output"
     exit 1
