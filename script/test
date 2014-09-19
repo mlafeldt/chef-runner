@@ -23,5 +23,4 @@ else
     verbose=
 fi
 
-script/bootstrap "$pkg"
-go test $verbose "$pkg"
+exec go test $verbose "$pkg"

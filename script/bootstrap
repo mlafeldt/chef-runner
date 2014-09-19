@@ -1,13 +1,9 @@
 #!/bin/sh
 # Download and install Go dependencies.
-# Usage: script/bootstrap [package]
+# Usage: script/bootstrap
 
-set -e
-
-pkg=${1:-./...}
-
-go get -v -t \
-    "$pkg" \
+exec go get -v -t \
+    ./... \
     code.google.com/p/go.tools/cmd/cover \
     github.com/golang/lint/golint \
     github.com/mattn/goveralls
