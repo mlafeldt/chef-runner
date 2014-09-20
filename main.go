@@ -53,7 +53,7 @@ func findDriver(flags *Flags) (driver.Driver, error) {
 	return vagrant.NewDriver(flags.Machine)
 }
 
-func buildRunList(cookbook string, recipes []string) ([]string, error) {
+func buildRunList(recipes []string, cookbook string) ([]string, error) {
 	runList := []string{}
 	for _, r := range recipes {
 		var recipe string
@@ -149,7 +149,7 @@ func main() {
 		}
 		log.Debugf("Cookbook = %s\n", cb)
 
-		if runList, err = buildRunList(cb.Name, recipes); err != nil {
+		if runList, err = buildRunList(recipes, cb.Name); err != nil {
 			abort(err)
 		}
 		log.Infof("Run list is %s\n", runList)

@@ -30,62 +30,62 @@ func TestLogLevel(t *testing.T) {
 
 func TestBuildRunList(t *testing.T) {
 	tests := []struct {
-		cookbookName string
-		recipes      []string
-		runList      []string
-		errString    string
+		cookbook  string
+		recipes   []string
+		runList   []string
+		errString string
 	}{
 		{
-			cookbookName: "cats",
-			recipes:      []string{},
-			runList:      []string{},
+			cookbook: "cats",
+			recipes:  []string{},
+			runList:  []string{},
 		},
 		{
-			cookbookName: "cats",
-			recipes:      []string{"::foo"},
-			runList:      []string{"cats::foo"},
+			cookbook: "cats",
+			recipes:  []string{"::foo"},
+			runList:  []string{"cats::foo"},
 		},
 		{
-			cookbookName: "cats",
-			recipes:      []string{"recipes/foo.rb"},
-			runList:      []string{"cats::foo"},
+			cookbook: "cats",
+			recipes:  []string{"recipes/foo.rb"},
+			runList:  []string{"cats::foo"},
 		},
 		{
-			cookbookName: "cats",
-			recipes:      []string{"./recipes//foo.rb"},
-			runList:      []string{"cats::foo"},
+			cookbook: "cats",
+			recipes:  []string{"./recipes//foo.rb"},
+			runList:  []string{"cats::foo"},
 		},
 		{
-			cookbookName: "",
-			recipes:      []string{"dogs::bar"},
-			runList:      []string{"dogs::bar"},
+			cookbook: "",
+			recipes:  []string{"dogs::bar"},
+			runList:  []string{"dogs::bar"},
 		},
 		{
-			cookbookName: "",
-			recipes:      []string{"dogs"},
-			runList:      []string{"dogs::default"},
+			cookbook: "",
+			recipes:  []string{"dogs"},
+			runList:  []string{"dogs::default"},
 		},
 		{
-			cookbookName: "cats",
-			recipes:      []string{"recipes/foo.rb", "::bar", "dogs::baz"},
-			runList:      []string{"cats::foo", "cats::bar", "dogs::baz"},
+			cookbook: "cats",
+			recipes:  []string{"recipes/foo.rb", "::bar", "dogs::baz"},
+			runList:  []string{"cats::foo", "cats::bar", "dogs::baz"},
 		},
 		// Check for errors
 		{
-			cookbookName: "",
-			recipes:      []string{"::foo"},
-			runList:      nil,
-			errString:    "cookbook name required",
+			cookbook:  "",
+			recipes:   []string{"::foo"},
+			runList:   nil,
+			errString: "cookbook name required",
 		},
 		{
-			cookbookName: "",
-			recipes:      []string{"recipes/foo.rb"},
-			runList:      nil,
-			errString:    "cookbook name required",
+			cookbook:  "",
+			recipes:   []string{"recipes/foo.rb"},
+			runList:   nil,
+			errString: "cookbook name required",
 		},
 	}
 	for _, test := range tests {
-		runList, err := buildRunList(test.cookbookName, test.recipes)
+		runList, err := buildRunList(test.recipes, test.cookbook)
 		if test.errString == "" {
 			assert.NoError(t, err)
 		} else {
