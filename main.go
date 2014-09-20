@@ -53,24 +53,29 @@ func findDriver(flags *Flags) (driver.Driver, error) {
 	return vagrant.NewDriver(flags.Machine)
 }
 
-func buildRunList(cookbookName string, recipes []string) ([]string, error) {
+func buildRunList(recipes []string, cookbook string) ([]string, error) {
 	runList := []string{}
 	for _, r := range recipes {
-		var recipeName string
-		if strings.Contains(r, "::") {
-			recipeName = r
-		} else {
-			if cookbookName == "" {
-				log.Errorf("cannot add recipe `%s` to run list\n", r)
+		var recipe string
+		if strings.HasPrefix(r, "::") {
+			if cookbook == "" {
+				log.Errorf("cannot add local recipe \"%s\" to run list\n",
+					strings.TrimPrefix(r, "::"))
 				return nil, errors.New("cookbook name required")
 			}
-			if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
-				recipeName = cookbookName + "::" + util.BaseName(r, ".rb")
-			} else {
-				recipeName = cookbookName + "::" + r
+			recipe = cookbook + r
+		} else if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
+			if cookbook == "" {
+				log.Errorf("cannot add local recipe \"%s\" to run list\n", r)
+				return nil, errors.New("cookbook name required")
 			}
+			recipe = cookbook + "::" + util.BaseName(r, ".rb")
+		} else if strings.Contains(r, "::") {
+			recipe = r
+		} else {
+			recipe = r + "::default"
 		}
-		runList = append(runList, recipeName)
+		runList = append(runList, recipe)
 	}
 	return runList, nil
 }
@@ -132,7 +137,7 @@ func main() {
 		if strings.Contains(attributes, "run_list") {
 			log.Infof("Using run list from %s\n", flags.JSONFile)
 		} else {
-			recipes = []string{"default"}
+			recipes = []string{"::default"}
 		}
 	}
 
@@ -144,7 +149,7 @@ func main() {
 		}
 		log.Debugf("Cookbook = %s\n", cb)
 
-		if runList, err = buildRunList(cb.Name, recipes); err != nil {
+		if runList, err = buildRunList(recipes, cb.Name); err != nil {
 			abort(err)
 		}
 		log.Infof("Run list is %s\n", runList)
