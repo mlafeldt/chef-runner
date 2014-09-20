@@ -42,6 +42,11 @@ func TestBuildRunList(t *testing.T) {
 		},
 		{
 			cookbookName: "cats",
+			recipes:      []string{"::foo"},
+			runList:      []string{"cats::foo"},
+		},
+		{
+			cookbookName: "cats",
 			recipes:      []string{"recipes/foo.rb"},
 			runList:      []string{"cats::foo"},
 		},
@@ -51,24 +56,24 @@ func TestBuildRunList(t *testing.T) {
 			runList:      []string{"cats::foo"},
 		},
 		{
-			cookbookName: "cats",
-			recipes:      []string{"foo"},
-			runList:      []string{"cats::foo"},
-		},
-		{
 			cookbookName: "",
 			recipes:      []string{"dogs::bar"},
 			runList:      []string{"dogs::bar"},
 		},
 		{
+			cookbookName: "",
+			recipes:      []string{"dogs"},
+			runList:      []string{"dogs::default"},
+		},
+		{
 			cookbookName: "cats",
-			recipes:      []string{"recipes/foo.rb", "bar", "dogs::baz"},
+			recipes:      []string{"recipes/foo.rb", "::bar", "dogs::baz"},
 			runList:      []string{"cats::foo", "cats::bar", "dogs::baz"},
 		},
 		// Check for errors
 		{
 			cookbookName: "",
-			recipes:      []string{"foo"},
+			recipes:      []string{"::foo"},
 			runList:      nil,
 			errString:    "cookbook name required",
 		},

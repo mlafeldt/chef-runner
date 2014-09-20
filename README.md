@@ -40,7 +40,7 @@ Use chef-runner for local cookbook development with Vagrant:
 Compose Chef run list using flexible recipe syntax:
 
     $ chef-runner recipes/foo.rb
-    $ chef-runner foo # same as above
+    $ chef-runner ::foo # same as above
     $ chef-runner dogs::bar
     $ chef-runner recipes/foo.rb bar dogs::baz # will run recipes in given order
 
@@ -154,7 +154,7 @@ chef-runner executes one or more recipes you pass on the command line, in the
 exact order given. The tool has a flexible recipe syntax allowing you to compose
 your run list in multiple ways.
 
-1) Run default recipe when passing no arguments:
+1) Run local default recipe when passing no arguments:
 
     $ chef-runner
 
@@ -164,19 +164,20 @@ your run list in multiple ways.
 
 3) Run local recipe when passing recipe name:
 
-    $ chef-runner foo
+    $ chef-runner ::foo
 
-4) Run external recipe when passing `cookbook::recipe`:
+4) Run any recipe when passing cookbook name plus recipe name:
 
     $ chef-runner dogs::bar
+    $ chef-runner dogs # same as dogs::default
 
 5) Run multiple recipes (of mixed type) in order given:
 
     $ chef-runner recipes/foo.rb bar dogs::baz
 
-**Note: When defining recipes in a format other than `cookbook::recipe`, you
-must be inside a cookbook directory with a `metadata.rb` file for chef-runner to
-know the cookbook's name.**
+**Note: When defining recipes in a format other than 4), you must be inside a
+cookbook directory with a `metadata.rb` file for chef-runner to know the
+cookbook's name.**
 
 Moreover, chef-runner allows you to load node attributes from a local JSON file:
 
