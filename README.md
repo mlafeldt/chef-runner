@@ -133,7 +133,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
 
   -H, --host <name>            Name of host reachable over SSH
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
-  -K, --kitchen <name>         Set name of Test Kitchen instance
+  -K, --kitchen <name>         Name of Test Kitchen instance
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
