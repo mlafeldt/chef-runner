@@ -6,6 +6,14 @@ IMPROVEMENTS:
   running complicated shell commands over SSH. Move installer logic from Chef
   Solo provisioner to new [omnibus package].
 
+BREAKING CHANGES:
+
+* Adapt run list syntax to Chef's standard: a run list entry named `foo` will
+  now expand to `foo::default`. Before, `foo` was treated as a local recipe and
+  expanded to `<cookbook>::foo`. Local recipes now need to be passed as `::foo`
+  instead. This change also simplifies run list composition when multiple
+  cookbooks are involved, e.g. `chef-runner apt postgresql::client nginx`.
+
 [omnibus package]: https://godoc.org/github.com/mlafeldt/chef-runner/chef/omnibus
 
 ## v0.7.0 (Sep 12 2014)
