@@ -75,11 +75,13 @@ func expand(recipe, cookbook string) (string, error) {
 func buildRunList(recipes []string, cookbook string) ([]string, error) {
 	runList := []string{}
 	for _, r := range recipes {
-		recipe, err := expand(r, cookbook)
-		if err != nil {
-			return nil, err
+		for _, r := range strings.Split(r, ",") {
+			recipe, err := expand(r, cookbook)
+			if err != nil {
+				return nil, err
+			}
+			runList = append(runList, recipe)
 		}
-		runList = append(runList, recipe)
 	}
 	return runList, nil
 }
