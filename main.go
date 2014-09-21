@@ -62,7 +62,6 @@ func expand(recipe, cookbook string) (string, error) {
 		}
 		return cookbook + recipe, nil
 	}
-
 	if path.Dir(recipe) == "recipes" && path.Ext(recipe) == ".rb" {
 		if cookbook == "" {
 			log.Errorf("cannot add local recipe \"%s\" to run list\n", recipe)
@@ -70,12 +69,7 @@ func expand(recipe, cookbook string) (string, error) {
 		}
 		return cookbook + "::" + util.BaseName(recipe, ".rb"), nil
 	}
-
-	if strings.Contains(recipe, "::") {
-		return recipe, nil
-	}
-
-	return recipe + "::default", nil
+	return recipe, nil
 }
 
 func buildRunList(recipes []string, cookbook string) ([]string, error) {

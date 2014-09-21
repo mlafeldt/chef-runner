@@ -63,7 +63,7 @@ func TestBuildRunList(t *testing.T) {
 		{
 			cookbook: "",
 			recipes:  []string{"dogs"},
-			runList:  []string{"dogs::default"},
+			runList:  []string{"dogs"},
 		},
 		{
 			cookbook: "cats",
