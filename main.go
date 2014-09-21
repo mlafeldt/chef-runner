@@ -1,15 +1,14 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"strings"
 	"time"
 
 	"github.com/mlafeldt/chef-runner/chef/cookbook"
+	"github.com/mlafeldt/chef-runner/chef/runlist"
 	"github.com/mlafeldt/chef-runner/driver"
 	"github.com/mlafeldt/chef-runner/driver/kitchen"
 	"github.com/mlafeldt/chef-runner/driver/ssh"
@@ -17,7 +16,6 @@ import (
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
-	"github.com/mlafeldt/chef-runner/util"
 )
 
 func logLevel() log.Level {
@@ -51,39 +49,6 @@ func findDriver(flags *Flags) (driver.Driver, error) {
 		return kitchen.NewDriver(flags.Kitchen)
 	}
 	return vagrant.NewDriver(flags.Machine)
-}
-
-func expand(recipe, cookbook string) (string, error) {
-	if strings.HasPrefix(recipe, "::") {
-		if cookbook == "" {
-			log.Errorf("cannot add local recipe \"%s\" to run list\n",
-				strings.TrimPrefix(recipe, "::"))
-			return "", errors.New("cookbook name required")
-		}
-		return cookbook + recipe, nil
-	}
-	if path.Dir(recipe) == "recipes" && path.Ext(recipe) == ".rb" {
-		if cookbook == "" {
-			log.Errorf("cannot add local recipe \"%s\" to run list\n", recipe)
-			return "", errors.New("cookbook name required")
-		}
-		return cookbook + "::" + util.BaseName(recipe, ".rb"), nil
-	}
-	return recipe, nil
-}
-
-func buildRunList(recipes []string, cookbook string) ([]string, error) {
-	runList := []string{}
-	for _, r := range recipes {
-		for _, r := range strings.Split(r, ",") {
-			recipe, err := expand(r, cookbook)
-			if err != nil {
-				return nil, err
-			}
-			runList = append(runList, recipe)
-		}
-	}
-	return runList, nil
 }
 
 func uploadFiles(drv driver.Driver) error {
@@ -155,7 +120,7 @@ func main() {
 		}
 		log.Debugf("Cookbook = %s\n", cb)
 
-		if runList, err = buildRunList(recipes, cb.Name); err != nil {
+		if runList, err = runlist.Build(recipes, cb.Name); err != nil {
 			abort(err)
 		}
 		log.Infof("Run list is %s\n", runList)
