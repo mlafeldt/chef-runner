@@ -40,9 +40,11 @@ Use chef-runner for local cookbook development with Vagrant:
 Compose Chef run list using flexible recipe syntax:
 
     $ chef-runner recipes/foo.rb
-    $ chef-runner ::foo # same as above
+    $ chef-runner ::foo                        # same as above
     $ chef-runner dogs::bar
+    $ chef-runner dogs                         # same as dogs::default
     $ chef-runner recipes/foo.rb bar dogs::baz # will run recipes in given order
+    $ chef-runner recipe[cats],dogs::bar       # standard Chef syntax
 
 Provision a specific Vagrant machine in a multi-machine environment:
 
@@ -174,6 +176,10 @@ your run list in multiple ways.
 5) Run multiple recipes (of mixed type) in order given:
 
     $ chef-runner recipes/foo.rb bar dogs::baz
+
+6) Of course, standard Chef syntax is supported as well:
+
+    $ chef-runner recipe[cats],dogs::bar
 
 **Note: When defining recipes in a format other than 4), you must be inside a
 cookbook directory with a `metadata.rb` file for chef-runner to know the
