@@ -53,27 +53,37 @@ func findDriver(flags *Flags) (driver.Driver, error) {
 	return vagrant.NewDriver(flags.Machine)
 }
 
+func expand(recipe, cookbook string) (string, error) {
+	if strings.HasPrefix(recipe, "::") {
+		if cookbook == "" {
+			log.Errorf("cannot add local recipe \"%s\" to run list\n",
+				strings.TrimPrefix(recipe, "::"))
+			return "", errors.New("cookbook name required")
+		}
+		return cookbook + recipe, nil
+	}
+
+	if path.Dir(recipe) == "recipes" && path.Ext(recipe) == ".rb" {
+		if cookbook == "" {
+			log.Errorf("cannot add local recipe \"%s\" to run list\n", recipe)
+			return "", errors.New("cookbook name required")
+		}
+		return cookbook + "::" + util.BaseName(recipe, ".rb"), nil
+	}
+
+	if strings.Contains(recipe, "::") {
+		return recipe, nil
+	}
+
+	return recipe + "::default", nil
+}
+
 func buildRunList(recipes []string, cookbook string) ([]string, error) {
 	runList := []string{}
 	for _, r := range recipes {
-		var recipe string
-		if strings.HasPrefix(r, "::") {
-			if cookbook == "" {
-				log.Errorf("cannot add local recipe \"%s\" to run list\n",
-					strings.TrimPrefix(r, "::"))
-				return nil, errors.New("cookbook name required")
-			}
-			recipe = cookbook + r
-		} else if path.Dir(r) == "recipes" && path.Ext(r) == ".rb" {
-			if cookbook == "" {
-				log.Errorf("cannot add local recipe \"%s\" to run list\n", r)
-				return nil, errors.New("cookbook name required")
-			}
-			recipe = cookbook + "::" + util.BaseName(r, ".rb")
-		} else if strings.Contains(r, "::") {
-			recipe = r
-		} else {
-			recipe = r + "::default"
+		recipe, err := expand(r, cookbook)
+		if err != nil {
+			return nil, err
 		}
 		runList = append(runList, recipe)
 	}
