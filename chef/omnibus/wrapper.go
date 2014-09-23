@@ -29,6 +29,9 @@ true)
         sh "$script"
     fi
     ;;
+*.deb)
+    dpkg -i "/tmp/chef-runner/$version"
+    ;;
 *)
     if test "$current_version" = "$version"; then
         echo "==> Chef version $version already installed. Doing nothing."

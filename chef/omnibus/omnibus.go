@@ -5,8 +5,10 @@ package omnibus
 import (
 	"io/ioutil"
 	"path"
+	"strings"
 
 	"github.com/mlafeldt/chef-runner/log"
+	"github.com/mlafeldt/chef-runner/rsync"
 	"github.com/mlafeldt/chef-runner/util"
 )
 
@@ -50,6 +52,13 @@ func (i Installer) PrepareScripts() error {
 		log.Debug("Skipping setup of install scripts")
 		return nil
 	}
+
+	if strings.HasSuffix(i.ChefVersion, ".deb") {
+		if err := rsync.MirrorClient.Copy(i.ScriptPath, i.ChefVersion); err != nil {
+			return err
+		}
+	}
+
 	log.Debug("Preparing install scripts")
 	if err := i.writeWrapperScript(); err != nil {
 		return err
