@@ -12,7 +12,7 @@ import (
 	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/rsync"
 	"github.com/mlafeldt/chef-runner/util"
-	"gopkg.in/yaml.v1"
+	"gopkg.in/yaml.v2"
 )
 
 // Driver is a driver based on Test Kitchen.
