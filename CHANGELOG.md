@@ -3,7 +3,7 @@
 IMPROVEMENTS:
 
 * Support standard Chef syntax for composing the run list: entries may be
-  separated by comma and an entry named `foo` will now expand to `foo::default`
+  separated by comma, and an entry named `foo` will now expand to `foo::default`
   (see BREAKING CHANGES for more information). As a result, something like
   `chef-runner recipe[cats],dogs::bar` now does what Chef users would expect.
 * Install Chef using a smart shell wrapper around Omnibus Installer instead of
