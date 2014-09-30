@@ -5,14 +5,8 @@ import (
 	"testing"
 
 	. "github.com/mlafeldt/chef-runner/exec"
-	"github.com/mlafeldt/chef-runner/log"
 	"github.com/stretchr/testify/assert"
 )
-
-func init() {
-	// Be quiet during testing
-	log.SetLevel(log.LevelWarn)
-}
 
 func TestRunCommand_Success(t *testing.T) {
 	err := RunCommand([]string{"bash", "-c", "echo foo | grep -q foo"})

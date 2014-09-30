@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/exec"
-	"github.com/mlafeldt/chef-runner/log"
 	. "github.com/mlafeldt/chef-runner/resolver"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
@@ -23,9 +22,6 @@ func init() {
 		lastCmd = args
 		return nil
 	})
-
-	// Be quiet during testing
-	log.SetLevel(log.LevelWarn)
 }
 
 func TestAutoResolve_Berkshelf(t *testing.T) {

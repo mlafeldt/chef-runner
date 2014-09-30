@@ -5,15 +5,9 @@ import (
 
 	"github.com/mlafeldt/chef-runner/driver"
 	. "github.com/mlafeldt/chef-runner/driver/kitchen"
-	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
 )
-
-func init() {
-	// Be quiet during testing
-	log.SetLevel(log.LevelWarn)
-}
 
 func TestDriverInterface(t *testing.T) {
 	assert.Implements(t, (*driver.Driver)(nil), new(Driver))

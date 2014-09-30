@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/exec"
-	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner"
 	. "github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 	"github.com/mlafeldt/chef-runner/util"
@@ -16,9 +15,6 @@ import (
 func init() {
 	// Don't run any commands
 	exec.SetRunnerFunc(func(args []string) error { return nil })
-
-	// Be quiet during testing
-	log.SetLevel(log.LevelWarn)
 }
 
 func TestProvisionerInterface(t *testing.T) {
