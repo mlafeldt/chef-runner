@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 var usage = `Usage: chef-runner [options] [--] [<recipe>...]
@@ -12,6 +13,8 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   -H, --host <name>            Name of host reachable over SSH
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
+
+  --ssh-option <key=value>     Specify custom SSH option, can be used multiple times
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
@@ -32,13 +35,27 @@ type Flags struct {
 	Machine string
 	Kitchen string
 
-	Format      string
-	LogLevel    string
-	JSONFile    string
+	SSHOptions map[string]string
+
+	Format   string
+	LogLevel string
+	JSONFile string
+
 	ShowVersion bool
 	ChefVersion string
 
 	Recipes []string
+}
+
+type stringSlice []string
+
+func (s *stringSlice) String() string {
+	return fmt.Sprintf("%v", *s)
+}
+
+func (s *stringSlice) Set(value string) error {
+	*s = append(*s, value)
+	return nil
 }
 
 // ParseFlags parses the command line and returns the result.
@@ -59,6 +76,9 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.StringVar(&flags.Kitchen, "K", "", "")
 	f.StringVar(&flags.Kitchen, "kitchen", "", "")
 
+	var sshOptions stringSlice
+	f.Var(&sshOptions, "ssh-option", "")
+
 	f.StringVar(&flags.Format, "F", "", "")
 	f.StringVar(&flags.Format, "format", "", "")
 
@@ -77,6 +97,17 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	if flags.Host != "" && flags.Machine != "" {
 		return nil, errors.New("-H and -M cannot be used together")
+	}
+
+	if len(sshOptions) > 0 {
+		flags.SSHOptions = make(map[string]string)
+		for _, o := range sshOptions {
+			fields := strings.Split(o, "=")
+			if len(fields) != 2 {
+				return nil, errors.New("invalid SSH option: " + o)
+			}
+			flags.SSHOptions[fields[0]] = fields[1]
+		}
 	}
 
 	if len(f.Args()) > 0 {

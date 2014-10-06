@@ -43,12 +43,12 @@ func abort(v ...interface{}) {
 
 func findDriver(flags *Flags) (driver.Driver, error) {
 	if flags.Host != "" {
-		return ssh.NewDriver(flags.Host, nil)
+		return ssh.NewDriver(flags.Host, flags.SSHOptions)
 	}
 	if flags.Kitchen != "" {
-		return kitchen.NewDriver(flags.Kitchen, nil)
+		return kitchen.NewDriver(flags.Kitchen, flags.SSHOptions)
 	}
-	return vagrant.NewDriver(flags.Machine, nil)
+	return vagrant.NewDriver(flags.Machine, flags.SSHOptions)
 }
 
 func uploadFiles(drv driver.Driver) error {
