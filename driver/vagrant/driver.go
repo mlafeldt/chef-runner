@@ -39,7 +39,7 @@ func init() {
 // NewDriver creates a new Vagrant driver that communicates with the given
 // Vagrant machine. Under the hood `vagrant ssh-config` is executed to get a
 // working SSH configuration for the machine.
-func NewDriver(machine string) (*Driver, error) {
+func NewDriver(machine string, sshOptions map[string]string) (*Driver, error) {
 	if machine == "" {
 		machine = DefaultMachine
 	}
@@ -64,7 +64,11 @@ func NewDriver(machine string) (*Driver, error) {
 		return nil, err
 	}
 
-	sshClient := &openssh.Client{Host: "default", ConfigFile: configFile}
+	sshClient := &openssh.Client{
+		Host:       "default",
+		ConfigFile: configFile,
+		Options:    sshOptions,
+	}
 
 	rsyncClient := *rsync.MirrorClient
 	rsyncClient.RemoteHost = "default"
