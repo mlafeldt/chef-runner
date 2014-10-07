@@ -79,7 +79,7 @@ var commandTests = []struct {
 			},
 		},
 		args: []string{"uname", "-a"},
-		result: []string{"ssh", "-o", "AnotherOption=1 2 3", // FIXME
+		result: []string{"ssh", "-o", "AnotherOption=1 2 3",
 			"-o", "SomeOption=yes", "some-host", "uname", "-a"},
 	},
 	{
@@ -129,15 +129,15 @@ var shellTests = []struct {
 }{
 	{
 		Client{Host: "some-host", User: "some-user", Port: 1234},
-		"ssh -l some-user -p 1234",
+		`"ssh" "-l" "some-user" "-p" "1234"`,
 	},
 	{
 		Client{Host: "some-host", Options: map[string]string{"x": "1"}},
-		"ssh -o x=1",
+		`"ssh" "-o" "x=1"`,
 	},
 	{
 		Client{Host: "some-host", Options: map[string]string{"y": "2 3"}},
-		"ssh -o y=2 3", // FIXME
+		`"ssh" "-o" "y=2 3"`,
 	},
 }
 

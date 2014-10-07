@@ -41,12 +41,7 @@ func NewClient(host string) (*Client, error) {
 		}
 	}
 
-	c := Client{
-		Host: host,
-		User: user,
-		Port: port,
-	}
-	return &c, nil
+	return &Client{Host: host, User: user, Port: port}, nil
 }
 
 // Command returns the ssh command that will be executed by Copy.
@@ -101,8 +96,13 @@ func (c Client) RunCommand(args []string) error {
 	return exec.RunCommand(c.Command(args))
 }
 
-// Shell returns a connection string that can be used by tools like rsync.
+// Shell returns a connection string that can be used by tools like rsync. Each
+// argument is double-quoted to preserve spaces.
 func (c Client) Shell() string {
 	cmd := c.Command([]string{})
-	return strings.Join(cmd[:len(cmd)-1], " ")
+	var quoted []string
+	for _, i := range cmd[:len(cmd)-1] {
+		quoted = append(quoted, `"`+i+`"`)
+	}
+	return strings.Join(quoted, " ")
 }
