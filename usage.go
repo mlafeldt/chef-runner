@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 )
 
 var usage = `Usage: chef-runner [options] [--] [<recipe>...]
@@ -14,7 +13,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
 
-  --ssh-option <key=value>     Specify custom SSH option, can be used multiple times
+  --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
@@ -35,7 +34,7 @@ type Flags struct {
 	Machine string
 	Kitchen string
 
-	SSHOptions map[string]string
+	SSHOptions stringSlice
 
 	Format   string
 	LogLevel string
@@ -76,8 +75,7 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.StringVar(&flags.Kitchen, "K", "", "")
 	f.StringVar(&flags.Kitchen, "kitchen", "", "")
 
-	var sshOptions stringSlice
-	f.Var(&sshOptions, "ssh-option", "")
+	f.Var(&flags.SSHOptions, "ssh-option", "")
 
 	f.StringVar(&flags.Format, "F", "", "")
 	f.StringVar(&flags.Format, "format", "", "")
@@ -97,17 +95,6 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	if flags.Host != "" && flags.Machine != "" {
 		return nil, errors.New("-H and -M cannot be used together")
-	}
-
-	if len(sshOptions) > 0 {
-		flags.SSHOptions = make(map[string]string)
-		for _, o := range sshOptions {
-			fields := strings.Split(o, "=")
-			if len(fields) != 2 {
-				return nil, errors.New("invalid SSH option: " + o)
-			}
-			flags.SSHOptions[fields[0]] = fields[1]
-		}
 	}
 
 	if len(f.Args()) > 0 {

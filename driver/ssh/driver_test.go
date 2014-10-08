@@ -13,13 +13,13 @@ func TestDriverInterface(t *testing.T) {
 }
 
 func TestNewDriver(t *testing.T) {
-	sshOpts := map[string]string{"LogLevel": "debug"}
+	sshOpts := []string{"LogLevel=debug"}
 	drv, err := NewDriver("some-user@some-host:1234", sshOpts)
 	if assert.NoError(t, err) {
 		assert.Equal(t, "some-host", drv.SSHClient.Host)
 		assert.Equal(t, 1234, drv.SSHClient.Port)
 		assert.Equal(t, "some-user", drv.SSHClient.User)
-		assert.Equal(t, "debug", drv.SSHClient.Options["LogLevel"])
+		assert.Equal(t, sshOpts, drv.SSHClient.Options)
 		assert.Equal(t, "some-host", drv.RsyncClient.RemoteHost)
 	}
 }

@@ -73,14 +73,14 @@ var commandTests = []struct {
 	{
 		client: Client{
 			Host: "some-host",
-			Options: map[string]string{
-				"SomeOption":    "yes",
-				"AnotherOption": "1 2 3",
+			Options: []string{
+				"SomeOption=yes",
+				"AnotherOption 1 2 3",
 			},
 		},
 		args: []string{"uname", "-a"},
-		result: []string{"ssh", "-o", "AnotherOption=1 2 3",
-			"-o", "SomeOption=yes", "some-host", "uname", "-a"},
+		result: []string{"ssh", "-o", "SomeOption=yes", "-o", "AnotherOption 1 2 3",
+			"some-host", "uname", "-a"},
 	},
 	{
 		client: Client{
@@ -88,7 +88,7 @@ var commandTests = []struct {
 			User:        "some-user",
 			Port:        1234,
 			PrivateKeys: []string{"some-key"},
-			Options:     map[string]string{"SomeOption": "yes"},
+			Options:     []string{"SomeOption=yes"},
 		},
 		args: []string{"uname", "-a"},
 		result: []string{"ssh", "-l", "some-user", "-p", "1234",
@@ -132,12 +132,12 @@ var shellTests = []struct {
 		`"ssh" "-l" "some-user" "-p" "1234"`,
 	},
 	{
-		Client{Host: "some-host", Options: map[string]string{"x": "1"}},
+		Client{Host: "some-host", Options: []string{"x=1"}},
 		`"ssh" "-o" "x=1"`,
 	},
 	{
-		Client{Host: "some-host", Options: map[string]string{"y": "2 3"}},
-		`"ssh" "-o" "y=2 3"`,
+		Client{Host: "some-host", Options: []string{"y 2 3"}},
+		`"ssh" "-o" "y 2 3"`,
 	},
 }
 

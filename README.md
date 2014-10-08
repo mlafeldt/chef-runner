@@ -137,7 +137,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
 
-  --ssh-option <key=value>     Specify custom SSH option, can be used multiple times
+  --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false

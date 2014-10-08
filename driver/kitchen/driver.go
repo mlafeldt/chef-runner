@@ -23,12 +23,12 @@ type Driver struct {
 }
 
 // This is what `vagrant ssh` uses
-var defaultSSHOptions = map[string]string{
-	"UserKnownHostsFile":     "/dev/null",
-	"StrictHostKeyChecking":  "no",
-	"PasswordAuthentication": "no",
-	"IdentitiesOnly":         "yes",
-	"LogLevel":               "FATAL",
+var defaultSSHOptions = [...]string{
+	"UserKnownHostsFile /dev/null",
+	"StrictHostKeyChecking no",
+	"PasswordAuthentication no",
+	"IdentitiesOnly yes",
+	"LogLevel FATAL",
 }
 
 type instanceConfig struct {
@@ -72,7 +72,7 @@ func readInstanceConfig(instance string) (*instanceConfig, error) {
 // NewDriver creates a new Test Kitchen driver that communicates with the given
 // Test Kitchen instance. Under the hood the instance's YAML configuration is
 // parsed to get a working SSH configuration.
-func NewDriver(instance string, sshOptions map[string]string) (*Driver, error) {
+func NewDriver(instance string, sshOptions []string) (*Driver, error) {
 	if !util.FileExist(".kitchen.yml") {
 		return nil, errors.New("Kitchen YAML file not found")
 	}
@@ -85,14 +85,10 @@ func NewDriver(instance string, sshOptions map[string]string) (*Driver, error) {
 	// Test Kitchen stores the port as an string
 	port, _ := strconv.Atoi(config.Port)
 
-	sshOpts := make(map[string]string)
-	for k, v := range defaultSSHOptions {
-		sshOpts[k] = v
-	}
-	if sshOptions != nil {
-		for k, v := range sshOptions {
-			sshOpts[k] = v
-		}
+	sshOpts := make([]string, len(defaultSSHOptions))
+	copy(sshOpts, defaultSSHOptions[:])
+	for _, o := range sshOptions {
+		sshOpts = append(sshOpts, o)
 	}
 
 	sshClient := &openssh.Client{

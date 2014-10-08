@@ -4,7 +4,6 @@ package openssh
 
 import (
 	"errors"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -17,7 +16,7 @@ type Client struct {
 	User        string
 	Port        int
 	PrivateKeys []string
-	Options     map[string]string
+	Options     []string
 	ConfigFile  string
 }
 
@@ -60,14 +59,8 @@ func (c Client) Command(args []string) []string {
 		cmd = append(cmd, "-i", pk)
 	}
 
-	// Sort options by name before using them
-	var optionNames []string
-	for k := range c.Options {
-		optionNames = append(optionNames, k)
-	}
-	sort.Strings(optionNames)
-	for _, k := range optionNames {
-		cmd = append(cmd, "-o", k+"="+c.Options[k])
+	for _, o := range c.Options {
+		cmd = append(cmd, "-o", o)
 	}
 
 	if c.ConfigFile != "" {

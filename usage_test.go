@@ -37,8 +37,8 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{Machine: "some-machine"},
 		},
 		{
-			args:  []string{"--ssh-option", "x=1", "--ssh-option", "y=2 3"},
-			flags: &Flags{SSHOptions: map[string]string{"x": "1", "y": "2 3"}},
+			args:  []string{"--ssh-option", "x=1", "--ssh-option", "y 2 3"},
+			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}},
 		},
 		{
 			args:  []string{"-F", "some-format"},
@@ -81,11 +81,6 @@ func TestParseFlags(t *testing.T) {
 			args:      []string{"-H", "some-host", "-M", "some-machine"},
 			flags:     nil,
 			errString: "-H and -M cannot be used together",
-		},
-		{
-			args:      []string{"--ssh-option", "x=1", "--ssh-option", "y 2"},
-			flags:     nil,
-			errString: "invalid SSH option: y 2",
 		},
 	}
 	for _, test := range tests {
