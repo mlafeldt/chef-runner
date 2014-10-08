@@ -38,12 +38,13 @@ type Flags struct {
 
 	SSHOptions stringSlice
 
+	ChefVersion string
+
 	Format   string
 	LogLevel string
 	JSONFile string
 
 	ShowVersion bool
-	ChefVersion string
 
 	Recipes []string
 }
@@ -66,8 +67,6 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	var flags Flags
 
-	f.BoolVar(&flags.ShowVersion, "version", false, "")
-
 	f.StringVar(&flags.Host, "H", "", "")
 	f.StringVar(&flags.Host, "host", "", "")
 
@@ -79,6 +78,9 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	f.Var(&flags.SSHOptions, "ssh-option", "")
 
+	f.StringVar(&flags.ChefVersion, "i", "", "")
+	f.StringVar(&flags.ChefVersion, "install-chef", "", "")
+
 	f.StringVar(&flags.Format, "F", "", "")
 	f.StringVar(&flags.Format, "format", "", "")
 
@@ -88,15 +90,20 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.StringVar(&flags.JSONFile, "j", "", "")
 	f.StringVar(&flags.JSONFile, "json-attributes", "", "")
 
-	f.StringVar(&flags.ChefVersion, "i", "", "")
-	f.StringVar(&flags.ChefVersion, "install-chef", "", "")
+	f.BoolVar(&flags.ShowVersion, "version", false, "")
 
 	if err := f.Parse(args); err != nil {
 		return nil, err
 	}
 
-	if flags.Host != "" && flags.Machine != "" {
-		return nil, errors.New("-H and -M cannot be used together")
+	n := 0
+	for _, i := range []string{flags.Host, flags.Machine, flags.Kitchen} {
+		if i != "" {
+			n += 1
+		}
+	}
+	if n > 1 {
+		return nil, errors.New("-H, -M, and -K cannot be used together")
 	}
 
 	if len(f.Args()) > 0 {

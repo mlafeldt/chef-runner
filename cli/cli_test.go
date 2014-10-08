@@ -18,10 +18,6 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{},
 		},
 		{
-			args:  []string{"--version"},
-			flags: &Flags{ShowVersion: true},
-		},
-		{
 			args:  []string{"-H", "some-host"},
 			flags: &Flags{Host: "some-host"},
 		},
@@ -38,8 +34,24 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{Machine: "some-machine"},
 		},
 		{
+			args:  []string{"-K", "some-instance"},
+			flags: &Flags{Kitchen: "some-instance"},
+		},
+		{
+			args:  []string{"--kitchen", "some-instance"},
+			flags: &Flags{Kitchen: "some-instance"},
+		},
+		{
 			args:  []string{"--ssh-option", "x=1", "--ssh-option", "y 2 3"},
 			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}},
+		},
+		{
+			args:  []string{"-i", "1.2.3"},
+			flags: &Flags{ChefVersion: "1.2.3"},
+		},
+		{
+			args:  []string{"--install-chef", "1.2.3"},
+			flags: &Flags{ChefVersion: "1.2.3"},
 		},
 		{
 			args:  []string{"-F", "some-format"},
@@ -66,22 +78,32 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{JSONFile: "some-file"},
 		},
 		{
+			args:  []string{"--version"},
+			flags: &Flags{ShowVersion: true},
+		},
+		{
 			args:  []string{"some-recipe", "another-recipe"},
 			flags: &Flags{Recipes: []string{"some-recipe", "another-recipe"}},
 		},
 		{
-			args: []string{"--machine", "some-machine", "-l", "some-level", "some-recipe"},
+			args: []string{"--machine", "some-machine", "-l", "some-level", "-i", "true", "some-recipe"},
 			flags: &Flags{
-				Machine:  "some-machine",
-				LogLevel: "some-level",
-				Recipes:  []string{"some-recipe"},
+				Machine:     "some-machine",
+				ChefVersion: "true",
+				LogLevel:    "some-level",
+				Recipes:     []string{"some-recipe"},
 			},
 		},
 		// Check for errors
 		{
 			args:      []string{"-H", "some-host", "-M", "some-machine"},
 			flags:     nil,
-			errString: "-H and -M cannot be used together",
+			errString: "-H, -M, and -K cannot be used together",
+		},
+		{
+			args:      []string{"-K", "some-instance", "-M", "some-machine"},
+			flags:     nil,
+			errString: "-H, -M, and -K cannot be used together",
 		},
 	}
 	for _, test := range tests {
