@@ -103,7 +103,7 @@ func ParseFlags(args []string) (*Flags, error) {
 	n := 0
 	for _, i := range []string{flags.Host, flags.Machine, flags.Kitchen} {
 		if i != "" {
-			n += 1
+			n++
 		}
 	}
 	if n > 1 {
@@ -117,6 +117,8 @@ func ParseFlags(args []string) (*Flags, error) {
 	return &flags, nil
 }
 
+// LogLevel returns the log level to use based on the CHEF_RUNNER_LOG
+// environment variable.
 func LogLevel() log.Level {
 	l := log.LevelInfo
 	e := os.Getenv("CHEF_RUNNER_LOG")
