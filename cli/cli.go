@@ -30,6 +30,18 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   --version                    Show program version
 `
 
+// This slice is used to implement options that can be passed multiple times.
+type stringSlice []string
+
+func (s *stringSlice) String() string {
+	return fmt.Sprintf("%v", *s)
+}
+
+func (s *stringSlice) Set(value string) error {
+	*s = append(*s, value)
+	return nil
+}
+
 // Flags stores the options and arguments passed on the command line.
 type Flags struct {
 	Host    string
@@ -47,17 +59,6 @@ type Flags struct {
 	ShowVersion bool
 
 	Recipes []string
-}
-
-type stringSlice []string
-
-func (s *stringSlice) String() string {
-	return fmt.Sprintf("%v", *s)
-}
-
-func (s *stringSlice) Set(value string) error {
-	*s = append(*s, value)
-	return nil
 }
 
 // ParseFlags parses the command line and returns the result.
