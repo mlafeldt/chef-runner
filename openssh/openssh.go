@@ -12,12 +12,12 @@ import (
 
 // A Client is an OpenSSH client.
 type Client struct {
+	ConfigFile  string
 	Host        string
 	User        string
 	Port        int
 	PrivateKeys []string
 	Options     []string
-	ConfigFile  string
 }
 
 // NewClient creates a new Client from the given host string. The host string
@@ -47,6 +47,10 @@ func NewClient(host string) (*Client, error) {
 func (c Client) Command(args []string) []string {
 	cmd := []string{"ssh"}
 
+	if c.ConfigFile != "" {
+		cmd = append(cmd, "-F", c.ConfigFile)
+	}
+
 	if c.User != "" {
 		cmd = append(cmd, "-l", c.User)
 	}
@@ -61,10 +65,6 @@ func (c Client) Command(args []string) []string {
 
 	for _, o := range c.Options {
 		cmd = append(cmd, "-o", o)
-	}
-
-	if c.ConfigFile != "" {
-		cmd = append(cmd, "-F", c.ConfigFile)
 	}
 
 	if c.Host != "" {
