@@ -19,24 +19,6 @@ import (
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 )
 
-func logLevel() log.Level {
-	l := log.LevelInfo
-	e := os.Getenv("CHEF_RUNNER_LOG")
-	if e == "" {
-		return l
-	}
-	m := map[string]log.Level{
-		"debug": log.LevelDebug,
-		"info":  log.LevelInfo,
-		"warn":  log.LevelWarn,
-		"error": log.LevelError,
-	}
-	if v, ok := m[strings.ToLower(e)]; ok {
-		l = v
-	}
-	return l
-}
-
 func abort(v ...interface{}) {
 	log.Error(v...)
 	os.Exit(1)
@@ -77,7 +59,7 @@ func runChef(drv driver.Driver, p provisioner.Provisioner) error {
 func main() {
 	startTime := time.Now()
 
-	log.SetLevel(logLevel())
+	log.SetLevel(cli.LogLevel())
 
 	flags, err := cli.ParseFlags(os.Args[1:])
 	if err != nil {

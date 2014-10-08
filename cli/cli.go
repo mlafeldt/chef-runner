@@ -7,6 +7,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
+
+	"github.com/mlafeldt/chef-runner/log"
 )
 
 var usage = `Usage: chef-runner [options] [--] [<recipe>...]
@@ -112,4 +115,22 @@ func ParseFlags(args []string) (*Flags, error) {
 	}
 
 	return &flags, nil
+}
+
+func LogLevel() log.Level {
+	l := log.LevelInfo
+	e := os.Getenv("CHEF_RUNNER_LOG")
+	if e == "" {
+		return l
+	}
+	m := map[string]log.Level{
+		"debug": log.LevelDebug,
+		"info":  log.LevelInfo,
+		"warn":  log.LevelWarn,
+		"error": log.LevelError,
+	}
+	if v, ok := m[strings.ToLower(e)]; ok {
+		l = v
+	}
+	return l
 }
