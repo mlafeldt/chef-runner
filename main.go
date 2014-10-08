@@ -9,6 +9,7 @@ import (
 
 	"github.com/mlafeldt/chef-runner/chef/cookbook"
 	"github.com/mlafeldt/chef-runner/chef/runlist"
+	"github.com/mlafeldt/chef-runner/cli"
 	"github.com/mlafeldt/chef-runner/driver"
 	"github.com/mlafeldt/chef-runner/driver/kitchen"
 	"github.com/mlafeldt/chef-runner/driver/ssh"
@@ -41,7 +42,7 @@ func abort(v ...interface{}) {
 	os.Exit(1)
 }
 
-func findDriver(flags *Flags) (driver.Driver, error) {
+func findDriver(flags *cli.Flags) (driver.Driver, error) {
 	if flags.Host != "" {
 		return ssh.NewDriver(flags.Host, flags.SSHOptions)
 	}
@@ -78,7 +79,7 @@ func main() {
 
 	log.SetLevel(logLevel())
 
-	flags, err := ParseFlags(os.Args[1:])
+	flags, err := cli.ParseFlags(os.Args[1:])
 	if err != nil {
 		abort(err)
 	}

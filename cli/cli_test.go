@@ -1,8 +1,9 @@
-package main
+package cli_test
 
 import (
 	"testing"
 
+	. "github.com/mlafeldt/chef-runner/cli"
 	"github.com/stretchr/testify/assert"
 )
 

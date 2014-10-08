@@ -1,4 +1,6 @@
-package main
+// Package cli handles the command line interface of chef-runner. This includes
+// parsing of options and arguments as well as printing help text.
+package cli
 
 import (
 	"errors"
