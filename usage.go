@@ -13,6 +13,8 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
 
+  --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
+
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
 
@@ -32,13 +34,27 @@ type Flags struct {
 	Machine string
 	Kitchen string
 
-	Format      string
-	LogLevel    string
-	JSONFile    string
+	SSHOptions stringSlice
+
+	Format   string
+	LogLevel string
+	JSONFile string
+
 	ShowVersion bool
 	ChefVersion string
 
 	Recipes []string
+}
+
+type stringSlice []string
+
+func (s *stringSlice) String() string {
+	return fmt.Sprintf("%v", *s)
+}
+
+func (s *stringSlice) Set(value string) error {
+	*s = append(*s, value)
+	return nil
 }
 
 // ParseFlags parses the command line and returns the result.
@@ -58,6 +74,8 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	f.StringVar(&flags.Kitchen, "K", "", "")
 	f.StringVar(&flags.Kitchen, "kitchen", "", "")
+
+	f.Var(&flags.SSHOptions, "ssh-option", "")
 
 	f.StringVar(&flags.Format, "F", "", "")
 	f.StringVar(&flags.Format, "format", "", "")

@@ -73,14 +73,14 @@ var commandTests = []struct {
 	{
 		client: Client{
 			Host: "some-host",
-			Options: map[string]string{
-				"SomeOption":    "yes",
-				"AnotherOption": "no",
+			Options: []string{
+				"SomeOption=yes",
+				"AnotherOption 1 2 3",
 			},
 		},
 		args: []string{"uname", "-a"},
-		result: []string{"ssh", "-o", "AnotherOption=no",
-			"-o", "SomeOption=yes", "some-host", "uname", "-a"},
+		result: []string{"ssh", "-o", "SomeOption=yes", "-o", "AnotherOption 1 2 3",
+			"some-host", "uname", "-a"},
 	},
 	{
 		client: Client{
@@ -88,7 +88,7 @@ var commandTests = []struct {
 			User:        "some-user",
 			Port:        1234,
 			PrivateKeys: []string{"some-key"},
-			Options:     map[string]string{"SomeOption": "yes"},
+			Options:     []string{"SomeOption=yes"},
 		},
 		args: []string{"uname", "-a"},
 		result: []string{"ssh", "-l", "some-user", "-p", "1234",
@@ -123,7 +123,26 @@ func TestRunCommand_MissingHost(t *testing.T) {
 	assert.EqualError(t, err, "no host given")
 }
 
+var shellTests = []struct {
+	client Client
+	shell  string
+}{
+	{
+		Client{Host: "some-host", User: "some-user", Port: 1234},
+		`"ssh" "-l" "some-user" "-p" "1234"`,
+	},
+	{
+		Client{Host: "some-host", Options: []string{"x=1"}},
+		`"ssh" "-o" "x=1"`,
+	},
+	{
+		Client{Host: "some-host", Options: []string{"y 2 3"}},
+		`"ssh" "-o" "y 2 3"`,
+	},
+}
+
 func TestShell(t *testing.T) {
-	c, _ := NewClient("some-user@some-host:1234")
-	assert.Equal(t, "ssh -l some-user -p 1234", c.Shell())
+	for _, test := range shellTests {
+		assert.Equal(t, test.shell, test.client.Shell())
+	}
 }

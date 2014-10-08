@@ -6,6 +6,10 @@ IMPROVEMENTS:
   separated by comma, and an entry named `foo` will now expand to `foo::default`
   (see BREAKING CHANGES for more information). As a result, something like
   `chef-runner recipe[cats],dogs::bar` now does what Chef users would expect.
+* Allow to specify one or more custom OpenSSH options on the command line, e.g.
+  `chef-runner --ssh-option LogLevel=debug --ssh-option "ProxyCommand ..."`. See
+  `ssh_config(5)` for a list of available options and their format. (Thanks to
+  @berniedurfee who requested this feature.)
 * Install Chef using a smart shell wrapper around Omnibus Installer instead of
   running complicated shell commands over SSH. Move installer logic from Chef
   Solo provisioner to new [omnibus package].

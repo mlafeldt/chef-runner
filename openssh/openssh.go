@@ -4,7 +4,6 @@ package openssh
 
 import (
 	"errors"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -13,12 +12,12 @@ import (
 
 // A Client is an OpenSSH client.
 type Client struct {
+	ConfigFile  string
 	Host        string
 	User        string
 	Port        int
 	PrivateKeys []string
-	Options     map[string]string
-	ConfigFile  string
+	Options     []string
 }
 
 // NewClient creates a new Client from the given host string. The host string
@@ -41,17 +40,16 @@ func NewClient(host string) (*Client, error) {
 		}
 	}
 
-	c := Client{
-		Host: host,
-		User: user,
-		Port: port,
-	}
-	return &c, nil
+	return &Client{Host: host, User: user, Port: port}, nil
 }
 
 // Command returns the ssh command that will be executed by Copy.
 func (c Client) Command(args []string) []string {
 	cmd := []string{"ssh"}
+
+	if c.ConfigFile != "" {
+		cmd = append(cmd, "-F", c.ConfigFile)
+	}
 
 	if c.User != "" {
 		cmd = append(cmd, "-l", c.User)
@@ -65,18 +63,8 @@ func (c Client) Command(args []string) []string {
 		cmd = append(cmd, "-i", pk)
 	}
 
-	// Sort options by name before using them
-	var optionNames []string
-	for k := range c.Options {
-		optionNames = append(optionNames, k)
-	}
-	sort.Strings(optionNames)
-	for _, k := range optionNames {
-		cmd = append(cmd, "-o", k+"="+c.Options[k])
-	}
-
-	if c.ConfigFile != "" {
-		cmd = append(cmd, "-F", c.ConfigFile)
+	for _, o := range c.Options {
+		cmd = append(cmd, "-o", o)
 	}
 
 	if c.Host != "" {
@@ -101,8 +89,13 @@ func (c Client) RunCommand(args []string) error {
 	return exec.RunCommand(c.Command(args))
 }
 
-// Shell returns a connection string that can be used by tools like rsync.
+// Shell returns a connection string that can be used by tools like rsync. Each
+// argument is double-quoted to preserve spaces.
 func (c Client) Shell() string {
 	cmd := c.Command([]string{})
-	return strings.Join(cmd[:len(cmd)-1], " ")
+	var quoted []string
+	for _, i := range cmd[:len(cmd)-1] {
+		quoted = append(quoted, `"`+i+`"`)
+	}
+	return strings.Join(quoted, " ")
 }

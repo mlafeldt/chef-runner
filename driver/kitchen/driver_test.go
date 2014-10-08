@@ -15,13 +15,16 @@ func TestDriverInterface(t *testing.T) {
 
 func TestNewDriver(t *testing.T) {
 	util.InDir("../../testdata", func() {
-		drv, err := NewDriver("default-ubuntu-1404")
+		sshOpts := []string{"LogLevel=debug"}
+		drv, err := NewDriver("default-ubuntu-1404", sshOpts)
 		if assert.NoError(t, err) {
 			assert.Equal(t, "127.0.0.1", drv.SSHClient.Host)
 			assert.Equal(t, 2222, drv.SSHClient.Port)
 			assert.Equal(t, "vagrant", drv.SSHClient.User)
 			assert.Equal(t, "/Users/mlafeldt/.vagrant.d/insecure_private_key",
 				drv.SSHClient.PrivateKeys[0])
+			assert.Equal(t, 6, len(drv.SSHClient.Options))
+			assert.Equal(t, "LogLevel=debug", drv.SSHClient.Options[5])
 			assert.Equal(t, "127.0.0.1", drv.RsyncClient.RemoteHost)
 		}
 	})
