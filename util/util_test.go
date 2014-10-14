@@ -86,13 +86,13 @@ func TestInTestDir(t *testing.T) {
 }
 
 func TestDownloadFile(t *testing.T) {
-	ts := httptest.NewServer(http.FileServer(http.Dir("../testdata")))
+	ts := httptest.NewServer(http.FileServer(http.Dir(".")))
 	defer ts.Close()
 
-	filename := "download.md"
-	assert.NoError(t, DownloadFile(filename, ts.URL+"/README.md"))
+	filename := "some-download-file"
+	assert.NoError(t, DownloadFile(filename, ts.URL+"/util_test.go"))
 	defer os.Remove(filename)
 
 	data, _ := ioutil.ReadFile(filename)
-	assert.Equal(t, "# Test Cookbook\n", string(data))
+	assert.True(t, strings.HasPrefix(string(data), "package util_test"))
 }
