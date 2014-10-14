@@ -95,7 +95,7 @@ func (c Client) Shell() string {
 	cmd := c.Command([]string{})
 	var quoted []string
 	for _, i := range cmd[:len(cmd)-1] {
-		quoted = append(quoted, `"`+i+`"`)
+		quoted = append(quoted, "'"+i+"'")
 	}
 	return strings.Join(quoted, " ")
 }

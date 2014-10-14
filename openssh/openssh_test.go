@@ -129,15 +129,15 @@ var shellTests = []struct {
 }{
 	{
 		Client{Host: "some-host", User: "some-user", Port: 1234},
-		`"ssh" "-l" "some-user" "-p" "1234"`,
+		"'ssh' '-l' 'some-user' '-p' '1234'",
 	},
 	{
 		Client{Host: "some-host", Options: []string{"x=1"}},
-		`"ssh" "-o" "x=1"`,
+		"'ssh' '-o' 'x=1'",
 	},
 	{
 		Client{Host: "some-host", Options: []string{"y 2 3"}},
-		`"ssh" "-o" "y 2 3"`,
+		"'ssh' '-o' 'y 2 3'",
 	},
 }
 
