@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -48,7 +47,7 @@ func TestTempDir(t *testing.T) {
 	assert.NoError(t, err)
 	defer os.RemoveAll(dir)
 
-	assert.True(t, strings.HasPrefix(path.Base(dir), "chef-runner-"))
+	assert.True(t, strings.HasPrefix(filepath.Base(dir), "chef-runner-"))
 
 	m, err := os.Stat(dir)
 	assert.NoError(t, err)
