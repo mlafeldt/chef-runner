@@ -12,10 +12,10 @@ build_dir="build/$version"
 echo "Building chef-runner $git_version ..."
 
 echo "Installing dependencies..."
-go get -v -t ./...
+script/bootstrap
 
 echo "Running all tests..."
-go test -race ./...
+GOTESTOPTS=-race script/test
 
 echo "Running style checks..."
 script/lint

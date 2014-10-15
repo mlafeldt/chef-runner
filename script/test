@@ -23,4 +23,4 @@ else
     verbose=
 fi
 
-exec go test $verbose "$pkg"
+exec go test ${GOTESTOPTS:-$verbose} "$pkg"
