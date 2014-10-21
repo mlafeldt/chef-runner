@@ -16,6 +16,8 @@ IMPROVEMENTS:
 * Install Chef using a smart shell wrapper around Omnibus Installer instead of
   running complicated shell commands over SSH. Move installer logic from Chef
   Solo provisioner to new [omnibus package].
+* The option `--version` now also outputs the Go version that was used to
+  compile chef-runner.
 
 BREAKING CHANGES:
 

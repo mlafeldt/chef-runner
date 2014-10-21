@@ -19,6 +19,11 @@ func VersionString() string {
 	return Version
 }
 
+// GoVersionString returns the Go version used to build the program.
+func GoVersionString() string {
+	return runtime.Version()
+}
+
 // TargetString returns the target operating system and architecture.
 func TargetString() string {
 	return runtime.GOOS + "/" + runtime.GOARCH

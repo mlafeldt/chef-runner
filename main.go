@@ -67,7 +67,8 @@ func main() {
 	}
 
 	if flags.ShowVersion {
-		fmt.Printf("chef-runner %s %s\n", VersionString(), TargetString())
+		fmt.Printf("chef-runner %s %s %s\n", VersionString(),
+			TargetString(), GoVersionString())
 		os.Exit(0)
 	}
 
