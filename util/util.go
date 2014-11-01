@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -20,7 +20,7 @@ func FileExist(name string) bool {
 // BaseName - as the basename Unix tool - deletes any prefix ending with the
 // last slash character present in a string, and a suffix, if given.
 func BaseName(s, suffix string) string {
-	base := path.Base(s)
+	base := filepath.Base(s)
 	if suffix != "" {
 		base = strings.TrimSuffix(base, suffix)
 	}

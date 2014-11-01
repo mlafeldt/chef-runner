@@ -9,13 +9,13 @@ import (
 )
 
 func TestRunCommand_Success(t *testing.T) {
-	err := RunCommand([]string{"bash", "-c", "echo foo | grep -q foo"})
+	err := RunCommand([]string{"go", "version"})
 	assert.NoError(t, err)
 }
 
 func TestRunCommand_Failure(t *testing.T) {
-	err := RunCommand([]string{"bash", "-c", "echo foo | grep -q bar"})
-	assert.EqualError(t, err, "exit status 1")
+	err := RunCommand([]string{"go", "some-unknown-subcommand"})
+	assert.EqualError(t, err, "exit status 2")
 }
 
 func TestRunCommand_Func(t *testing.T) {

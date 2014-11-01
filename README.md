@@ -95,10 +95,10 @@ The directory you execute chef-runner from must either:
 
 ### Download
 
-There are [pre-built binaries] of chef-runner for Mac OS X, Linux, FreeBSD, and
-OpenBSD. Please download the proper package for your operating system and
-architecture, then unzip the `chef-runner` binary to a location included in
-`$PATH`.
+There are [pre-built binaries] of chef-runner for Mac OS X, Linux, Windows,
+FreeBSD, and OpenBSD. Please download the proper package for your operating
+system and architecture, then unzip the `chef-runner` binary to a location
+included in `$PATH`.
 
 ### Homebrew
 
