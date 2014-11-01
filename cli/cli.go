@@ -48,22 +48,19 @@ func (s *stringSlice) Set(value string) error {
 
 // Flags stores the options and arguments passed on the command line.
 type Flags struct {
-	Host    string
-	Machine string
-	Kitchen string
-
+	Host       string
+	Machine    string
+	Kitchen    string
 	SSHOptions stringSlice
 
 	ChefVersion string
-
-	Format   string
-	LogLevel string
-	JSONFile string
+	Format      string
+	LogLevel    string
+	JSONFile    string
+	Recipes     []string
 
 	Color       bool
 	ShowVersion bool
-
-	Recipes []string
 }
 
 // ParseFlags parses the command line and returns the result.

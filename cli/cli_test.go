@@ -80,6 +80,10 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{JSONFile: "some-file", Color: true},
 		},
 		{
+			args:  []string{"some-recipe", "another-recipe"},
+			flags: &Flags{Recipes: []string{"some-recipe", "another-recipe"}, Color: true},
+		},
+		{
 			args:  []string{"--color=false"},
 			flags: &Flags{Color: false},
 		},
@@ -88,17 +92,13 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{ShowVersion: true, Color: true},
 		},
 		{
-			args:  []string{"some-recipe", "another-recipe"},
-			flags: &Flags{Recipes: []string{"some-recipe", "another-recipe"}, Color: true},
-		},
-		{
 			args: []string{"--machine", "some-machine", "-l", "some-level", "-i", "true", "some-recipe"},
 			flags: &Flags{
 				Machine:     "some-machine",
 				ChefVersion: "true",
 				LogLevel:    "some-level",
-				Color:       true,
 				Recipes:     []string{"some-recipe"},
+				Color:       true,
 			},
 		},
 		// Check for errors
