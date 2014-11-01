@@ -29,6 +29,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
                                default: info
   -j, --json-attributes <file> Load attributes from a JSON file
 
+  --color=false                Disable colorized output (enabled by default)
   -h, --help                   Show help text
   --version                    Show program version
 `
@@ -47,21 +48,19 @@ func (s *stringSlice) Set(value string) error {
 
 // Flags stores the options and arguments passed on the command line.
 type Flags struct {
-	Host    string
-	Machine string
-	Kitchen string
-
+	Host       string
+	Machine    string
+	Kitchen    string
 	SSHOptions stringSlice
 
 	ChefVersion string
+	Format      string
+	LogLevel    string
+	JSONFile    string
+	Recipes     []string
 
-	Format   string
-	LogLevel string
-	JSONFile string
-
+	Color       bool
 	ShowVersion bool
-
-	Recipes []string
 }
 
 // ParseFlags parses the command line and returns the result.
@@ -93,6 +92,8 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	f.StringVar(&flags.JSONFile, "j", "", "")
 	f.StringVar(&flags.JSONFile, "json-attributes", "", "")
+
+	f.BoolVar(&flags.Color, "color", true, "")
 
 	f.BoolVar(&flags.ShowVersion, "version", false, "")
 

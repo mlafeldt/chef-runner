@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	DisableColor()
+	UseColor = false
 }
 
 func ExampleDebug() {

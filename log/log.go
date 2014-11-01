@@ -40,20 +40,17 @@ var levelColor = [...]string{
 }
 
 var level = LevelDebug
-var useColor = true
+
+// UseColor, if true, enables colorized output.
+var UseColor = true
 
 // SetLevel changes the current log level to l.
 func SetLevel(l Level) {
 	level = l
 }
 
-// DisableColor disables any color output.
-func DisableColor() {
-	useColor = false
-}
-
 func colorize(l Level, s string) string {
-	if !useColor {
+	if !UseColor {
 		return s
 	}
 	return colorstring.Color(levelColor[l] + s)

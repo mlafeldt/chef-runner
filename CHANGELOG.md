@@ -6,6 +6,7 @@ FEATURES:
   `chef-runner --ssh-option LogLevel=debug --ssh-option "ProxyCommand ..."`. See
   `ssh_config(5)` for a list of available options and their format. (Thanks to
   @berniedurfee who requested this feature.)
+* Add `--color=false` option to disable colorized output.
 
 IMPROVEMENTS:
 

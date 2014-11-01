@@ -17,75 +17,79 @@ func TestParseFlags(t *testing.T) {
 	}{
 		{
 			args:  []string{},
-			flags: &Flags{},
+			flags: &Flags{Color: true},
 		},
 		{
 			args:  []string{"-H", "some-host"},
-			flags: &Flags{Host: "some-host"},
+			flags: &Flags{Host: "some-host", Color: true},
 		},
 		{
 			args:  []string{"--host", "some-host"},
-			flags: &Flags{Host: "some-host"},
+			flags: &Flags{Host: "some-host", Color: true},
 		},
 		{
 			args:  []string{"-M", "some-machine"},
-			flags: &Flags{Machine: "some-machine"},
+			flags: &Flags{Machine: "some-machine", Color: true},
 		},
 		{
 			args:  []string{"--machine", "some-machine"},
-			flags: &Flags{Machine: "some-machine"},
+			flags: &Flags{Machine: "some-machine", Color: true},
 		},
 		{
 			args:  []string{"-K", "some-instance"},
-			flags: &Flags{Kitchen: "some-instance"},
+			flags: &Flags{Kitchen: "some-instance", Color: true},
 		},
 		{
 			args:  []string{"--kitchen", "some-instance"},
-			flags: &Flags{Kitchen: "some-instance"},
+			flags: &Flags{Kitchen: "some-instance", Color: true},
 		},
 		{
 			args:  []string{"--ssh-option", "x=1", "--ssh-option", "y 2 3"},
-			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}},
+			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}, Color: true},
 		},
 		{
 			args:  []string{"-i", "1.2.3"},
-			flags: &Flags{ChefVersion: "1.2.3"},
+			flags: &Flags{ChefVersion: "1.2.3", Color: true},
 		},
 		{
 			args:  []string{"--install-chef", "1.2.3"},
-			flags: &Flags{ChefVersion: "1.2.3"},
+			flags: &Flags{ChefVersion: "1.2.3", Color: true},
 		},
 		{
 			args:  []string{"-F", "some-format"},
-			flags: &Flags{Format: "some-format"},
+			flags: &Flags{Format: "some-format", Color: true},
 		},
 		{
 			args:  []string{"--format", "some-format"},
-			flags: &Flags{Format: "some-format"},
+			flags: &Flags{Format: "some-format", Color: true},
 		},
 		{
 			args:  []string{"-l", "some-level"},
-			flags: &Flags{LogLevel: "some-level"},
+			flags: &Flags{LogLevel: "some-level", Color: true},
 		},
 		{
 			args:  []string{"--log_level", "some-level"},
-			flags: &Flags{LogLevel: "some-level"},
+			flags: &Flags{LogLevel: "some-level", Color: true},
 		},
 		{
 			args:  []string{"-j", "some-file"},
-			flags: &Flags{JSONFile: "some-file"},
+			flags: &Flags{JSONFile: "some-file", Color: true},
 		},
 		{
 			args:  []string{"--json-attributes", "some-file"},
-			flags: &Flags{JSONFile: "some-file"},
-		},
-		{
-			args:  []string{"--version"},
-			flags: &Flags{ShowVersion: true},
+			flags: &Flags{JSONFile: "some-file", Color: true},
 		},
 		{
 			args:  []string{"some-recipe", "another-recipe"},
-			flags: &Flags{Recipes: []string{"some-recipe", "another-recipe"}},
+			flags: &Flags{Recipes: []string{"some-recipe", "another-recipe"}, Color: true},
+		},
+		{
+			args:  []string{"--color=false"},
+			flags: &Flags{Color: false},
+		},
+		{
+			args:  []string{"--version"},
+			flags: &Flags{ShowVersion: true, Color: true},
 		},
 		{
 			args: []string{"--machine", "some-machine", "-l", "some-level", "-i", "true", "some-recipe"},
@@ -94,6 +98,7 @@ func TestParseFlags(t *testing.T) {
 				ChefVersion: "true",
 				LogLevel:    "some-level",
 				Recipes:     []string{"some-recipe"},
+				Color:       true,
 			},
 		},
 		// Check for errors
