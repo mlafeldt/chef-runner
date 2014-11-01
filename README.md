@@ -148,6 +148,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
                                default: info
   -j, --json-attributes <file> Load attributes from a JSON file
 
+  --color=false                Disable colorized output (enabled by default)
   -h, --help                   Show help text
   --version                    Show program version
 ```

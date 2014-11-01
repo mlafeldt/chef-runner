@@ -66,6 +66,8 @@ func main() {
 		abort(err)
 	}
 
+	log.UseColor = flags.Color
+
 	if flags.ShowVersion {
 		fmt.Printf("chef-runner %s %s %s\n", VersionString(),
 			TargetString(), GoVersionString())

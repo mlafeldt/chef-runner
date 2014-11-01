@@ -29,6 +29,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
                                default: info
   -j, --json-attributes <file> Load attributes from a JSON file
 
+  --color=false                Disable colorized output (enabled by default)
   -h, --help                   Show help text
   --version                    Show program version
 `
@@ -59,6 +60,7 @@ type Flags struct {
 	LogLevel string
 	JSONFile string
 
+	Color       bool
 	ShowVersion bool
 
 	Recipes []string
@@ -93,6 +95,8 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	f.StringVar(&flags.JSONFile, "j", "", "")
 	f.StringVar(&flags.JSONFile, "json-attributes", "", "")
+
+	f.BoolVar(&flags.Color, "color", true, "")
 
 	f.BoolVar(&flags.ShowVersion, "version", false, "")
 
