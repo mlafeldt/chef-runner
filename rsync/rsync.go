@@ -30,6 +30,9 @@ type Client struct {
 
 	// RemoteHost specifies the remote host to copy files to/from.
 	RemoteHost string
+
+	// Additional options.
+	Options []string
 }
 
 // DefaultClient is a usable rsync client without any options enabled.
@@ -81,6 +84,10 @@ func (c Client) Command(dst string, src ...string) ([]string, error) {
 		}
 		cmd = append(cmd, "--rsh", c.RemoteShell)
 		dst = c.RemoteHost + ":" + dst
+	}
+
+	for _, o := range c.Options {
+		cmd = append(cmd, o)
 	}
 
 	cmd = append(cmd, src...)

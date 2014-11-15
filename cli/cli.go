@@ -19,6 +19,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   -K, --kitchen <name>         Name of Test Kitchen instance
 
   --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
+  --rsync-option <option>      Add Rsync option as listed in rsync(1)
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
@@ -48,10 +49,12 @@ func (s *stringSlice) Set(value string) error {
 
 // Flags stores the options and arguments passed on the command line.
 type Flags struct {
-	Host       string
-	Machine    string
-	Kitchen    string
-	SSHOptions stringSlice
+	Host    string
+	Machine string
+	Kitchen string
+
+	SSHOptions   stringSlice
+	RsyncOptions stringSlice
 
 	ChefVersion string
 	Format      string
@@ -80,6 +83,8 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.StringVar(&flags.Kitchen, "kitchen", "", "")
 
 	f.Var(&flags.SSHOptions, "ssh-option", "")
+
+	f.Var(&flags.RsyncOptions, "rsync-option", "")
 
 	f.StringVar(&flags.ChefVersion, "i", "", "")
 	f.StringVar(&flags.ChefVersion, "install-chef", "", "")

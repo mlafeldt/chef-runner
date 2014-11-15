@@ -48,6 +48,10 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}, Color: true},
 		},
 		{
+			args:  []string{"--rsync-option", "-x", "--rsync-option", "--y"},
+			flags: &Flags{RsyncOptions: []string{"-x", "--y"}, Color: true},
+		},
+		{
 			args:  []string{"-i", "1.2.3"},
 			flags: &Flags{ChefVersion: "1.2.3", Color: true},
 		},

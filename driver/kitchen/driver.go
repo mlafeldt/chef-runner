@@ -72,7 +72,7 @@ func readInstanceConfig(instance string) (*instanceConfig, error) {
 // NewDriver creates a new Test Kitchen driver that communicates with the given
 // Test Kitchen instance. Under the hood the instance's YAML configuration is
 // parsed to get a working SSH configuration.
-func NewDriver(instance string, sshOptions []string) (*Driver, error) {
+func NewDriver(instance string, sshOptions, rsyncOptions []string) (*Driver, error) {
 	if !util.FileExist(".kitchen.yml") {
 		return nil, errors.New("Kitchen YAML file not found")
 	}
@@ -102,6 +102,7 @@ func NewDriver(instance string, sshOptions []string) (*Driver, error) {
 	rsyncClient := *rsync.MirrorClient
 	rsyncClient.RemoteHost = config.Hostname
 	rsyncClient.RemoteShell = sshClient.Shell()
+	rsyncClient.Options = rsyncOptions
 
 	return &Driver{instance, sshClient, &rsyncClient}, nil
 }

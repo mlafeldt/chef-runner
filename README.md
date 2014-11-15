@@ -138,6 +138,7 @@ Usage: chef-runner [options] [--] [<recipe>...]
   -K, --kitchen <name>         Name of Test Kitchen instance
 
   --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
+  --rsync-option <option>      Add Rsync option as listed in rsync(1)
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false

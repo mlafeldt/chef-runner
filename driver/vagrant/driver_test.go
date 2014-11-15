@@ -23,14 +23,17 @@ func TestNewDriver(t *testing.T) {
 		defer os.Setenv("PATH", oldPath)
 
 		sshOpts := []string{"LogLevel=debug"}
-		drv, err := NewDriver("some-machine", sshOpts)
+		rsyncOpts := []string{"--quiet"}
+		drv, err := NewDriver("some-machine", sshOpts, rsyncOpts)
 		if assert.NoError(t, err) {
 			defer os.RemoveAll(".chef-runner")
 			assert.Equal(t, "default", drv.SSHClient.Host)
 			assert.Equal(t, ".chef-runner/vagrant/machines/some-machine/ssh_config",
 				drv.SSHClient.ConfigFile)
 			assert.Equal(t, sshOpts, drv.SSHClient.Options)
+
 			assert.Equal(t, "default", drv.RsyncClient.RemoteHost)
+			assert.Equal(t, rsyncOpts, drv.RsyncClient.Options)
 		}
 	})
 }
