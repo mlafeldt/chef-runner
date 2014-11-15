@@ -18,8 +18,8 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
 
-  --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
-  --rsync-option <option>      Add Rsync option as listed in rsync(1)
+  --ssh <option>               Add OpenSSH option as specified in ssh_config(5)
+  --rsync <option>             Add Rsync option as listed in rsync(1)
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
@@ -82,9 +82,9 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.StringVar(&flags.Kitchen, "K", "", "")
 	f.StringVar(&flags.Kitchen, "kitchen", "", "")
 
-	f.Var(&flags.SSHOptions, "ssh-option", "")
+	f.Var(&flags.SSHOptions, "ssh", "")
 
-	f.Var(&flags.RsyncOptions, "rsync-option", "")
+	f.Var(&flags.RsyncOptions, "rsync", "")
 
 	f.StringVar(&flags.ChefVersion, "i", "", "")
 	f.StringVar(&flags.ChefVersion, "install-chef", "", "")

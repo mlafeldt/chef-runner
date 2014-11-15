@@ -44,11 +44,11 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{Kitchen: "some-instance", Color: true},
 		},
 		{
-			args:  []string{"--ssh-option", "x=1", "--ssh-option", "y 2 3"},
+			args:  []string{"--ssh", "x=1", "--ssh", "y 2 3"},
 			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}, Color: true},
 		},
 		{
-			args:  []string{"--rsync-option", "-x", "--rsync-option", "--y"},
+			args:  []string{"--rsync", "-x", "--rsync", "--y"},
 			flags: &Flags{RsyncOptions: []string{"-x", "--y"}, Color: true},
 		},
 		{

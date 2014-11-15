@@ -137,8 +137,8 @@ Usage: chef-runner [options] [--] [<recipe>...]
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
 
-  --ssh-option <option>        Add OpenSSH option as specified in ssh_config(5)
-  --rsync-option <option>      Add Rsync option as listed in rsync(1)
+  --ssh <option>               Add OpenSSH option as specified in ssh_config(5)
+  --rsync <option>             Add Rsync option as listed in rsync(1)
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
@@ -257,7 +257,7 @@ any system reachable over SSH.
 Use the `-H` option (or `--host`) to specify the name of a host that was
 configured for direct SSH access. The argument passed to `-H` has the format
 `[user@]hostname[:port]`, allowing you to optionally change SSH user and port.
-If you need to change other SSH settings, either use `--ssh-option` or add a
+If you need to change other SSH settings, either use `--ssh` or add a
 host-specific configuration section to your `~/.ssh/config`.
 
 Examples:
@@ -265,7 +265,7 @@ Examples:
     $ chef-runner -H example.local
     $ chef-runner -H user@example.local
     $ chef-runner -H example.local:1234
-    $ chef-runner -H example.local --ssh-option LogLevel=debug --ssh-option "ProxyCommand ..."
+    $ chef-runner -H example.local --ssh LogLevel=debug --ssh "ProxyCommand ..."
 
 ### Installing Chef
 
