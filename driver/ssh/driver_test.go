@@ -14,7 +14,7 @@ func TestDriverInterface(t *testing.T) {
 
 func TestNewDriver(t *testing.T) {
 	sshOpts := []string{"LogLevel=debug"}
-	rsyncOpts := []string{"--quiet"}
+	rsyncOpts := []string{"--verbose"}
 	drv, err := NewDriver("some-user@some-host:1234", sshOpts, rsyncOpts)
 	if assert.NoError(t, err) {
 		assert.Equal(t, "some-host", drv.SSHClient.Host)

@@ -7,7 +7,7 @@ FEATURES:
   `ssh_config(5)` for a list of available options and their format. (Thanks to
   @berniedurfee who requested this feature.)
 * Allow to specify one or more custom Rsync options on the command line, e.g.
-  `chef-runner --rsync-option "--progress"`. See `rsync(1)` for a list of
+  `chef-runner --rsync-option --progress`. See `rsync(1)` for a list of
   available options.
 * Add `--color=false` option to disable colorized output.
 
@@ -30,6 +30,8 @@ BREAKING CHANGES:
   expanded to `<cookbook>::foo`. Local recipes now need to be passed as `::foo`
   instead. This change also simplifies run list composition when multiple
   cookbooks are involved, e.g. `chef-runner apt postgresql::client nginx`.
+* No longer run Rsync in verbose mode by default. To get back the old output,
+  you need to use `--rsync-option --verbose` now.
 
 [omnibus package]: https://godoc.org/github.com/mlafeldt/chef-runner/chef/omnibus
 
