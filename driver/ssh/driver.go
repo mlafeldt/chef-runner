@@ -16,7 +16,7 @@ type Driver struct {
 }
 
 // NewDriver creates a new SSH driver that communicates with the given host.
-func NewDriver(host string, sshOptions []string) (*Driver, error) {
+func NewDriver(host string, sshOptions, rsyncOptions []string) (*Driver, error) {
 	sshClient, err := openssh.NewClient(host)
 	if err != nil {
 		return nil, err
@@ -26,6 +26,7 @@ func NewDriver(host string, sshOptions []string) (*Driver, error) {
 	rsyncClient := *rsync.MirrorClient
 	rsyncClient.RemoteHost = sshClient.Host
 	rsyncClient.RemoteShell = sshClient.Shell()
+	rsyncClient.Options = rsyncOptions
 
 	return &Driver{host, sshClient, &rsyncClient}, nil
 }

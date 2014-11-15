@@ -63,6 +63,12 @@ var commandTests = []struct {
 		cmd:    []string{"rsync", "--rsh", "some-shell", "a", "some-host:b"},
 	},
 	{
+		client: Client{Options: []string{"--some-option", "--another-option"}},
+		src:    []string{"a"},
+		dst:    "b",
+		cmd:    []string{"rsync", "--some-option", "--another-option", "a", "b"},
+	},
+	{
 		client: Client{Archive: true, Compress: true, Exclude: []string{"x"}},
 		src:    []string{"a"},
 		dst:    "b",
