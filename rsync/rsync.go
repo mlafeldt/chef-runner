@@ -43,7 +43,6 @@ var MirrorClient = &Client{
 	Archive:  true,
 	Delete:   true,
 	Compress: true,
-	Verbose:  true,
 }
 
 // Command returns the rsync command that will be executed by Copy.

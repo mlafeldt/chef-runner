@@ -63,7 +63,7 @@ func TestAutoResolve_Dir(t *testing.T) {
 	})
 
 	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
-		"--verbose", "metadata.rb", CookbookPath + "/cats"}, lastCmd)
+		"metadata.rb", CookbookPath + "/cats"}, lastCmd)
 }
 
 func TestAutoResolve_DirUpdate(t *testing.T) {
@@ -78,7 +78,7 @@ func TestAutoResolve_DirUpdate(t *testing.T) {
 	})
 
 	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
-		"--verbose", "metadata.rb", CookbookPath + "/cats"}, lastCmd)
+		"metadata.rb", CookbookPath + "/cats"}, lastCmd)
 }
 
 func TestAutoResolve_NoCookbooks(t *testing.T) {

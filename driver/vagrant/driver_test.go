@@ -23,7 +23,7 @@ func TestNewDriver(t *testing.T) {
 		defer os.Setenv("PATH", oldPath)
 
 		sshOpts := []string{"LogLevel=debug"}
-		rsyncOpts := []string{"--quiet"}
+		rsyncOpts := []string{"--verbose"}
 		drv, err := NewDriver("some-machine", sshOpts, rsyncOpts)
 		if assert.NoError(t, err) {
 			defer os.RemoveAll(".chef-runner")
