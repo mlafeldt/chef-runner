@@ -1,7 +1,12 @@
-## v0.8.0 (unreleased)
+## v0.8.0 (Nov 16 2014)
 
 FEATURES:
 
+* Support using chef-runner on **Windows**. New releases will include
+  cross-compiled Windows binaries. Requires `ssh.exe` and `rsync.exe` to be
+  installed. `ssh.exe` is included in MinGW ([Git Bash]). `rsync.exe` must be
+  configured to use destination-default permissions when copying files:
+  `chef-runner --rsync --no-p --rsync --no-g --rsync --chmod=ugo=rwX`.
 * Allow to specify one or more custom OpenSSH options on the command line, e.g.
   `chef-runner --ssh LogLevel=debug --ssh "ProxyCommand ..."`. See
   `ssh_config(5)` for a list of available options and their format. (Thanks to
@@ -32,6 +37,7 @@ BREAKING CHANGES:
 * No longer run Rsync in verbose mode by default. To get back the old output,
   you need to use `--rsync --verbose` now.
 
+[Git Bash]: http://msysgit.github.io/
 [omnibus package]: https://godoc.org/github.com/mlafeldt/chef-runner/chef/omnibus
 
 ## v0.7.0 (Sep 12 2014)
