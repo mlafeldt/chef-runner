@@ -5,8 +5,8 @@ FEATURES:
 * Support using chef-runner on **Windows**. New releases will include
   cross-compiled Windows binaries. Requires `ssh.exe` and `rsync.exe` to be
   installed. `ssh.exe` is included in MinGW ([Git Bash]). `rsync.exe` must be
-  configured to use destination-default permissions when copying files:
-  `chef-runner --rsync --no-p --rsync --no-g --rsync --chmod=ugo=rwX`.
+  configured to use destination-default permissions when provisioning Unix-like
+  systems: `chef-runner --rsync --no-p --rsync --no-g --rsync --chmod=ugo=rwX`.
 * Allow to specify one or more custom OpenSSH options on the command line, e.g.
   `chef-runner --ssh LogLevel=debug --ssh "ProxyCommand ..."`. See
   `ssh_config(5)` for a list of available options and their format. (Thanks to
