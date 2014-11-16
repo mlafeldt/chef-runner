@@ -13,6 +13,7 @@ FEATURES:
   @berniedurfee who requested this feature.)
 * Allow to specify one or more custom Rsync options on the command line, e.g.
   `chef-runner --rsync --progress`. See `rsync(1)` for a list of available
+  options.
 * Add `--color=false` option to disable colorized output.
 
 IMPROVEMENTS:
