@@ -242,12 +242,18 @@ over SSH.
 To get a list of all instances, run `kitchen list` inside a directory with a
 `.kitchen.yml` file. Then either use `kitchen create`, `kitchen converge`, or
 `kitchen verify` to bring up the instance you want to use. Finally, pass the
-name of that instance to chef-runner via `-K` (or `--kitchen`).
+name of that instance to chef-runner via `-K` (or `--kitchen`). When you only
+specify a portion of the instance name, chef-runner will use the first instance
+containing that string in its name.
 
 Example:
 
     $ kitchen converge default-ubuntu-1404
     $ chef-runner -K default-ubuntu-1404 ...
+
+Or, with the partial name:
+
+    $ chef-runner -K ubuntu ...
 
 ### SSH
 
