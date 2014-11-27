@@ -27,6 +27,7 @@ gox \
     -os="darwin linux windows freebsd openbsd" \
     -ldflags "-X main.GitVersion $git_version" \
     ./...
+ln -snf "$version" build/latest
 
 case "$1" in
 -r|--release)
