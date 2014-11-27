@@ -2,8 +2,8 @@
 
 * Partial matching of Test Kitchen instance names. For example, `chef-runner -K
   ubuntu` will provision the instance "default-ubuntu-1404" if that's the first
-  instance with the string "ubuntu" in its name. (Note: The matching does not
-  support regular expressions.)
+  instance with the string "ubuntu" in its name. Note: The matching does not
+  support regular expressions. (Thanks to @StephenKing for the idea.)
 
 ## v0.8.0 (Nov 16 2014)
 
