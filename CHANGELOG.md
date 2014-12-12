@@ -4,6 +4,11 @@
   ubuntu` will provision the instance "default-ubuntu-1404" if that's the first
   instance with the string "ubuntu" in its name. Note: The matching does not
   support regular expressions. (Thanks to @StephenKing for the idea.)
+* Move most documentation from README to the [chef-runner wiki][wiki]. The
+  README was too long, making it too hard to find relevant information. Now it
+  only contains the most essential information.
+
+[wiki]: https://github.com/mlafeldt/chef-runner/wiki
 
 ## v0.8.0 (Nov 16 2014)
 
