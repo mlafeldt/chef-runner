@@ -4,6 +4,7 @@ package omnibus
 
 import (
 	"io/ioutil"
+	"os"
 	"path"
 
 	"github.com/mlafeldt/chef-runner/log"
@@ -51,6 +52,9 @@ func (i Installer) PrepareScripts() error {
 		return nil
 	}
 	log.Debug("Preparing install scripts")
+	if err := os.MkdirAll(i.ScriptPath, 0755); err != nil {
+		return err
+	}
 	if err := i.writeWrapperScript(); err != nil {
 		return err
 	}

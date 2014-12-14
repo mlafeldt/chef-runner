@@ -57,7 +57,7 @@ func (p Provisioner) prepareCookbooks() error {
 func (p Provisioner) prepareInstallScripts() error {
 	i := omnibus.Installer{
 		ChefVersion: p.ChefVersion,
-		ScriptPath:  base.SandboxPath,
+		ScriptPath:  base.SandboxPathTo("scripts"),
 	}
 	return i.PrepareScripts()
 }
@@ -90,7 +90,7 @@ func (p Provisioner) CleanupSandbox() error {
 func (p Provisioner) InstallCommand() []string {
 	i := omnibus.Installer{
 		ChefVersion: p.ChefVersion,
-		ScriptPath:  base.RootPath,
+		ScriptPath:  base.RootPathTo("scripts"),
 	}
 	return i.Command()
 }
