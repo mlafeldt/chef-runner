@@ -3,6 +3,7 @@
 package provisioner
 
 import (
+	"io/ioutil"
 	"os"
 	"path"
 
@@ -10,6 +11,11 @@ import (
 )
 
 const (
+	// SandboxVersion is a number that is stored inside every sandbox. This
+	// number can be increased to avoid compatibility issues in case the
+	// sandbox structure changes.
+	SandboxVersion = "1"
+
 	// SandboxPath is the path to the local sandbox directory where
 	// chef-runner stores files that will be uploaded to a machine.
 	SandboxPath = ".chef-runner/sandbox"
@@ -42,8 +48,20 @@ func RootPathTo(elem ...string) string {
 // CreateSandbox creates the sandbox directory.
 func CreateSandbox() error {
 	log.Info("Preparing local files")
+
+	version, _ := ioutil.ReadFile(SandboxPathTo("version"))
+	if string(version) != SandboxVersion {
+		log.Debugf("Wiping old sandbox with version: %s\n", string(version))
+		if err := os.RemoveAll(SandboxPath); err != nil {
+			return err
+		}
+	}
+
 	log.Debug("Creating local sandbox in", SandboxPath)
-	return os.MkdirAll(SandboxPath, 0755)
+	if err := os.MkdirAll(SandboxPath, 0755); err != nil {
+		return err
+	}
+	return ioutil.WriteFile(SandboxPathTo("version"), []byte(SandboxVersion), 0644)
 }
 
 // CleanupSandbox deletes the sandbox directory.

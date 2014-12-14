@@ -1,0 +1,57 @@
+- parse command-line
+- read attributes
+- get run list
+- init driver
+- create sandbox
+  - prepare attributes
+  - prepare Chef config
+  - prepare cookbooks
+  - prepare install scripts
+- upload files
+- install Chef
+- provision
+
+
+driver: upload, install, provision
+
+
+
+.chef-runner/
+└── sandbox
+    ├── cookbooks
+    │   ├── Berksfile.lock
+    │   ├── inspeqtor
+    │   │   ├── README.md
+    │   │   ├── attributes
+    │   │   │   └── default.rb
+    │   │   ├── definitions
+    │   │   │   └── inspeqtor_service.rb
+    │   │   ├── libraries
+    │   │   │   └── alert_route.rb
+    │   │   ├── metadata.json
+    │   │   ├── recipes
+    │   │   │   └── default.rb
+    │   │   └── templates
+    │   │       └── default
+    │   │           ├── inspeqtor.conf.erb
+    │   │           └── service.inq.erb
+    │   └── packagecloud
+    │       ├── README.md
+    │       ├── attributes
+    │       │   └── default.rb
+    │       ├── libraries
+    │       │   └── helper.rb
+    │       ├── metadata.json
+    │       ├── providers
+    │       │   └── repo.rb
+    │       ├── resources
+    │       │   └── repo.rb
+    │       └── templates
+    │           └── default
+    │               ├── apt.erb
+    │               └── yum.erb
+    ├── dna.json
+    ├── scripts
+    │   ├── install-wrapper.sh
+    │   └── install.sh
+    └── solo.rb
