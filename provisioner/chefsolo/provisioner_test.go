@@ -2,6 +2,7 @@ package chefsolo_test
 
 import (
 	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/exec"
@@ -22,6 +23,8 @@ func TestProvisionerInterface(t *testing.T) {
 
 func TestPrepareFiles(t *testing.T) {
 	util.InTestDir(func() {
+		os.MkdirAll(".chef-runner/sandbox", 0755)
+
 		p := Provisioner{
 			SandboxPath: ".chef-runner/sandbox",
 			RootPath:    "/tmp/chef-runner",
@@ -43,6 +46,8 @@ func TestPrepareFiles(t *testing.T) {
 
 func TestPrepareFiles_CustomJSON(t *testing.T) {
 	util.InTestDir(func() {
+		os.MkdirAll(".chef-runner/sandbox", 0755)
+
 		p := Provisioner{
 			Attributes:  `{"foo": "bar"}`,
 			SandboxPath: ".chef-runner/sandbox",

@@ -4,7 +4,6 @@ package chefsolo
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path"
 	"strings"
 
@@ -31,12 +30,6 @@ type Provisioner struct {
 	RootPath    string
 }
 
-func (p Provisioner) prepareSandbox() error {
-	log.Info("Preparing local files")
-	log.Debug("Creating local sandbox in", p.SandboxPath)
-	return os.MkdirAll(p.SandboxPath, 0755)
-}
-
 func (p Provisioner) prepareJSON() error {
 	log.Debug("Preparing JSON data")
 	data := "{}\n"
@@ -53,20 +46,12 @@ func (p Provisioner) prepareSoloConfig() error {
 	return ioutil.WriteFile(path.Join(p.SandboxPath, "solo.rb"), []byte(data), 0644)
 }
 
-// PrepareFiles creates the sandbox directory. This includes preparing Chef
-// configuration data and cookbooks.
+// PrepareFiles prepares Chef configuration data.
 func (p Provisioner) PrepareFiles() error {
-	funcs := []func() error{
-		p.prepareSandbox,
-		p.prepareJSON,
-		p.prepareSoloConfig,
+	if err := p.prepareJSON(); err != nil {
+		return err
 	}
-	for _, f := range funcs {
-		if err := f(); err != nil {
-			return err
-		}
-	}
-	return nil
+	return p.prepareSoloConfig()
 }
 
 func (p Provisioner) sudo(args []string) []string {

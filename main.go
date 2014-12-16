@@ -139,6 +139,12 @@ func main() {
 
 	log.Debugf("Provisioner = %+v\n", p)
 
+	log.Info("Preparing local files")
+	log.Debug("Creating local sandbox in", SandboxPath)
+	if err := os.MkdirAll(SandboxPath, 0755); err != nil {
+		abort(err)
+	}
+
 	if err := p.PrepareFiles(); err != nil {
 		abort(err)
 	}
