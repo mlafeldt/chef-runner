@@ -125,20 +125,6 @@ func main() {
 		log.Infof("Run list is %s\n", runList)
 	}
 
-	log.Debug("Preparing cookbooks")
-	if err := resolver.AutoResolve(path.Join(SandboxPath, "cookbooks")); err != nil {
-		abort(err)
-	}
-
-	installer := omnibus.Installer{
-		ChefVersion: flags.ChefVersion,
-		SandboxPath: SandboxPath,
-		RootPath:    RootPath,
-	}
-	if err := installer.PrepareScripts(); err != nil {
-		abort(err)
-	}
-
 	var p provisioner.Provisioner
 	p = chefsolo.Provisioner{
 		RunList:    runList,
@@ -154,6 +140,20 @@ func main() {
 	log.Debugf("Provisioner = %+v\n", p)
 
 	if err := p.PrepareFiles(); err != nil {
+		abort(err)
+	}
+
+	log.Debug("Preparing cookbooks")
+	if err := resolver.AutoResolve(path.Join(SandboxPath, "cookbooks")); err != nil {
+		abort(err)
+	}
+
+	installer := omnibus.Installer{
+		ChefVersion: flags.ChefVersion,
+		SandboxPath: SandboxPath,
+		RootPath:    RootPath,
+	}
+	if err := installer.PrepareScripts(); err != nil {
 		abort(err)
 	}
 
