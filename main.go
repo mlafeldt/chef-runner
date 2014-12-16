@@ -19,6 +19,16 @@ import (
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
 )
 
+const (
+	// SandboxPath is the path to the local sandbox directory where
+	// chef-runner stores files that will be uploaded to a machine.
+	SandboxPath = ".chef-runner/sandbox"
+
+	// RootPath is the path on the machine where files from SandboxPath
+	// will be uploaded to.
+	RootPath = "/tmp/chef-runner"
+)
+
 func abort(v ...interface{}) {
 	log.Error(v...)
 	os.Exit(1)
@@ -37,8 +47,8 @@ func findDriver(flags *cli.Flags) (driver.Driver, error) {
 func uploadFiles(drv driver.Driver) error {
 	log.Info("Uploading local files to machine. This may take a while...")
 	log.Debugf("Uploading files from %s to %s on machine\n",
-		provisioner.SandboxPath, provisioner.RootPath)
-	return drv.Upload(provisioner.RootPath, provisioner.SandboxPath+"/")
+		SandboxPath, RootPath)
+	return drv.Upload(RootPath, SandboxPath+"/")
 }
 
 func installChef(drv driver.Driver, p provisioner.Provisioner) error {
@@ -120,6 +130,9 @@ func main() {
 		LogLevel:    flags.LogLevel,
 		UseSudo:     true,
 		ChefVersion: flags.ChefVersion,
+
+		SandboxPath: SandboxPath,
+		RootPath:    RootPath,
 	}
 
 	log.Debugf("Provisioner = %+v\n", p)
