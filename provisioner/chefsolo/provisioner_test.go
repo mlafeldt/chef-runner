@@ -22,7 +22,7 @@ func TestProvisionerInterface(t *testing.T) {
 }
 
 // Note: Setup of cookbook dependencies is tested in the resolver package.
-func TestCreateSandbox(t *testing.T) {
+func TestPrepareFiles(t *testing.T) {
 	util.InTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
@@ -31,7 +31,7 @@ func TestCreateSandbox(t *testing.T) {
 			SandboxPath: ".chef-runner/sandbox",
 			RootPath:    "/tmp/chef-runner",
 		}
-		assert.NoError(t, p.CreateSandbox())
+		assert.NoError(t, p.PrepareFiles())
 
 		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
 		assert.NoError(t, err)
@@ -46,7 +46,7 @@ func TestCreateSandbox(t *testing.T) {
 	})
 }
 
-func TestCreateSandbox_CustomJSON(t *testing.T) {
+func TestPrepareFiles_CustomJSON(t *testing.T) {
 	util.InTestDir(func() {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
@@ -56,7 +56,7 @@ func TestCreateSandbox_CustomJSON(t *testing.T) {
 			SandboxPath: ".chef-runner/sandbox",
 			RootPath:    "/tmp/chef-runner",
 		}
-		assert.NoError(t, p.CreateSandbox())
+		assert.NoError(t, p.PrepareFiles())
 
 		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
 		assert.NoError(t, err)

@@ -69,9 +69,9 @@ func (p Provisioner) prepareInstallScripts() error {
 	return i.PrepareScripts()
 }
 
-// CreateSandbox creates the sandbox directory. This includes preparing Chef
+// PrepareFiles creates the sandbox directory. This includes preparing Chef
 // configuration data and cookbooks.
-func (p Provisioner) CreateSandbox() error {
+func (p Provisioner) PrepareFiles() error {
 	funcs := []func() error{
 		p.prepareSandbox,
 		p.prepareJSON,
@@ -84,11 +84,6 @@ func (p Provisioner) CreateSandbox() error {
 			return err
 		}
 	}
-	return nil
-}
-
-// CleanupSandbox deletes the sandbox directory.
-func (p Provisioner) CleanupSandbox() error {
 	return nil
 }
 

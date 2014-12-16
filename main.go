@@ -137,7 +137,7 @@ func main() {
 
 	log.Debugf("Provisioner = %+v\n", p)
 
-	if err := p.CreateSandbox(); err != nil {
+	if err := p.PrepareFiles(); err != nil {
 		abort(err)
 	}
 
