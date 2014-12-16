@@ -10,7 +10,6 @@ import (
 
 	"github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/resolver"
 )
 
 const (
@@ -56,11 +55,6 @@ func (p Provisioner) prepareSoloConfig() error {
 	return ioutil.WriteFile(path.Join(p.SandboxPath, "solo.rb"), []byte(data), 0644)
 }
 
-func (p Provisioner) prepareCookbooks() error {
-	log.Debug("Preparing cookbooks")
-	return resolver.AutoResolve(path.Join(p.SandboxPath, "cookbooks"))
-}
-
 func (p Provisioner) prepareInstallScripts() error {
 	i := omnibus.Installer{
 		ChefVersion: p.ChefVersion,
@@ -76,7 +70,6 @@ func (p Provisioner) PrepareFiles() error {
 		p.prepareSandbox,
 		p.prepareJSON,
 		p.prepareSoloConfig,
-		p.prepareCookbooks,
 		p.prepareInstallScripts,
 	}
 	for _, f := range funcs {

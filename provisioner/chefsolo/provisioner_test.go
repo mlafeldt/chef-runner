@@ -2,7 +2,6 @@ package chefsolo_test
 
 import (
 	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/mlafeldt/chef-runner/exec"
@@ -21,12 +20,8 @@ func TestProvisionerInterface(t *testing.T) {
 	assert.Implements(t, (*provisioner.Provisioner)(nil), new(Provisioner))
 }
 
-// Note: Setup of cookbook dependencies is tested in the resolver package.
 func TestPrepareFiles(t *testing.T) {
 	util.InTestDir(func() {
-		ioutil.WriteFile("Berksfile", []byte{}, 0644)
-		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
-
 		p := Provisioner{
 			SandboxPath: ".chef-runner/sandbox",
 			RootPath:    "/tmp/chef-runner",
@@ -48,9 +43,6 @@ func TestPrepareFiles(t *testing.T) {
 
 func TestPrepareFiles_CustomJSON(t *testing.T) {
 	util.InTestDir(func() {
-		ioutil.WriteFile("Berksfile", []byte{}, 0644)
-		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
-
 		p := Provisioner{
 			Attributes:  `{"foo": "bar"}`,
 			SandboxPath: ".chef-runner/sandbox",

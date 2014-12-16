@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -17,6 +18,7 @@ import (
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
+	"github.com/mlafeldt/chef-runner/resolver"
 )
 
 const (
@@ -120,6 +122,11 @@ func main() {
 			abort(err)
 		}
 		log.Infof("Run list is %s\n", runList)
+	}
+
+	log.Debug("Preparing cookbooks")
+	if err := resolver.AutoResolve(path.Join(SandboxPath, "cookbooks")); err != nil {
+		abort(err)
 	}
 
 	var p provisioner.Provisioner
