@@ -8,7 +8,6 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/log"
 )
 
@@ -22,12 +21,11 @@ const (
 
 // Provisioner is a provisioner based on Chef Solo.
 type Provisioner struct {
-	RunList     []string
-	Attributes  string
-	Format      string
-	LogLevel    string
-	UseSudo     bool
-	ChefVersion string
+	RunList    []string
+	Attributes string
+	Format     string
+	LogLevel   string
+	UseSudo    bool
 
 	SandboxPath string
 	RootPath    string
@@ -55,14 +53,6 @@ func (p Provisioner) prepareSoloConfig() error {
 	return ioutil.WriteFile(path.Join(p.SandboxPath, "solo.rb"), []byte(data), 0644)
 }
 
-func (p Provisioner) prepareInstallScripts() error {
-	i := omnibus.Installer{
-		ChefVersion: p.ChefVersion,
-		ScriptPath:  p.SandboxPath,
-	}
-	return i.PrepareScripts()
-}
-
 // PrepareFiles creates the sandbox directory. This includes preparing Chef
 // configuration data and cookbooks.
 func (p Provisioner) PrepareFiles() error {
@@ -70,7 +60,6 @@ func (p Provisioner) PrepareFiles() error {
 		p.prepareSandbox,
 		p.prepareJSON,
 		p.prepareSoloConfig,
-		p.prepareInstallScripts,
 	}
 	for _, f := range funcs {
 		if err := f(); err != nil {
@@ -78,16 +67,6 @@ func (p Provisioner) PrepareFiles() error {
 		}
 	}
 	return nil
-}
-
-// InstallCommand returns the command string to conditionally install Chef onto
-// a machine.
-func (p Provisioner) InstallCommand() []string {
-	i := omnibus.Installer{
-		ChefVersion: p.ChefVersion,
-		ScriptPath:  p.RootPath,
-	}
-	return i.Command()
 }
 
 func (p Provisioner) sudo(args []string) []string {

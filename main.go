@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/mlafeldt/chef-runner/chef/cookbook"
+	"github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/chef/runlist"
 	"github.com/mlafeldt/chef-runner/cli"
 	"github.com/mlafeldt/chef-runner/driver"
@@ -53,8 +54,8 @@ func uploadFiles(drv driver.Driver) error {
 	return drv.Upload(RootPath, SandboxPath+"/")
 }
 
-func installChef(drv driver.Driver, p provisioner.Provisioner) error {
-	installCmd := p.InstallCommand()
+func installChef(drv driver.Driver, installer omnibus.Installer) error {
+	installCmd := installer.Command()
 	if len(installCmd) == 0 {
 		log.Info("Skipping installation of Chef")
 		return nil
@@ -129,14 +130,22 @@ func main() {
 		abort(err)
 	}
 
+	installer := omnibus.Installer{
+		ChefVersion: flags.ChefVersion,
+		SandboxPath: SandboxPath,
+		RootPath:    RootPath,
+	}
+	if err := installer.PrepareScripts(); err != nil {
+		abort(err)
+	}
+
 	var p provisioner.Provisioner
 	p = chefsolo.Provisioner{
-		RunList:     runList,
-		Attributes:  attributes,
-		Format:      flags.Format,
-		LogLevel:    flags.LogLevel,
-		UseSudo:     true,
-		ChefVersion: flags.ChefVersion,
+		RunList:    runList,
+		Attributes: attributes,
+		Format:     flags.Format,
+		LogLevel:   flags.LogLevel,
+		UseSudo:    true,
 
 		SandboxPath: SandboxPath,
 		RootPath:    RootPath,
@@ -157,7 +166,7 @@ func main() {
 		abort(err)
 	}
 
-	if err := installChef(drv, p); err != nil {
+	if err := installChef(drv, installer); err != nil {
 		abort(err)
 	}
 

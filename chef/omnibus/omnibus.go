@@ -16,26 +16,22 @@ var ScriptURL = "https://www.opscode.com/chef/install.sh"
 // An Installer allows to install Chef.
 type Installer struct {
 	ChefVersion string
-	ScriptPath  string
+	SandboxPath string
+	RootPath    string
 }
 
 func (i Installer) skip() bool {
 	return i.ChefVersion == "" || i.ChefVersion == "false"
 }
 
-func (i Installer) scriptPathTo(elem ...string) string {
-	slice := append([]string{i.ScriptPath}, elem...)
-	return path.Join(slice...)
-}
-
 func (i Installer) writeWrapperScript() error {
-	script := i.scriptPathTo("install-wrapper.sh")
+	script := path.Join(i.SandboxPath, "install-wrapper.sh")
 	log.Debugf("Writing install wrapper script to %s\n", script)
 	return ioutil.WriteFile(script, []byte(wrapperScript), 0644)
 }
 
 func (i Installer) downloadOmnibusScript() error {
-	script := i.scriptPathTo("install.sh")
+	script := path.Join(i.SandboxPath, "install.sh")
 	if util.FileExist(script) {
 		log.Debugf("Omnibus script already downloaded to %s\n", script)
 		return nil
@@ -66,8 +62,8 @@ func (i Installer) Command() []string {
 	return []string{
 		"sudo",
 		"sh",
-		i.scriptPathTo("install-wrapper.sh"),
-		i.scriptPathTo("install.sh"),
+		path.Join(i.RootPath, "install-wrapper.sh"),
+		path.Join(i.RootPath, "install.sh"),
 		i.ChefVersion,
 	}
 }
