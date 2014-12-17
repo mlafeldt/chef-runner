@@ -1,9 +1,7 @@
 language: go
 
 go:
-  - 1.2
-  - 1.3
-  - tip
+  - 1.4
 
 install: script/bootstrap
 
@@ -15,7 +13,3 @@ script:
 branches:
   only:
     - master
-
-matrix:
-  allow_failures:
-    - go: tip
