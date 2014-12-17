@@ -40,8 +40,8 @@ func (i Installer) downloadOmnibusScript() error {
 	return util.DownloadFile(script, ScriptURL)
 }
 
-// PrepareScripts sets up the scripts required to install Chef.
-func (i Installer) PrepareScripts() error {
+// PrepareFiles sets up the scripts required to install Chef.
+func (i Installer) PrepareFiles() error {
 	if i.skip() {
 		log.Debug("Skipping setup of install scripts")
 		return nil

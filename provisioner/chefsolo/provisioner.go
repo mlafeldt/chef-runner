@@ -61,9 +61,9 @@ func (p Provisioner) sudo(args []string) []string {
 	return append([]string{"sudo"}, args...)
 }
 
-// ProvisionCommand returns the command string which will invoke the
-// provisioner on the prepared machine.
-func (p Provisioner) ProvisionCommand() []string {
+// Command returns the command string which will invoke the provisioner on the
+// prepared machine.
+func (p Provisioner) Command() []string {
 	format := p.Format
 	if format == "" {
 		format = DefaultFormat

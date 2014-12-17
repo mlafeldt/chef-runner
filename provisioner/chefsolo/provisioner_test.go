@@ -68,7 +68,7 @@ func TestPrepareFiles_CustomJSON(t *testing.T) {
 	})
 }
 
-var provisionCommandTests = []struct {
+var commandTests = []struct {
 	provisioner Provisioner
 	cmd         []string
 }{
@@ -155,8 +155,8 @@ var provisionCommandTests = []struct {
 	},
 }
 
-func TestProvisionCommand(t *testing.T) {
-	for _, test := range provisionCommandTests {
-		assert.Equal(t, test.cmd, test.provisioner.ProvisionCommand())
+func TestCommand(t *testing.T) {
+	for _, test := range commandTests {
+		assert.Equal(t, test.cmd, test.provisioner.Command())
 	}
 }

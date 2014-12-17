@@ -66,7 +66,7 @@ func installChef(drv driver.Driver, installer omnibus.Installer) error {
 
 func runChef(drv driver.Driver, p provisioner.Provisioner) error {
 	log.Infof("Running Chef using %s\n", drv)
-	return drv.RunCommand(p.ProvisionCommand())
+	return drv.RunCommand(p.Command())
 }
 
 func main() {
@@ -136,10 +136,17 @@ func main() {
 		SandboxPath: SandboxPath,
 		RootPath:    RootPath,
 	}
-
 	log.Debugf("Provisioner = %+v\n", p)
 
+	installer := omnibus.Installer{
+		ChefVersion: flags.ChefVersion,
+		SandboxPath: SandboxPath,
+		RootPath:    RootPath,
+	}
+	log.Debugf("Installer = %+v\n", installer)
+
 	log.Info("Preparing local files")
+
 	log.Debug("Creating local sandbox in", SandboxPath)
 	if err := os.MkdirAll(SandboxPath, 0755); err != nil {
 		abort(err)
@@ -149,17 +156,11 @@ func main() {
 		abort(err)
 	}
 
-	log.Debug("Preparing cookbooks")
 	if err := resolver.AutoResolve(path.Join(SandboxPath, "cookbooks")); err != nil {
 		abort(err)
 	}
 
-	installer := omnibus.Installer{
-		ChefVersion: flags.ChefVersion,
-		SandboxPath: SandboxPath,
-		RootPath:    RootPath,
-	}
-	if err := installer.PrepareScripts(); err != nil {
+	if err := installer.PrepareFiles(); err != nil {
 		abort(err)
 	}
 

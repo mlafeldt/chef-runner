@@ -11,14 +11,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPrepareScripts(t *testing.T) {
+func TestPrepareFiles(t *testing.T) {
 	ts := httptest.NewServer(http.FileServer(http.Dir(".")))
 	defer ts.Close()
 	ScriptURL = ts.URL + "/omnibus_test.go"
 
 	wd, _ := os.Getwd()
 	i := Installer{ChefVersion: "1.2.3", SandboxPath: wd}
-	assert.NoError(t, i.PrepareScripts())
+	assert.NoError(t, i.PrepareFiles())
 
 	defer os.Remove("install.sh")
 	defer os.Remove("install-wrapper.sh")
