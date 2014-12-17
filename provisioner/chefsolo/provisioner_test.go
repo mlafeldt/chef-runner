@@ -21,13 +21,15 @@ func TestProvisionerInterface(t *testing.T) {
 	assert.Implements(t, (*provisioner.Provisioner)(nil), new(Provisioner))
 }
 
-// Note: Setup of cookbook dependencies is tested in the resolver package.
-func TestCreateSandbox(t *testing.T) {
+func TestPrepareFiles(t *testing.T) {
 	util.InTestDir(func() {
-		ioutil.WriteFile("Berksfile", []byte{}, 0644)
-		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
+		os.MkdirAll(".chef-runner/sandbox", 0755)
 
-		assert.NoError(t, Provisioner{}.CreateSandbox())
+		p := Provisioner{
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
+		}
+		assert.NoError(t, p.PrepareFiles())
 
 		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
 		assert.NoError(t, err)
@@ -42,13 +44,16 @@ func TestCreateSandbox(t *testing.T) {
 	})
 }
 
-func TestCreateSandbox_CustomJSON(t *testing.T) {
+func TestPrepareFiles_CustomJSON(t *testing.T) {
 	util.InTestDir(func() {
-		ioutil.WriteFile("Berksfile", []byte{}, 0644)
-		os.MkdirAll(".chef-runner/sandbox/cookbooks", 0755)
+		os.MkdirAll(".chef-runner/sandbox", 0755)
 
-		p := Provisioner{Attributes: `{"foo": "bar"}`}
-		assert.NoError(t, p.CreateSandbox())
+		p := Provisioner{
+			Attributes:  `{"foo": "bar"}`,
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
+		}
+		assert.NoError(t, p.PrepareFiles())
 
 		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
 		assert.NoError(t, err)
@@ -63,12 +68,15 @@ func TestCreateSandbox_CustomJSON(t *testing.T) {
 	})
 }
 
-var provisionCommandTests = []struct {
+var commandTests = []struct {
 	provisioner Provisioner
 	cmd         []string
 }{
 	{
-		Provisioner{},
+		Provisioner{
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
+		},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
 			"--json-attributes", "/tmp/chef-runner/dna.json",
@@ -77,7 +85,9 @@ var provisionCommandTests = []struct {
 	},
 	{
 		Provisioner{
-			RunList: []string{"cats::foo"},
+			RunList:     []string{"cats::foo"},
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
 		},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
@@ -88,8 +98,10 @@ var provisionCommandTests = []struct {
 	},
 	{
 		Provisioner{
-			RunList: []string{"cats::foo"},
-			Format:  "null",
+			RunList:     []string{"cats::foo"},
+			Format:      "null",
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
 		},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
@@ -100,8 +112,10 @@ var provisionCommandTests = []struct {
 	},
 	{
 		Provisioner{
-			RunList:  []string{"cats::foo"},
-			LogLevel: "error",
+			RunList:     []string{"cats::foo"},
+			LogLevel:    "error",
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
 		},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
@@ -112,9 +126,11 @@ var provisionCommandTests = []struct {
 	},
 	{
 		Provisioner{
-			RunList:  []string{"cats::foo", "dogs::bar"},
-			Format:   "min",
-			LogLevel: "warn",
+			RunList:     []string{"cats::foo", "dogs::bar"},
+			Format:      "min",
+			LogLevel:    "warn",
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
 		},
 		[]string{
 			"chef-solo", "--config", "/tmp/chef-runner/solo.rb",
@@ -125,8 +141,10 @@ var provisionCommandTests = []struct {
 	},
 	{
 		Provisioner{
-			RunList: []string{"cats::foo"},
-			UseSudo: true,
+			RunList:     []string{"cats::foo"},
+			UseSudo:     true,
+			SandboxPath: ".chef-runner/sandbox",
+			RootPath:    "/tmp/chef-runner",
 		},
 		[]string{
 			"sudo", "chef-solo", "--config", "/tmp/chef-runner/solo.rb",
@@ -137,8 +155,8 @@ var provisionCommandTests = []struct {
 	},
 }
 
-func TestProvisionCommand(t *testing.T) {
-	for _, test := range provisionCommandTests {
-		assert.Equal(t, test.cmd, test.provisioner.ProvisionCommand())
+func TestCommand(t *testing.T) {
+	for _, test := range commandTests {
+		assert.Equal(t, test.cmd, test.provisioner.Command())
 	}
 }

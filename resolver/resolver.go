@@ -71,6 +71,8 @@ func stripCookbooks(dst string) error {
 // present in the current directory. After resolving dependencies, it also
 // deletes all non-cookbook files.
 func AutoResolve(dst string) error {
+	log.Debug("Preparing cookbooks")
+
 	r, err := findResolver(dst)
 	if err != nil {
 		return err

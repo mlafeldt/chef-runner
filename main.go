@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"strings"
 	"time"
 
 	"github.com/mlafeldt/chef-runner/chef/cookbook"
+	"github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/chef/runlist"
 	"github.com/mlafeldt/chef-runner/cli"
 	"github.com/mlafeldt/chef-runner/driver"
@@ -17,6 +19,17 @@ import (
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/provisioner"
 	"github.com/mlafeldt/chef-runner/provisioner/chefsolo"
+	"github.com/mlafeldt/chef-runner/resolver"
+)
+
+const (
+	// SandboxPath is the path to the local sandbox directory where
+	// chef-runner stores files that will be uploaded to a machine.
+	SandboxPath = ".chef-runner/sandbox"
+
+	// RootPath is the path on the machine where files from SandboxPath
+	// will be uploaded to.
+	RootPath = "/tmp/chef-runner"
 )
 
 func abort(v ...interface{}) {
@@ -37,12 +50,12 @@ func findDriver(flags *cli.Flags) (driver.Driver, error) {
 func uploadFiles(drv driver.Driver) error {
 	log.Info("Uploading local files to machine. This may take a while...")
 	log.Debugf("Uploading files from %s to %s on machine\n",
-		provisioner.SandboxPath, provisioner.RootPath)
-	return drv.Upload(provisioner.RootPath, provisioner.SandboxPath+"/")
+		SandboxPath, RootPath)
+	return drv.Upload(RootPath, SandboxPath+"/")
 }
 
-func installChef(drv driver.Driver, p provisioner.Provisioner) error {
-	installCmd := p.InstallCommand()
+func installChef(drv driver.Driver, installer omnibus.Installer) error {
+	installCmd := installer.Command()
 	if len(installCmd) == 0 {
 		log.Info("Skipping installation of Chef")
 		return nil
@@ -53,7 +66,7 @@ func installChef(drv driver.Driver, p provisioner.Provisioner) error {
 
 func runChef(drv driver.Driver, p provisioner.Provisioner) error {
 	log.Infof("Running Chef using %s\n", drv)
-	return drv.RunCommand(p.ProvisionCommand())
+	return drv.RunCommand(p.Command())
 }
 
 func main() {
@@ -114,17 +127,40 @@ func main() {
 
 	var p provisioner.Provisioner
 	p = chefsolo.Provisioner{
-		RunList:     runList,
-		Attributes:  attributes,
-		Format:      flags.Format,
-		LogLevel:    flags.LogLevel,
-		UseSudo:     true,
-		ChefVersion: flags.ChefVersion,
-	}
+		RunList:    runList,
+		Attributes: attributes,
+		Format:     flags.Format,
+		LogLevel:   flags.LogLevel,
+		UseSudo:    true,
 
+		SandboxPath: SandboxPath,
+		RootPath:    RootPath,
+	}
 	log.Debugf("Provisioner = %+v\n", p)
 
-	if err := p.CreateSandbox(); err != nil {
+	installer := omnibus.Installer{
+		ChefVersion: flags.ChefVersion,
+		SandboxPath: SandboxPath,
+		RootPath:    RootPath,
+	}
+	log.Debugf("Installer = %+v\n", installer)
+
+	log.Info("Preparing local files")
+
+	log.Debug("Creating local sandbox in", SandboxPath)
+	if err := os.MkdirAll(SandboxPath, 0755); err != nil {
+		abort(err)
+	}
+
+	if err := p.PrepareFiles(); err != nil {
+		abort(err)
+	}
+
+	if err := resolver.AutoResolve(path.Join(SandboxPath, "cookbooks")); err != nil {
+		abort(err)
+	}
+
+	if err := installer.PrepareFiles(); err != nil {
 		abort(err)
 	}
 
@@ -137,7 +173,7 @@ func main() {
 		abort(err)
 	}
 
-	if err := installChef(drv, p); err != nil {
+	if err := installChef(drv, installer); err != nil {
 		abort(err)
 	}
 
