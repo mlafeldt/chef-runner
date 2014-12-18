@@ -1,7 +1,6 @@
 # chef-runner - The fastest way to run Chef cookbooks
 
 [![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
-[![Coverage Status](https://img.shields.io/coveralls/mlafeldt/chef-runner.svg)](https://coveralls.io/r/mlafeldt/chef-runner?branch=master)
 [![GoDoc](https://godoc.org/github.com/mlafeldt/chef-runner?status.svg)](https://godoc.org/github.com/mlafeldt/chef-runner)
 
 The goal of chef-runner is to speed up your Chef development and testing
