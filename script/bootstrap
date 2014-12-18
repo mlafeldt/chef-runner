@@ -4,6 +4,6 @@
 
 exec go get -v -t \
     ./... \
-    code.google.com/p/go.tools/cmd/cover \
     github.com/golang/lint/golint \
-    github.com/mitchellh/gox
+    github.com/mitchellh/gox \
+    golang.org/x/tools/cmd/cover
