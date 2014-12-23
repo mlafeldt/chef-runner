@@ -37,7 +37,7 @@ func (r Resolver) Resolve(dst string) error {
 	return installCookbook(dst, ".")
 }
 
-// String returns the resolver's name.
-func (r Resolver) String() string {
-	return "Directory resolver"
+// Name returns the resolver's name.
+func (r Resolver) Name() string {
+	return "Directory"
 }

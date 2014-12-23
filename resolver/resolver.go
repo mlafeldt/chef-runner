@@ -18,7 +18,7 @@ import (
 // This is the interface that all resolvers need to implement.
 type Resolver interface {
 	Resolve(dst string) error
-	String() string
+	Name() string
 }
 
 // Helper to determine resolver from files in current directory.
@@ -78,7 +78,7 @@ func AutoResolve(dst string) error {
 		return err
 	}
 
-	log.Infof("Installing cookbook dependencies with %s\n", r)
+	log.Infof("Installing cookbook dependencies with %s resolver\n", r.Name())
 	if err := r.Resolve(dst); err != nil {
 		return err
 	}
