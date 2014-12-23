@@ -4,6 +4,7 @@ package berkshelf
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/mlafeldt/chef-runner/bundler"
@@ -28,6 +29,9 @@ func Command(dst string) []string {
 
 // Resolve runs Berkshelf to install cookbook dependencies to dst.
 func (r Resolver) Resolve(dst string) error {
+	if err := os.RemoveAll(dst); err != nil {
+		return err
+	}
 	return exec.RunCommand(Command(dst))
 }
 
