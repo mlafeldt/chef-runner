@@ -91,3 +91,15 @@ func TestAutoResolve_NoCookbooks(t *testing.T) {
 
 	assert.Equal(t, []string{}, lastCmd)
 }
+
+func TestResolve_Librarian(t *testing.T) {
+	lastCmd = []string{}
+
+	util.InTestDir(func() {
+		os.MkdirAll(CookbookPath, 0755)
+
+		assert.NoError(t, Resolve("librarian", CookbookPath))
+	})
+
+	assert.Equal(t, []string{"librarian-chef", "install", "--path", CookbookPath}, lastCmd)
+}

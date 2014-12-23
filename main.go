@@ -156,7 +156,8 @@ func main() {
 		abort(err)
 	}
 
-	if err := resolver.AutoResolve(path.Join(SandboxPath, "cookbooks")); err != nil {
+	cookbookPath := path.Join(SandboxPath, "cookbooks")
+	if err := resolver.Resolve(flags.Resolver, cookbookPath); err != nil {
 		abort(err)
 	}
 

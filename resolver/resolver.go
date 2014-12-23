@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"path"
+	"strings"
 
 	"github.com/mlafeldt/chef-runner/chef/cookbook"
 	"github.com/mlafeldt/chef-runner/log"
@@ -21,8 +22,25 @@ type Resolver interface {
 	Name() string
 }
 
-// Helper to determine resolver from files in current directory.
-func findResolver(dst string) (Resolver, error) {
+func findResolverByName(name string) (Resolver, error) {
+	var resolvers = [...]Resolver{
+		berkshelf.Resolver{},
+		librarian.Resolver{},
+		dir.Resolver{},
+	}
+	for _, r := range resolvers {
+		if strings.HasPrefix(strings.ToLower(r.Name()), strings.ToLower(name)) {
+			return r, nil
+		}
+	}
+	return nil, errors.New("unknown resolver name: " + name)
+}
+
+func findResolver(name, dst string) (Resolver, error) {
+	if name != "" {
+		return findResolverByName(name)
+	}
+
 	cb, _ := cookbook.NewCookbook(".")
 
 	// If the current folder is a cookbook and its dependencies have
@@ -67,13 +85,14 @@ func stripCookbooks(dst string) error {
 	return nil
 }
 
-// AutoResolve automatically resolves cookbook dependencies based on the files
-// present in the current directory. After resolving dependencies, it also
-// deletes all non-cookbook files.
-func AutoResolve(dst string) error {
+// Resolve resolves cookbook dependencies using the named resolver. If no
+// resolver is specified, it will be guessed based on the files present in the
+// current directory. After resolving dependencies, all non-cookbook files will
+// be deleted as well.
+func Resolve(name, dst string) error {
 	log.Debug("Preparing cookbooks")
 
-	r, err := findResolver(dst)
+	r, err := findResolver(name, dst)
 	if err != nil {
 		return err
 	}
@@ -85,4 +104,12 @@ func AutoResolve(dst string) error {
 
 	log.Info("Stripping non-cookbook files")
 	return stripCookbooks(dst)
+
+}
+
+// AutoResolve automatically resolves cookbook dependencies based on the files
+// present in the current directory. After resolving dependencies, all
+// non-cookbook files will be deleted as well.
+func AutoResolve(dst string) error {
+	return Resolve("", dst)
 }

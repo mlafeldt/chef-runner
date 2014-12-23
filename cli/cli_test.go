@@ -52,6 +52,10 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{RsyncOptions: []string{"-x", "--y"}, Color: true},
 		},
 		{
+			args:  []string{"--resolver", "some-resolver"},
+			flags: &Flags{Resolver: "some-resolver", Color: true},
+		},
+		{
 			args:  []string{"-i", "1.2.3"},
 			flags: &Flags{ChefVersion: "1.2.3", Color: true},
 		},
