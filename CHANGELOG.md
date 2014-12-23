@@ -7,6 +7,10 @@
 * Move most documentation from README to the [chef-runner wiki][wiki]. The
   README was too long, making it too hard to find relevant information. Now it
   only contains the most essential information.
+* Add `--resolver` option to specify the cookbook dependency resolver to use.
+  Available resolvers are: `berkshelf`, `librarian`, and `dir`. Without this
+  option, the resolver is still selected based on the files in the current
+  directory.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
 
