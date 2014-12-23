@@ -21,7 +21,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   --ssh <option>               Add OpenSSH option as specified in ssh_config(5)
   --rsync <option>             Add Rsync option as listed in rsync(1)
 
-  --resolver                   Name of cookbook dependency resolver
+  --resolver <name>            Name of cookbook dependency resolver
 
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
