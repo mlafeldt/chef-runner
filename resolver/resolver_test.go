@@ -31,7 +31,7 @@ func TestAutoResolve_Berkshelf(t *testing.T) {
 		ioutil.WriteFile("Berksfile", []byte{}, 0644)
 		os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, AutoResolve(CookbookPath))
+		AutoResolve(CookbookPath)
 	})
 
 	assert.Equal(t, []string{"ruby", "-e"}, lastCmd[:2])
@@ -90,4 +90,16 @@ func TestAutoResolve_NoCookbooks(t *testing.T) {
 	})
 
 	assert.Equal(t, []string{}, lastCmd)
+}
+
+func TestResolve_Librarian(t *testing.T) {
+	lastCmd = []string{}
+
+	util.InTestDir(func() {
+		os.MkdirAll(CookbookPath, 0755)
+
+		assert.NoError(t, Resolve("librarian", CookbookPath))
+	})
+
+	assert.Equal(t, []string{"librarian-chef", "install", "--path", CookbookPath}, lastCmd)
 }

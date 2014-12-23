@@ -21,6 +21,8 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   --ssh <option>               Add OpenSSH option as specified in ssh_config(5)
   --rsync <option>             Add Rsync option as listed in rsync(1)
 
+  --resolver                   Name of cookbook dependency resolver
+
   -i, --install-chef <version> Install Chef (x.y.z, latest, true, false)
                                default: false
 
@@ -56,11 +58,14 @@ type Flags struct {
 	SSHOptions   stringSlice
 	RsyncOptions stringSlice
 
+	Resolver string
+
 	ChefVersion string
-	Format      string
-	LogLevel    string
-	JSONFile    string
-	Recipes     []string
+
+	Format   string
+	LogLevel string
+	JSONFile string
+	Recipes  []string
 
 	Color       bool
 	ShowVersion bool
@@ -85,6 +90,8 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.Var(&flags.SSHOptions, "ssh", "")
 
 	f.Var(&flags.RsyncOptions, "rsync", "")
+
+	f.StringVar(&flags.Resolver, "resolver", "", "")
 
 	f.StringVar(&flags.ChefVersion, "i", "", "")
 	f.StringVar(&flags.ChefVersion, "install-chef", "", "")

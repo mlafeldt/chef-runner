@@ -21,7 +21,7 @@ func (r Resolver) Resolve(dst string) error {
 	return exec.RunCommand(Command(dst))
 }
 
-// String returns the resolver's name.
-func (r Resolver) String() string {
-	return "Librarian-Chef resolver"
+// Name returns the resolver's name.
+func (r Resolver) Name() string {
+	return "Librarian-Chef"
 }
