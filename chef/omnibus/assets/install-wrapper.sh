@@ -1,9 +1,5 @@
-// vi: set ft=sh :
-
-package omnibus
-
-// A smart wrapper around Omnibus Installer
-var wrapperScript = `#!/bin/sh
+#!/bin/sh
+# A smart wrapper around Omnibus Installer
 
 set -e
 
@@ -38,4 +34,3 @@ true)
     fi
     ;;
 esac
-`

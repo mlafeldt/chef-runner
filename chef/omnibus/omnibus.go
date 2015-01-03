@@ -2,6 +2,8 @@
 // See https://docs.getchef.com/install_omnibus.html
 package omnibus
 
+//go:generate go-bindata -pkg $GOPACKAGE -o assets.go assets/
+
 import (
 	"io/ioutil"
 	"path"
@@ -27,7 +29,11 @@ func (i Installer) skip() bool {
 func (i Installer) writeWrapperScript() error {
 	script := path.Join(i.SandboxPath, "install-wrapper.sh")
 	log.Debugf("Writing install wrapper script to %s\n", script)
-	return ioutil.WriteFile(script, []byte(wrapperScript), 0644)
+	data, err := Asset("assets/install-wrapper.sh")
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(script, []byte(data), 0644)
 }
 
 func (i Installer) downloadOmnibusScript() error {

@@ -23,4 +23,5 @@ else
     verbose=
 fi
 
+go generate "$pkg"
 exec go test ${GOTESTOPTS:-$verbose} "$pkg"

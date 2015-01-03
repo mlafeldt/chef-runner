@@ -11,8 +11,10 @@
   Available resolvers are: `berkshelf`, `librarian`, and `dir`. Without this
   option, the resolver is still selected based on the files in the current
   directory.
+* Use [go-bindata] for assets.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
+[go-bindata]: https://github.com/jteeuwen/go-bindata
 
 ## v0.8.0 (Nov 16 2014)
 
