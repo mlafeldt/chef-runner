@@ -2,5 +2,3 @@
 /build/
 # script/coverage
 /.cover/
-# go-bindata
-/chef/omnibus/assets.go

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Install Go dependencies and generate source code.
+# Install Go dependencies.
 # Usage: script/bootstrap
 
 set -e
@@ -8,5 +8,4 @@ go get -v github.com/golang/lint/golint
 go get -v github.com/jteeuwen/go-bindata/...
 go get -v github.com/mitchellh/gox
 go get -v golang.org/x/tools/cmd/cover
-go generate -x ./...
 go get -v -t ./...
