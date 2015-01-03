@@ -1,8 +1,6 @@
 package omnibus_test
 
 import (
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -12,19 +10,14 @@ import (
 )
 
 func TestPrepareFiles(t *testing.T) {
-	ts := httptest.NewServer(http.FileServer(http.Dir(".")))
-	defer ts.Close()
-	ScriptURL = ts.URL + "/omnibus_test.go"
+	util.InTestDir(func() {
+		wd, _ := os.Getwd()
+		i := Installer{ChefVersion: "1.2.3", SandboxPath: wd}
+		assert.NoError(t, i.PrepareFiles())
 
-	wd, _ := os.Getwd()
-	i := Installer{ChefVersion: "1.2.3", SandboxPath: wd}
-	assert.NoError(t, i.PrepareFiles())
-
-	defer os.Remove("install.sh")
-	defer os.Remove("install-wrapper.sh")
-
-	assert.True(t, util.FileExist("install.sh"))
-	assert.True(t, util.FileExist("install-wrapper.sh"))
+		assert.True(t, util.FileExist("install.sh"))
+		assert.True(t, util.FileExist("install-wrapper.sh"))
+	})
 }
 
 func TestCommand(t *testing.T) {
