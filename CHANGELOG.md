@@ -14,6 +14,7 @@
 * Embed Omnibus installer instead of downloading it from
   https://www.opscode.com/chef/install.sh. Now the script [is part][install.sh]
   of chef-runner's source code and we have total control of what it does.
+* Add `Makefile`.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
 [install.sh]: /chef/omnibus/assets/install.sh

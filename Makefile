@@ -1,3 +1,6 @@
+bootstrap:
+	@script/bootstrap
+
 generate:
 	@go generate -x ./...
 
@@ -5,4 +8,19 @@ update_omnibus:
 	@curl -Ls https://www.opscode.com/chef/install.sh >chef/omnibus/assets/install.sh
 	@go generate -x ./chef/omnibus
 
-.PHONY: generate update_omnibus
+lint:
+	@script/lint
+
+test:
+	@script/test
+
+coverage:
+	@script/coverage --html
+
+build:
+	@script/build
+
+release:
+	@script/build --release
+
+.PHONY: deps generate update_omnibus lint test coverage build release
