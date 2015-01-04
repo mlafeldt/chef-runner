@@ -2,10 +2,7 @@
 package util
 
 import (
-	"errors"
-	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -59,26 +56,4 @@ func InTestDir(f func()) {
 	}
 	defer os.RemoveAll(testDir)
 	InDir(testDir, f)
-}
-
-// DownloadFile downloads a file from url and writes it to filename.
-func DownloadFile(filename, url string) error {
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return errors.New("HTTP error: " + resp.Status)
-	}
-
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	_, err = io.Copy(f, resp.Body)
-	return err
 }

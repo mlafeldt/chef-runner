@@ -2,8 +2,6 @@ package util_test
 
 import (
 	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -82,16 +80,4 @@ func TestInTestDir(t *testing.T) {
 	wd2, _ := os.Getwd()
 	assert.Equal(t, wd, wd2)
 	assert.False(t, FileExist(testDir))
-}
-
-func TestDownloadFile(t *testing.T) {
-	ts := httptest.NewServer(http.FileServer(http.Dir(".")))
-	defer ts.Close()
-
-	filename := "some-download-file"
-	assert.NoError(t, DownloadFile(filename, ts.URL+"/util_test.go"))
-	defer os.Remove(filename)
-
-	data, _ := ioutil.ReadFile(filename)
-	assert.True(t, strings.HasPrefix(string(data), "package util_test"))
 }

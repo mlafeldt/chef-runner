@@ -9,11 +9,7 @@ import (
 	"path"
 
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/mlafeldt/chef-runner/util"
 )
-
-// ScriptURL is the URL of the Omnibus install script.
-var ScriptURL = "https://www.opscode.com/chef/install.sh"
 
 // An Installer allows to install Chef.
 type Installer struct {
@@ -36,14 +32,14 @@ func (i Installer) writeWrapperScript() error {
 	return ioutil.WriteFile(script, []byte(data), 0644)
 }
 
-func (i Installer) downloadOmnibusScript() error {
+func (i Installer) writeOmnibusScript() error {
 	script := path.Join(i.SandboxPath, "install.sh")
-	if util.FileExist(script) {
-		log.Debugf("Omnibus script already downloaded to %s\n", script)
-		return nil
+	log.Debugf("Writing Omnibus script to %s\n", script)
+	data, err := Asset("assets/install.sh")
+	if err != nil {
+		return err
 	}
-	log.Debugf("Downloading Omnibus script from %s to %s\n", ScriptURL, script)
-	return util.DownloadFile(script, ScriptURL)
+	return ioutil.WriteFile(script, []byte(data), 0644)
 }
 
 // PrepareFiles sets up the scripts required to install Chef.
@@ -56,7 +52,7 @@ func (i Installer) PrepareFiles() error {
 	if err := i.writeWrapperScript(); err != nil {
 		return err
 	}
-	return i.downloadOmnibusScript()
+	return i.writeOmnibusScript()
 }
 
 // Command returns the command string to conditionally install Chef onto a
