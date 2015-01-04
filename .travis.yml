@@ -1,16 +1,12 @@
 language: go
 
-go:
-  - 1.4
+go: 1.4
 
 sudo: false
 
-install: script/bootstrap
+install: make bootstrap
 
-script:
-  - PATH="$HOME/gopath/bin:$PATH"
-  - script/lint
-  - script/test
+script: make lint test
 
 branches:
   only:
