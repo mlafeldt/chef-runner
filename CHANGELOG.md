@@ -12,10 +12,11 @@
   option, the resolver is still selected based on the files in the current
   directory.
 * Embed Omnibus installer instead of downloading it from
-  https://www.opscode.com/chef/install.sh. Now the script is part of
-  chef-runner's source code and we have total control of what it does.
+  https://www.opscode.com/chef/install.sh. Now the script [is part][install.sh]
+  of chef-runner's source code and we have total control of what it does.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
+[install.sh]: /chef/omnibus/assets/install.sh
 
 ## v0.8.0 (Nov 16 2014)
 
