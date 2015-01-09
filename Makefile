@@ -1,3 +1,5 @@
+all: test
+
 bootstrap:
 	@script/bootstrap
 
@@ -23,4 +25,4 @@ build:
 release:
 	@script/build --release
 
-.PHONY: deps generate update_omnibus lint test coverage build release
+.PHONY: all bootstrap generate update_omnibus lint test coverage build release
