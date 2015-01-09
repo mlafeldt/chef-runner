@@ -25,4 +25,7 @@ build:
 release:
 	@script/build --release
 
+clean:
+	$(RM) -r .cover build
+
 .PHONY: all bootstrap generate update_omnibus lint test coverage build release
