@@ -14,11 +14,11 @@ echo "Building chef-runner $git_version ..."
 echo "Installing dependencies..."
 script/bootstrap
 
+echo "Running lint checks..."
+script/lint
+
 echo "Running all tests..."
 GOTESTOPTS="-race -cpu 1,2,4" script/test
-
-echo "Running style checks..."
-script/lint
 
 echo "Cross-compiling binaries..."
 rm -rf "$build_dir"
