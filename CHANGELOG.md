@@ -11,13 +11,15 @@
   Available resolvers are: `berkshelf`, `librarian`, and `dir`. Without this
   option, the resolver is still selected based on the files in the current
   directory.
-* Embed Omnibus installer instead of downloading it from
-  https://www.opscode.com/chef/install.sh. Now the script [is part][install.sh]
-  of chef-runner's source code and we have total control of what it does.
+* Embed Omnibus installer instead of downloading it from the Internet. Now the
+  script [is part][install.sh] of chef-runner's source code and we have total
+  control of what it does.
+* On Ubuntu, you can now install chef-runner from a [Debian package][deb].
 * Add `Makefile`.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
 [install.sh]: /chef/omnibus/assets/install.sh
+[deb]: https://packagecloud.io/mlafeldt/chef-runner?filter=debs
 
 ## v0.8.0 (Nov 16 2014)
 
