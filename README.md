@@ -1,5 +1,7 @@
 # chef-runner - The fastest way to run Chef cookbooks
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mlafeldt/chef-runner?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
 [![GoDoc](https://godoc.org/github.com/mlafeldt/chef-runner?status.svg)](https://godoc.org/github.com/mlafeldt/chef-runner)
 
