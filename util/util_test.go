@@ -12,13 +12,8 @@ import (
 )
 
 func TestFileExist(t *testing.T) {
-	filename := "some-file"
-	assert.False(t, FileExist(filename))
-
-	f, _ := os.Create(filename)
-	f.Close()
-	defer os.Remove(filename)
-	assert.True(t, FileExist(filename))
+	assert.False(t, FileExist("some-non-existing-file"))
+	assert.True(t, FileExist("util_test.go"))
 }
 
 func TestBaseName(t *testing.T) {
