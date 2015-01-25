@@ -25,7 +25,11 @@ build:
 release:
 	@script/build --release
 
+deb:
+	$(MAKE) -C packaging/debian build
+
 clean:
 	$(RM) -r .cover build
 
-.PHONY: all bootstrap generate update_omnibus lint test coverage build release
+.PHONY: all bootstrap generate update_omnibus \
+	lint test coverage build release deb clean
