@@ -14,12 +14,13 @@
 * Embed Omnibus installer instead of downloading it from the Internet. Now the
   script [is part][install.sh] of chef-runner's source code and we have total
   control of what it does.
-* On Ubuntu, you can now install chef-runner from a [Debian package][deb].
+* You can now install chef-runner as a Debian package on most Ubuntu and Debian
+  distributions. See the [wiki page][deb] to learn more.
 * Add `Makefile`.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
 [install.sh]: /chef/omnibus/assets/install.sh
-[deb]: https://packagecloud.io/mlafeldt/chef-runner?filter=debs
+[deb]: https://github.com/mlafeldt/chef-runner/wiki/Installation
 
 ## v0.8.0 (Nov 16 2014)
 
