@@ -21,8 +21,8 @@ chef-runner"][blog].
 
 ## Quick Start
 
-[Install chef-runner][installation] by either downloading a pre-built binary,
-using Homebrew, or running `go get`.
+Install chef-runner using one of the [available installation
+methods][installation].
 
 Use chef-runner for local cookbook development with Vagrant:
 
