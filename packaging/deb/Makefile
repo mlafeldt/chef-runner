@@ -19,8 +19,7 @@ build: image
 
 push:
 	@for distro in $(DISTROS); do \
-		echo "Pushing package for $$distro..."; \
-		package_cloud push $(PACKAGECLOUD_REPO)/$$distro pkg/*.deb || exit 1; \
+		pkgcloud-push $(PACKAGECLOUD_REPO)/$$distro pkg/*.deb || exit 1; \
 	done
 
 release: build push
