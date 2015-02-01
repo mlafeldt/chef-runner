@@ -26,7 +26,7 @@ release:
 	@script/build --release
 
 deb:
-	$(MAKE) -C packaging/debian build
+	$(MAKE) -C packaging/deb build
 
 clean:
 	$(RM) -r .cover build
