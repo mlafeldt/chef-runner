@@ -13,7 +13,12 @@ class ChefRunner < FPM::Cookery::Recipe
   license     "Apache 2.0"
   section     "development"
 
-  build_depends %w(golang-go git)
+  case platform
+  when :debian, :ubuntu
+    build_depends %w(golang-go git)
+  when :centos, :redhat
+    build_depends %w(golang git)
+  end
 
   def build
     pkgdir = builddir("gobuild/src/#{GOPACKAGE}")

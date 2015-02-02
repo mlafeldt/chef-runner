@@ -1,20 +1,18 @@
-#
-# Docker image to build Debian package of chef-runner using fpm-cookery.
-#
-
-FROM ubuntu:14.04
+FROM centos:7
 
 MAINTAINER Mathias Lafeldt <mathias.lafeldt@gmail.com>
 
-ENV REFRESHED_AT 2015-01-26
+ENV REFRESHED_AT 2015-02-02
 
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -y && apt-get install -y --no-install-recommends \
-        build-essential \
+RUN yum update -y && yum install -y \
         curl \
+        gcc \
         git \
+        make \
+        rpm-build \
         ruby \
-        ruby-dev
+        ruby-devel \
+        tar
 
 RUN echo "gem: --no-ri --no-rdoc" >/etc/gemrc
 RUN gem install fpm -v 1.3.3
@@ -28,4 +26,4 @@ ENV PATH=$PATH:/usr/local/go/bin
 VOLUME /data
 WORKDIR /data
 
-CMD ["fpm-cook", "package", "--debug", "--no-deps", "recipe.rb"]
+CMD ["fpm-cook", "package", "--debug", "--no-deps", "--tmp-root", "/tmp", "recipe.rb"]
