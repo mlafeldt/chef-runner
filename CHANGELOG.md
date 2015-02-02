@@ -15,12 +15,13 @@
   script [is part][install.sh] of chef-runner's source code and we have total
   control of what it does.
 * You can now install chef-runner as a Debian package on most Ubuntu and Debian
-  distributions. See the [wiki page][deb] to learn more.
+  distributions, and as an RPM package on Centos. See the [wiki
+  page][wiki-installation] to learn more.
 * Add `Makefile`.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
+[wiki-installation]: https://github.com/mlafeldt/chef-runner/wiki/Installation
 [install.sh]: /chef/omnibus/assets/install.sh
-[deb]: https://github.com/mlafeldt/chef-runner/wiki/Installation
 
 ## v0.8.0 (Nov 16 2014)
 
