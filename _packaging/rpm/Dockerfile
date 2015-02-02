@@ -1,7 +1,3 @@
-#
-# Docker image to build RPM package of chef-runner using fpm-cookery.
-#
-
 FROM centos:7
 
 MAINTAINER Mathias Lafeldt <mathias.lafeldt@gmail.com>
@@ -30,4 +26,4 @@ ENV PATH=$PATH:/usr/local/go/bin
 VOLUME /data
 WORKDIR /data
 
-CMD ["fpm-cook", "package", "--debug", "--no-deps", "recipe.rb"]
+CMD ["fpm-cook", "package", "--debug", "--no-deps", "--tmp-root", "/tmp", "recipe.rb"]
