@@ -8,10 +8,10 @@ RPM_DISTROS = el/6 el/7
 all: build
 
 deb_image:
-	$(MAKE) -C deb image
+	docker build --force-rm -t $(CHEF_RUNNER_IMAGE):deb $(CURDIR)/deb
 
 rpm_image:
-	$(MAKE) -C rpm image
+	docker build --force-rm -t $(CHEF_RUNNER_IMAGE):rpm $(CURDIR)/rpm
 
 images: deb_image rpm_image
 
