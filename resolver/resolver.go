@@ -46,17 +46,35 @@ func findResolver(name, dst string) (Resolver, error) {
 	// If the current folder is a cookbook and its dependencies have
 	// already been resolved, only update this cookbook with rsync.
 	// TODO: improve this check by comparing timestamps etc.
-	if cb.Name != "" && util.FileExist(dst) {
-		return dir.Resolver{}, nil
-	}
+	// if cb.Name != "" && util.FileExist(dst) {
+	// 	return dir.Resolver{}, nil
+	// }
+
+	tsFile := path.Join(dst, "action_resolve")
+	ts, _ := util.ReadTimestampFile(tsFile)
 
 	if util.FileExist("Berksfile") {
-		return berkshelf.Resolver{}, nil
+		mt, _ := util.FileModTime("Berksfile")
+		if mt >= ts {
+			return berkshelf.Resolver{}, nil
+		}
+	}
+	if util.FileExist("Berksfile.lock") {
+		mt, _ := util.FileModTime("Berksfile.lock")
+		if mt >= ts {
+			return berkshelf.Resolver{}, nil
+		}
+	}
+	if util.FileExist("metadata.rb") {
+		mt, _ := util.FileModTime("metadata.rb")
+		if mt >= ts {
+			return berkshelf.Resolver{}, nil
+		}
 	}
 
-	if util.FileExist("Cheffile") {
-		return librarian.Resolver{}, nil
-	}
+	// if util.FileExist("Cheffile") {
+	// 	return librarian.Resolver{}, nil
+	// }
 
 	if cb.Name != "" {
 		return dir.Resolver{}, nil

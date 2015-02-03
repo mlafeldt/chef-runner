@@ -75,3 +75,12 @@ func ReadTimestampFile(filename string) (int64, error) {
 	}
 	return strconv.ParseInt(string(data), 10, 64)
 }
+
+// FileModTime returns a file's modification time as Unix timestamp.
+func FileModTime(filename string) (int64, error) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		return 0, err
+	}
+	return info.ModTime().Unix(), nil
+}
