@@ -19,7 +19,7 @@ RUN gem install fpm-cookery -v 0.25.0
 # Install recent version of Go. Use --no-deps below to not install Go again.
 RUN curl -Ls https://storage.googleapis.com/golang/go1.4.1.linux-amd64.tar.gz | \
     tar -C /usr/local -xz
-ENV PATH=$PATH:/usr/local/go/bin
+ENV PATH $PATH:/usr/local/go/bin
 
 VOLUME /data
 WORKDIR /data
