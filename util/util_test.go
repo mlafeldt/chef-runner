@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	. "github.com/mlafeldt/chef-runner/util"
 	"github.com/stretchr/testify/assert"
@@ -75,4 +76,16 @@ func TestInTestDir(t *testing.T) {
 	wd2, _ := os.Getwd()
 	assert.Equal(t, wd, wd2)
 	assert.False(t, FileExist(testDir))
+}
+
+func TestWriteAndReadTimestampFile(t *testing.T) {
+	tsFile := "some-timestamp"
+	defer os.Remove(tsFile)
+
+	err := WriteTimestampFile(tsFile)
+	assert.NoError(t, err)
+
+	ts, err := ReadTimestampFile(tsFile)
+	assert.NoError(t, err)
+	assert.True(t, ts >= time.Now().Unix())
 }

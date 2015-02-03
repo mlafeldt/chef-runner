@@ -102,6 +102,11 @@ func Resolve(name, dst string) error {
 		return err
 	}
 
+	tsFile := path.Join(dst, "action_resolve")
+	if err := util.WriteTimestampFile(tsFile); err != nil {
+		return err
+	}
+
 	log.Info("Stripping non-cookbook files")
 	return stripCookbooks(dst)
 

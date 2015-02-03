@@ -5,7 +5,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // FileExist reports whether a file or directory exists.
@@ -56,4 +58,20 @@ func InTestDir(f func()) {
 	}
 	defer os.RemoveAll(testDir)
 	InDir(testDir, f)
+}
+
+// WriteTimestampFile writes the current time as Unix timestamp to a file.
+func WriteTimestampFile(filename string) error {
+	ts := strconv.FormatInt(time.Now().Unix(), 10)
+	return ioutil.WriteFile(filename, []byte(ts), 0644)
+}
+
+// ReadTimestampFile reads the Unix timestamp from a file created with
+// WriteTimestampFile.
+func ReadTimestampFile(filename string) (int64, error) {
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return 0, err
+	}
+	return strconv.ParseInt(string(data), 10, 64)
 }
