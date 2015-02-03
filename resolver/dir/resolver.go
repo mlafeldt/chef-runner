@@ -41,3 +41,8 @@ func (r Resolver) Resolve(dst string) error {
 func (r Resolver) Name() string {
 	return "Directory"
 }
+
+// InputFiles returns a list of files the directory resolver uses as input.
+func (r Resolver) InputFiles() []string {
+	return []string{}
+}

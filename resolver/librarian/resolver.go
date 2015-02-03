@@ -25,3 +25,8 @@ func (r Resolver) Resolve(dst string) error {
 func (r Resolver) Name() string {
 	return "Librarian-Chef"
 }
+
+// InputFiles returns a list of files Librarian-Chef uses as input.
+func (r Resolver) InputFiles() []string {
+	return []string{"Cheffile", "Cheffile.lock"}
+}
