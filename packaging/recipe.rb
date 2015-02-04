@@ -3,7 +3,7 @@ class ChefRunner < FPM::Cookery::Recipe
 
   name     "chef-runner"
   version  "0.8.0"
-  revision 2
+  revision 3
   source   "https://#{GOPACKAGE}/archive/v#{version}.tar.gz"
   sha256   "a7de23f989f8353ecf838b551a8ceff09b83c8aeff2553b2c31d57615f8fcc53"
 
@@ -15,9 +15,11 @@ class ChefRunner < FPM::Cookery::Recipe
 
   case platform
   when :debian, :ubuntu
-    build_depends %w(golang-go git)
+    build_depends %w(git golang-go)
+    depends       %w(openssh-client rsync)
   when :centos, :redhat
-    build_depends %w(golang git)
+    build_depends %w(git golang)
+    depends       %w(openssh-clients rsync)
   end
 
   def build
