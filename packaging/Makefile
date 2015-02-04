@@ -1,4 +1,4 @@
-DOCKER_IMAGE ?= mlafeldt/chef-runner
+CHEF_RUNNER_IMAGE ?= mlafeldt/chef-runner
 PACKAGECLOUD_REPO ?= mlafeldt/chef-runner
 
 DEB_DISTROS = ubuntu/precise ubuntu/trusty ubuntu/utopic \
@@ -7,35 +7,41 @@ RPM_DISTROS = el/6 el/7
 
 all: build
 
-image:
-	docker pull -a $(DOCKER_IMAGE)
+deb_image:
+	docker build --force-rm -t $(CHEF_RUNNER_IMAGE):deb $(CURDIR)/docker/deb
 
-deb:
-	docker run -it --rm -v $(CURDIR):/data $(DOCKER_IMAGE):deb
+rpm_image:
+	docker build --force-rm -t $(CHEF_RUNNER_IMAGE):rpm $(CURDIR)/docker/rpm
 
-rpm:
-	docker run -it --rm -v $(CURDIR):/data $(DOCKER_IMAGE):rpm
+images: deb_image rpm_image
 
-build: deb rpm
+deb_build: deb_image
+	docker run -it --rm -v $(CURDIR):/data $(CHEF_RUNNER_IMAGE):deb
 
-push_deb: deb
+rpm_build: rpm_image
+	docker run -it --rm -v $(CURDIR):/data $(CHEF_RUNNER_IMAGE):rpm
+
+build: deb_build rpm_build
+
+deb_push: deb_build
 	@for distro in $(DEB_DISTROS); do \
 		pkgcloud-push $(PACKAGECLOUD_REPO)/$$distro pkg/*.deb || exit 1; \
 	done
 
-push_rpm: rpm
+rpm_push: rpm_build
 	@for distro in $(RPM_DISTROS); do \
 		pkgcloud-push $(PACKAGECLOUD_REPO)/$$distro pkg/*.rpm || exit 1; \
 	done
 
-push: push_deb push_rpm
+push: deb_push rpm_push
 
-release: push
+release: build push
 
 clean:
-	$(RM) -r cache
+	$(RM) -r cache tmp-build tmp-dest
 
 clobber: clean
 	$(RM) -r pkg
 
-.PHONY: all image deb rpm build push_deb push_rpm push release clean clobber
+.PHONY: all deb_image rpm_image images deb_build rpm_build build \
+	deb_push rpm_push push release clean clobber
