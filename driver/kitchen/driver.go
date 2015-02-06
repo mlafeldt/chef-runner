@@ -86,7 +86,7 @@ type instanceConfig struct {
 	Port     int
 }
 
-func (c *instanceConfig) Parse(data []byte) error {
+func (c *instanceConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var aux struct {
 		Hostname string `yaml:"hostname"`
 		Username string `yaml:"username"`
@@ -94,7 +94,7 @@ func (c *instanceConfig) Parse(data []byte) error {
 		Port     string `yaml:"port"`
 	}
 
-	if err := yaml.Unmarshal(data, &aux); err != nil {
+	if err := unmarshal(&aux); err != nil {
 		return err
 	}
 	if aux.Hostname == "" {
@@ -129,7 +129,7 @@ func readInstanceConfig(instance string) (*instanceConfig, error) {
 	}
 
 	var config instanceConfig
-	if err := config.Parse(data); err != nil {
+	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, err
 	}
 	log.Debugf("Kitchen config = %+v\n", config)
