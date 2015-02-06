@@ -40,13 +40,6 @@ type kitchenConfig struct {
 	Suites    []kitchenConfigEntry `yaml:"suites"`
 }
 
-type instanceConfig struct {
-	Hostname string `yaml:"hostname"`
-	Username string `yaml:"username"`
-	SSHKey   string `yaml:"ssh_key"`
-	Port     string `yaml:"port"`
-}
-
 func readInstanceNames() ([]string, error) {
 	data, err := ioutil.ReadFile(".kitchen.yml")
 	if err != nil {
@@ -86,6 +79,46 @@ func findInstanceName(instance string) (string, error) {
 	return "", errors.New("Kitchen instance not found")
 }
 
+type instanceConfig struct {
+	Hostname string
+	Username string
+	SSHKey   string
+	Port     int
+}
+
+func (c *instanceConfig) Parse(data []byte) error {
+	var aux struct {
+		Hostname string `yaml:"hostname"`
+		Username string `yaml:"username"`
+		SSHKey   string `yaml:"ssh_key"`
+		Port     string `yaml:"port"`
+	}
+
+	if err := yaml.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if aux.Hostname == "" {
+		return errors.New("Kitchen config: invalid `hostname`")
+	}
+	if aux.Username == "" {
+		return errors.New("Kitchen config: invalid `username`")
+	}
+	if aux.SSHKey == "" {
+		return errors.New("Kitchen config: invalid `ssh_key`")
+	}
+	// Test Kitchen stores the port as an string
+	port, err := strconv.Atoi(aux.Port)
+	if err != nil {
+		return errors.New("Kitchen config: invalid `port`")
+	}
+
+	c.Hostname = aux.Hostname
+	c.Username = aux.Username
+	c.SSHKey = aux.SSHKey
+	c.Port = port
+	return nil
+}
+
 func readInstanceConfig(instance string) (*instanceConfig, error) {
 	configFile := path.Join(".kitchen", instance+".yml")
 	log.Debugf("Kitchen config file = %s\n", configFile)
@@ -96,23 +129,10 @@ func readInstanceConfig(instance string) (*instanceConfig, error) {
 	}
 
 	var config instanceConfig
-	if err := yaml.Unmarshal(data, &config); err != nil {
+	if err := config.Parse(data); err != nil {
 		return nil, err
 	}
 	log.Debugf("Kitchen config = %+v\n", config)
-
-	if config.Hostname == "" {
-		return nil, errors.New(configFile + ": invalid `hostname`")
-	}
-	if config.Username == "" {
-		return nil, errors.New(configFile + ": invalid `username`")
-	}
-	if config.SSHKey == "" {
-		return nil, errors.New(configFile + ": invalid `ssh_key`")
-	}
-	if _, err := strconv.Atoi(config.Port); err != nil {
-		return nil, errors.New(configFile + ": invalid `port`")
-	}
 
 	return &config, nil
 }
@@ -131,9 +151,6 @@ func NewDriver(instance string, sshOptions, rsyncOptions []string) (*Driver, err
 		return nil, err
 	}
 
-	// Test Kitchen stores the port as an string
-	port, _ := strconv.Atoi(config.Port)
-
 	sshOpts := make([]string, len(defaultSSHOptions))
 	copy(sshOpts, defaultSSHOptions[:])
 	for _, o := range sshOptions {
@@ -143,7 +160,7 @@ func NewDriver(instance string, sshOptions, rsyncOptions []string) (*Driver, err
 	sshClient := &openssh.Client{
 		Host:        config.Hostname,
 		User:        config.Username,
-		Port:        port,
+		Port:        config.Port,
 		PrivateKeys: []string{config.SSHKey},
 		Options:     sshOpts,
 	}
