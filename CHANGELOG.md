@@ -1,5 +1,8 @@
 ## v0.9.0 (unreleased)
 
+* Add ability to provision the host system with `-L` or `--local`. This way, you
+  can use chef-runner locally as a convenient wrapper around Chef. Note: This
+  is going to replace `-M` (`--machine`) as the default target soon.
 * Partial matching of Test Kitchen instance names. For example, `chef-runner -K
   ubuntu` will provision the instance "default-ubuntu-1404" if that's the first
   instance with the string "ubuntu" in its name. Note: The matching does not

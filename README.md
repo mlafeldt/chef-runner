@@ -21,8 +21,7 @@ chef-runner"][blog].
 
 ## Quick Start
 
-Install chef-runner using one of the [available installation
-methods][installation].
+Install chef-runner using one of the [available installation methods][installation].
 
 Use chef-runner for local cookbook development with Vagrant:
 
@@ -60,6 +59,10 @@ over SSH:
 
 (chef-runner automatically resolves cookbook dependencies using tools like
 Berkshelf or Librarian-Chef.)
+
+Use chef-runner to provision the host system without running commands as root:
+
+    $ chef-runner -L --sudo=false
 
 If required, install a specific version of Chef before provisioning:
 
