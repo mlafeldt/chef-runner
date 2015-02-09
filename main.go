@@ -14,6 +14,7 @@ import (
 	"github.com/mlafeldt/chef-runner/cli"
 	"github.com/mlafeldt/chef-runner/driver"
 	"github.com/mlafeldt/chef-runner/driver/kitchen"
+	"github.com/mlafeldt/chef-runner/driver/local"
 	"github.com/mlafeldt/chef-runner/driver/ssh"
 	"github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/log"
@@ -43,6 +44,9 @@ func findDriver(flags *cli.Flags) (driver.Driver, error) {
 	}
 	if flags.Kitchen != "" {
 		return kitchen.NewDriver(flags.Kitchen, flags.SSHOptions, flags.RsyncOptions)
+	}
+	if flags.Local {
+		return local.NewDriver()
 	}
 	return vagrant.NewDriver(flags.Machine, flags.SSHOptions, flags.RsyncOptions)
 }

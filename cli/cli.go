@@ -17,6 +17,7 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
   -H, --host <name>            Name of host reachable over SSH
   -M, --machine <name>         Name or UUID of Vagrant virtual machine
   -K, --kitchen <name>         Name of Test Kitchen instance
+  -L, --local                  Provision host system
 
   --ssh <option>               Add OpenSSH option as specified in ssh_config(5)
   --rsync <option>             Add Rsync option as listed in rsync(1)
@@ -56,6 +57,7 @@ type Flags struct {
 	Host    string
 	Machine string
 	Kitchen string
+	Local   bool
 
 	SSHOptions   stringSlice
 	RsyncOptions stringSlice
@@ -91,6 +93,9 @@ func ParseFlags(args []string) (*Flags, error) {
 	f.StringVar(&flags.Kitchen, "K", "", "")
 	f.StringVar(&flags.Kitchen, "kitchen", "", "")
 
+	f.BoolVar(&flags.Local, "L", false, "")
+	f.BoolVar(&flags.Local, "local", false, "")
+
 	f.Var(&flags.SSHOptions, "ssh", "")
 
 	f.Var(&flags.RsyncOptions, "rsync", "")
@@ -125,8 +130,11 @@ func ParseFlags(args []string) (*Flags, error) {
 			n++
 		}
 	}
+	if flags.Local {
+		n++
+	}
 	if n > 1 {
-		return nil, errors.New("-H, -M, and -K cannot be used together")
+		return nil, errors.New("-H, -M, -K, and -L cannot be used together")
 	}
 
 	if len(f.Args()) > 0 {

@@ -44,6 +44,14 @@ func TestParseFlags(t *testing.T) {
 			flags: &Flags{Kitchen: "some-instance", Sudo: true, Color: true},
 		},
 		{
+			args:  []string{"-L"},
+			flags: &Flags{Local: true, Sudo: true, Color: true},
+		},
+		{
+			args:  []string{"--local"},
+			flags: &Flags{Local: true, Sudo: true, Color: true},
+		},
+		{
 			args:  []string{"--ssh", "x=1", "--ssh", "y 2 3"},
 			flags: &Flags{SSHOptions: []string{"x=1", "y 2 3"}, Sudo: true, Color: true},
 		},
@@ -118,12 +126,12 @@ func TestParseFlags(t *testing.T) {
 		{
 			args:      []string{"-H", "some-host", "-M", "some-machine"},
 			flags:     nil,
-			errString: "-H, -M, and -K cannot be used together",
+			errString: "-H, -M, -K, and -L cannot be used together",
 		},
 		{
-			args:      []string{"-K", "some-instance", "-M", "some-machine"},
+			args:      []string{"-K", "some-instance", "-L"},
 			flags:     nil,
-			errString: "-H, -M, and -K cannot be used together",
+			errString: "-H, -M, -K, and -L cannot be used together",
 		},
 	}
 	for _, test := range tests {
