@@ -11,6 +11,8 @@
   Available resolvers are: `berkshelf`, `librarian`, and `dir`. Without this
   option, the resolver is still selected based on the files in the current
   directory.
+* Add `--sudo=false` option to not run commands using `sudo`. This currently
+  affects Omnibus installer and Chef itself.
 * Embed Omnibus installer instead of downloading it from the Internet. Now the
   script [is part][install.sh] of chef-runner's source code and we have total
   control of what it does.

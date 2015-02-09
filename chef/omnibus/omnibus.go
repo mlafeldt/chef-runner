@@ -16,6 +16,7 @@ type Installer struct {
 	ChefVersion string
 	SandboxPath string
 	RootPath    string
+	Sudo        bool
 }
 
 func (i Installer) skip() bool {
@@ -61,11 +62,14 @@ func (i Installer) Command() []string {
 	if i.skip() {
 		return []string{}
 	}
-	return []string{
-		"sudo",
+	cmd := []string{
 		"sh",
 		path.Join(i.RootPath, "install-wrapper.sh"),
 		path.Join(i.RootPath, "install.sh"),
 		i.ChefVersion,
 	}
+	if !i.Sudo {
+		return cmd
+	}
+	return append([]string{"sudo"}, cmd...)
 }

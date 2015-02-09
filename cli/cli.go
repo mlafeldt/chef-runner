@@ -32,7 +32,9 @@ var usage = `Usage: chef-runner [options] [--] [<recipe>...]
                                default: info
   -j, --json-attributes <file> Load attributes from a JSON file
 
+  --sudo=false                 Do not run commands with sudo (enabled by default)
   --color=false                Disable colorized output (enabled by default)
+
   -h, --help                   Show help text
   --version                    Show program version
 `
@@ -67,7 +69,9 @@ type Flags struct {
 	JSONFile string
 	Recipes  []string
 
-	Color       bool
+	Sudo  bool
+	Color bool
+
 	ShowVersion bool
 }
 
@@ -104,6 +108,8 @@ func ParseFlags(args []string) (*Flags, error) {
 
 	f.StringVar(&flags.JSONFile, "j", "", "")
 	f.StringVar(&flags.JSONFile, "json-attributes", "", "")
+
+	f.BoolVar(&flags.Sudo, "sudo", true, "")
 
 	f.BoolVar(&flags.Color, "color", true, "")
 

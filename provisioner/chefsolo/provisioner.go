@@ -20,14 +20,13 @@ const (
 
 // Provisioner is a provisioner based on Chef Solo.
 type Provisioner struct {
-	RunList    []string
-	Attributes string
-	Format     string
-	LogLevel   string
-	UseSudo    bool
-
+	RunList     []string
+	Attributes  string
+	Format      string
+	LogLevel    string
 	SandboxPath string
 	RootPath    string
+	Sudo        bool
 }
 
 func (p Provisioner) prepareJSON() error {
@@ -52,13 +51,6 @@ func (p Provisioner) PrepareFiles() error {
 		return err
 	}
 	return p.prepareSoloConfig()
-}
-
-func (p Provisioner) sudo(args []string) []string {
-	if !p.UseSudo {
-		return args
-	}
-	return append([]string{"sudo"}, args...)
 }
 
 // Command returns the command string which will invoke the provisioner on the
@@ -86,5 +78,8 @@ func (p Provisioner) Command() []string {
 		cmd = append(cmd, "--override-runlist", strings.Join(p.RunList, ","))
 	}
 
-	return p.sudo(cmd)
+	if !p.Sudo {
+		return cmd
+	}
+	return append([]string{"sudo"}, cmd...)
 }

@@ -127,14 +127,13 @@ func main() {
 
 	var p provisioner.Provisioner
 	p = chefsolo.Provisioner{
-		RunList:    runList,
-		Attributes: attributes,
-		Format:     flags.Format,
-		LogLevel:   flags.LogLevel,
-		UseSudo:    true,
-
+		RunList:     runList,
+		Attributes:  attributes,
+		Format:      flags.Format,
+		LogLevel:    flags.LogLevel,
 		SandboxPath: SandboxPath,
 		RootPath:    RootPath,
+		Sudo:        flags.Sudo,
 	}
 	log.Debugf("Provisioner = %+v\n", p)
 
@@ -142,6 +141,7 @@ func main() {
 		ChefVersion: flags.ChefVersion,
 		SandboxPath: SandboxPath,
 		RootPath:    RootPath,
+		Sudo:        flags.Sudo,
 	}
 	log.Debugf("Installer = %+v\n", installer)
 

@@ -142,7 +142,7 @@ var commandTests = []struct {
 	{
 		Provisioner{
 			RunList:     []string{"cats::foo"},
-			UseSudo:     true,
+			Sudo:        true,
 			SandboxPath: ".chef-runner/sandbox",
 			RootPath:    "/tmp/chef-runner",
 		},
