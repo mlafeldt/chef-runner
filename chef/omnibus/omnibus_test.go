@@ -29,7 +29,11 @@ func TestCommand(t *testing.T) {
 		"1.2.3":  []string{"sudo", "sh", "/some/path/install-wrapper.sh", "/some/path/install.sh", "1.2.3"},
 	}
 	for version, cmd := range tests {
-		i := Installer{ChefVersion: version, RootPath: "/some/path"}
+		i := Installer{
+			ChefVersion: version,
+			RootPath:    "/some/path",
+			Sudo:        true,
+		}
 		assert.Equal(t, cmd, i.Command())
 	}
 }
