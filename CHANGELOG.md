@@ -1,32 +1,36 @@
-## v0.9.0 (unreleased)
+## v0.9.0 (Feb 10 2015)
+
+FEATURES:
 
 * Add ability to provision the host system with `-L` or `--local`. This way, you
-  can use chef-runner locally as a convenient wrapper around Chef. Note: This
-  is going to replace `-M` (`--machine`) as the default target soon.
-* Partial matching of Test Kitchen instance names. For example, `chef-runner -K
-  ubuntu` will provision the instance "default-ubuntu-1404" if that's the first
-  instance with the string "ubuntu" in its name. Note: The matching does not
-  support regular expressions. (Thanks to @StephenKing for the idea.)
-* Move most documentation from README to the [chef-runner wiki][wiki]. The
-  README was too long, making it too hard to find relevant information. Now it
-  only contains the most essential information.
+  can use chef-runner as a convenient wrapper around Chef to manage your
+  workstation or to create Docker images. Note: This is going to replace `-M`
+  (`--machine`) as the default target soon.
+* Add `--sudo=false` option to not run commands using `sudo`. This currently
+  affects Omnibus installer and Chef itself.
 * Add `--resolver` option to specify the cookbook dependency resolver to use.
   Available resolvers are: `berkshelf`, `librarian`, and `dir`. Without this
   option, the resolver is still selected based on the files in the current
   directory.
-* Add `--sudo=false` option to not run commands using `sudo`. This currently
-  affects Omnibus installer and Chef itself.
-* Embed Omnibus installer instead of downloading it from the Internet. Now the
-  script [is part][install.sh] of chef-runner's source code and we have total
-  control of what it does.
+
+IMPROVEMENTS:
+
+* Move most documentation from README to the [chef-runner wiki][wiki]. The
+  README was too long, making it too hard to find relevant information. Now it
+  only contains the most essential information.
 * You can now install chef-runner as a Debian package on most Ubuntu and Debian
   distributions, and as an RPM package on Centos. See the [wiki
   page][wiki-installation] to learn more.
-* Add `Makefile`.
+* Partial matching of Test Kitchen instance names. For example, `chef-runner -K
+  ubuntu` will provision the instance "default-ubuntu-1404" if that's the first
+  instance with the string "ubuntu" in its name. Note: The matching does not
+  support regular expressions. (Thanks to @StephenKing for the idea.)
+* Embed Omnibus installer instead of downloading it from the Internet. Now the
+  `install.sh` script is part of chef-runner's source code and we have total
+  control of what it does.
 
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
 [wiki-installation]: https://github.com/mlafeldt/chef-runner/wiki/Installation
-[install.sh]: /chef/omnibus/assets/install.sh
 
 ## v0.8.0 (Nov 16 2014)
 
