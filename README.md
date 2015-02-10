@@ -73,7 +73,7 @@ If required, install a specific version of Chef before provisioning:
 * See the [chef-runner wiki][wiki] for the official documentation.
 * For bug reports and feature requests, please [open an issue here][issues].
 * Join our [chat room][gitter] on Gitter for discussion.
-* New releases are announced on [Twitter] and the [Chef mailing list][list].
+* New releases are announced on [Twitter] and the [Chef Users mailing list][list].
 
 ## License
 
@@ -94,7 +94,7 @@ chef-runner is being developed by [Mathias Lafeldt][twitter].
 [gitter]: https://gitter.im/mlafeldt/chef-runner
 [installation]: https://github.com/mlafeldt/chef-runner/wiki/Installation
 [issues]: https://github.com/mlafeldt/chef-runner/issues
-[list]: http://lists.opscode.com/sympa/info/chef
+[list]: https://groups.google.com/a/lists.chef.io/forum/#!forum/chef
 [twitter]: https://twitter.com/mlafeldt
 [vim]: https://github.com/mlafeldt/chef-runner/wiki/Vim
 [wiki]: https://github.com/mlafeldt/chef-runner/wiki
