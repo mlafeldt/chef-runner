@@ -2,10 +2,10 @@ class ChefRunner < FPM::Cookery::Recipe
   GOPACKAGE = "github.com/mlafeldt/chef-runner"
 
   name     "chef-runner"
-  version  "0.8.0"
-  revision 3
+  version  "0.9.0"
+  revision 1
   source   "https://#{GOPACKAGE}/archive/v#{version}.tar.gz"
-  sha256   "a7de23f989f8353ecf838b551a8ceff09b83c8aeff2553b2c31d57615f8fcc53"
+  sha256   "4f896fa21cab1f94fe1ce678804b2e5d481523b5c74a5695cbfb76eb9f39dc8b"
 
   description "The fastest way to run Chef cookbooks"
   homepage    "https://#{GOPACKAGE}"
