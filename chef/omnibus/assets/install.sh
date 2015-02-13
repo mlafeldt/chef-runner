@@ -169,7 +169,7 @@ elif test "x$os" = "xFreeBSD"; then
   platform_version=`uname -r | sed 's/-.*//'`
 elif test "x$os" = "xAIX"; then
   platform="aix"
-  platform_version="${uname -v}.${uname -r}"
+  platform_version="`uname -v`.`uname -r`"
   machine="powerpc"
 fi
 
@@ -436,7 +436,7 @@ do_download() {
 }
 
 # install_file TYPE FILENAME
-# TYPE is "rpm", "deb", "solaris", or "sh"
+# TYPE is "rpm", "deb", "solaris", "sh", etc.
 install_file() {
   echo "Installing Chef $version"
   case "$1" in
@@ -447,6 +447,10 @@ install_file() {
     "deb")
       echo "installing with dpkg..."
       dpkg -i "$2"
+      ;;
+    "bff")
+      echo "installing with installp..."
+      installp -aXYgd "$2" all
       ;;
     "solaris")
       echo "installing with pkgadd..."
@@ -491,19 +495,19 @@ metadata_filename="$tmp_dir/metadata.txt"
 
 case "$project" in
   "chef")
-    metadata_url="https://www.opscode.com/chef/metadata?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
+    metadata_url="https://www.chef.io/chef/metadata?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
     ;;
   "angrychef")
-    metadata_url="https://www.opscode.com/chef/metadata-angrychef?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
+    metadata_url="https://www.chef.io/chef/metadata-angrychef?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
     ;;
   "server")
-    metadata_url="https://www.opscode.com/chef/metadata-server?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
+    metadata_url="https://www.chef.io/chef/metadata-server?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
     ;;
   "chefdk")
-    metadata_url="https://www.opscode.com/chef/metadata-chefdk?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
+    metadata_url="https://www.chef.io/chef/metadata-chefdk?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
     ;;
   "container")
-    metadata_url="https://www.opscode.com/chef/metadata-container?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
+    metadata_url="https://www.chef.io/chef/metadata-container?v=${version}&prerelease=${prerelease}&nightlies=${nightlies}&p=${platform}&pv=${platform_version}&m=${machine}"
     ;;
     *)
 esac
