@@ -20,6 +20,7 @@ import (
 type Resolver interface {
 	Resolve(dst string) error
 	Name() string
+	InputFiles() []string
 }
 
 func findResolverByName(name string) (Resolver, error) {
@@ -41,23 +42,26 @@ func findResolver(name, dst string) (Resolver, error) {
 		return findResolverByName(name)
 	}
 
+	tsFile := path.Join(dst, "action_resolve")
+	ts, _ := util.ReadTimestampFile(tsFile)
+
+	for _, name := range berkshelf.InputFiles {
+		mt, err := util.FileModTime(name)
+		if err == nil && mt >= ts {
+			log.Debugf("%s was updated, using Berkshelf\n", name)
+			return berkshelf.Resolver{}, nil
+		}
+	}
+
+	for _, name := range librarian.InputFiles {
+		mt, err := util.FileModTime(name)
+		if err == nil && mt >= ts {
+			log.Debugf("%s was updated, using Librarian\n", name)
+			return librarian.Resolver{}, nil
+		}
+	}
+
 	cb, _ := cookbook.NewCookbook(".")
-
-	// If the current folder is a cookbook and its dependencies have
-	// already been resolved, only update this cookbook with rsync.
-	// TODO: improve this check by comparing timestamps etc.
-	if cb.Name != "" && util.FileExist(dst) {
-		return dir.Resolver{}, nil
-	}
-
-	if util.FileExist("Berksfile") {
-		return berkshelf.Resolver{}, nil
-	}
-
-	if util.FileExist("Cheffile") {
-		return librarian.Resolver{}, nil
-	}
-
 	if cb.Name != "" {
 		return dir.Resolver{}, nil
 	}
@@ -99,6 +103,11 @@ func Resolve(name, dst string) error {
 
 	log.Infof("Installing cookbook dependencies with %s resolver\n", r.Name())
 	if err := r.Resolve(dst); err != nil {
+		return err
+	}
+
+	tsFile := path.Join(dst, "action_resolve")
+	if err := util.WriteTimestampFile(tsFile); err != nil {
 		return err
 	}
 

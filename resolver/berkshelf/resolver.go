@@ -39,3 +39,8 @@ func (r Resolver) Resolve(dst string) error {
 func (r Resolver) Name() string {
 	return "Berkshelf"
 }
+
+// InputFiles returns a list of files Berkshelf uses as input.
+func (r Resolver) InputFiles() []string {
+	return []string{"Berksfile", "Berksfile.lock"}
+}
