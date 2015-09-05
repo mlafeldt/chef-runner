@@ -457,8 +457,8 @@ install_file() {
       echo "conflict=nocheck" > $tmp_dir/nocheck
       echo "action=nocheck" >> $tmp_dir/nocheck
       echo "mail=" >> $tmp_dir/nocheck
-      pkgrm -a $tmp_dir/nocheck -n chef >/dev/null 2>&1 || true
-      pkgadd -n -d "$2" -a $tmp_dir/nocheck chef
+      pkgrm -a $tmp_dir/nocheck -n $project >/dev/null 2>&1 || true
+      pkgadd -n -d "$2" -a $tmp_dir/nocheck $project
       ;;
     "pkg")
       echo "installing with installer..."
@@ -580,10 +580,17 @@ if test "x$cached_file_available" != "xtrue"; then
   do_checksum "$download_filename" "$sha256" "$md5" || checksum_mismatch
 fi
 
-if grep yolo "$metadata_filename" >/dev/null; then
+if test "x$version" = "x"; then
   echo
-  echo "WARNING: Chef-Client has not been regression tested on this O/S Distribution"
-  echo "WARNING: Do not use this configuration for Production Applications.  Use at your own risk."
+  echo "WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING"
+  echo
+  echo "You are installing an omnibus package without a version pin.  If you are installing"
+  echo "on production servers via an automated process this is DANGEROUS and you will"
+  echo "be upgraded without warning on new releases, even to new major releases."
+  echo "Letting the version float is only appropriate in desktop, test, development or"
+  echo "CI/CD environments."
+  echo
+  echo "WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING"
   echo
 fi
 
