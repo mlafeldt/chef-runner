@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/mlafeldt/chef-runner.svg?branch=master)](https://travis-ci.org/mlafeldt/chef-runner)
 [![GoDoc](https://godoc.org/github.com/mlafeldt/chef-runner?status.svg)](https://godoc.org/github.com/mlafeldt/chef-runner)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mlafeldt/chef-runner)
 
 The goal of chef-runner is to speed up your Chef development and testing
 workflow by allowing you to change infrastructure code and get *immediate
@@ -72,7 +71,6 @@ If required, install a specific version of Chef before provisioning:
 
 * See the [chef-runner wiki][wiki] for the official documentation.
 * For bug reports and feature requests, please [open an issue here][issues].
-* Join our [chat room][gitter] on Gitter for discussion.
 * New releases are announced on [Twitter] and the [Chef Users mailing list][list].
 
 ## License
@@ -91,7 +89,6 @@ chef-runner is being developed by [Mathias Lafeldt][twitter].
 
 [blog]: http://mlafeldt.github.io/blog/telling-people-about-chef-runner/
 [development]: https://github.com/mlafeldt/chef-runner/wiki/Development
-[gitter]: https://gitter.im/mlafeldt/chef-runner
 [installation]: https://github.com/mlafeldt/chef-runner/wiki/Installation
 [issues]: https://github.com/mlafeldt/chef-runner/issues
 [list]: https://groups.google.com/a/lists.chef.io/forum/#!forum/chef
