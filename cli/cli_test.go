@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/cli"
 	"github.com/mlafeldt/chef-runner/log"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestParseFlags(t *testing.T) {

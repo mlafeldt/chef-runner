@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/chef/omnibus"
 	"github.com/mlafeldt/chef-runner/util"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestPrepareFiles(t *testing.T) {

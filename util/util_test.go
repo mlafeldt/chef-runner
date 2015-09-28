@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/util"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFileExist(t *testing.T) {

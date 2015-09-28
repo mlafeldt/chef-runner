@@ -3,9 +3,9 @@ package ssh_test
 import (
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	"github.com/mlafeldt/chef-runner/driver"
 	. "github.com/mlafeldt/chef-runner/driver/ssh"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDriverInterface(t *testing.T) {

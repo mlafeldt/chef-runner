@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/chef/cookbook/metadata"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestParse(t *testing.T) {
