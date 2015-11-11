@@ -2,8 +2,8 @@ package main
 
 import "runtime"
 
-// The current version of chef-runner. A ".dev" suffix denotes that the version
-// is currently being developed.
+// Version is the current version of chef-runner. A ".dev" suffix denotes
+// that the version is currently being developed.
 const Version = "v0.9.0"
 
 // GitVersion is the Git version that is being compiled. This string contains

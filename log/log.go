@@ -41,7 +41,7 @@ var levelColor = [...]string{
 
 var level = LevelDebug
 
-// UseColor, if true, enables colorized output.
+// UseColor enables colorized output is set to true.
 var UseColor = true
 
 // SetLevel changes the current log level to l.
