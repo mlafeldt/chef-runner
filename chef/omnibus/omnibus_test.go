@@ -10,14 +10,13 @@ import (
 )
 
 func TestPrepareFiles(t *testing.T) {
-	util.InTestDir(func() {
-		wd, _ := os.Getwd()
-		i := Installer{ChefVersion: "1.2.3", SandboxPath: wd}
-		assert.NoError(t, i.PrepareFiles())
+	defer util.TestTempDir(t)()
+	wd, _ := os.Getwd()
+	i := Installer{ChefVersion: "1.2.3", SandboxPath: wd}
+	assert.NoError(t, i.PrepareFiles())
 
-		assert.True(t, util.FileExist("install.sh"))
-		assert.True(t, util.FileExist("install-wrapper.sh"))
-	})
+	assert.True(t, util.FileExist("install.sh"))
+	assert.True(t, util.FileExist("install-wrapper.sh"))
 }
 
 func TestCommand(t *testing.T) {

@@ -16,20 +16,20 @@ func TestResolverInterface(t *testing.T) {
 }
 
 func TestResolve(t *testing.T) {
-	util.InDir("../../testdata", func() {
-		cookbookPath := "test-cookbooks"
-		defer os.RemoveAll(cookbookPath)
+	defer util.TestChdir(t, "../../testdata")()
 
-		assert.NoError(t, Resolver{}.Resolve(cookbookPath))
+	cookbookPath := "test-cookbooks"
+	defer os.RemoveAll(cookbookPath)
 
-		expectFiles := []string{
-			"practicingruby/README.md",
-			"practicingruby/attributes",
-			"practicingruby/metadata.rb",
-			"practicingruby/recipes",
-		}
-		for _, f := range expectFiles {
-			assert.True(t, util.FileExist(path.Join(cookbookPath, f)))
-		}
-	})
+	assert.NoError(t, Resolver{}.Resolve(cookbookPath))
+
+	expectFiles := []string{
+		"practicingruby/README.md",
+		"practicingruby/attributes",
+		"practicingruby/metadata.rb",
+		"practicingruby/recipes",
+	}
+	for _, f := range expectFiles {
+		assert.True(t, util.FileExist(path.Join(cookbookPath, f)))
+	}
 }

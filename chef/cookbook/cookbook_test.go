@@ -47,34 +47,34 @@ func TestFiles(t *testing.T) {
 }
 
 func TestStrip(t *testing.T) {
-	util.InTestDir(func() {
-		for _, f := range []string{"CHANGELOG.md", "README.md", "metadata.rb"} {
-			ioutil.WriteFile(f, []byte{}, 0644)
-		}
-		for _, d := range []string{"attributes", "recipes", "tmp"} {
-			os.Mkdir(d, 0755)
-		}
+	defer util.TestTempDir(t)()
 
-		cb, _ := NewCookbook(".")
-		assert.NoError(t, cb.Strip())
+	for _, f := range []string{"CHANGELOG.md", "README.md", "metadata.rb"} {
+		ioutil.WriteFile(f, []byte{}, 0644)
+	}
+	for _, d := range []string{"attributes", "recipes", "tmp"} {
+		os.Mkdir(d, 0755)
+	}
 
-		expect := []string{
-			"README.md",
-			"attributes",
-			"metadata.rb",
-			"recipes",
-		}
+	cb, _ := NewCookbook(".")
+	assert.NoError(t, cb.Strip())
 
-		files, err := ioutil.ReadDir(".")
-		if err != nil {
-			panic(err)
-		}
+	expect := []string{
+		"README.md",
+		"attributes",
+		"metadata.rb",
+		"recipes",
+	}
 
-		var actual []string
-		for _, f := range files {
-			actual = append(actual, f.Name())
-		}
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		panic(err)
+	}
 
-		assert.Equal(t, expect, actual)
-	})
+	var actual []string
+	for _, f := range files {
+		actual = append(actual, f.Name())
+	}
+
+	assert.Equal(t, expect, actual)
 }

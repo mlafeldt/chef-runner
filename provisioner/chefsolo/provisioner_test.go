@@ -22,50 +22,48 @@ func TestProvisionerInterface(t *testing.T) {
 }
 
 func TestPrepareFiles(t *testing.T) {
-	util.InTestDir(func() {
-		os.MkdirAll(".chef-runner/sandbox", 0755)
+	defer util.TestTempDir(t)()
+	os.MkdirAll(".chef-runner/sandbox", 0755)
 
-		p := Provisioner{
-			SandboxPath: ".chef-runner/sandbox",
-			RootPath:    "/tmp/chef-runner",
-		}
-		assert.NoError(t, p.PrepareFiles())
+	p := Provisioner{
+		SandboxPath: ".chef-runner/sandbox",
+		RootPath:    "/tmp/chef-runner",
+	}
+	assert.NoError(t, p.PrepareFiles())
 
-		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
-		assert.NoError(t, err)
-		assert.Equal(t, "{}\n", string(json))
+	json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
+	assert.NoError(t, err)
+	assert.Equal(t, "{}\n", string(json))
 
-		expect := "cookbook_path \"/tmp/chef-runner/cookbooks\"\n"
-		expect += "ssl_verify_mode :verify_peer\n"
+	expect := "cookbook_path \"/tmp/chef-runner/cookbooks\"\n"
+	expect += "ssl_verify_mode :verify_peer\n"
 
-		config, err := ioutil.ReadFile(".chef-runner/sandbox/solo.rb")
-		assert.NoError(t, err)
-		assert.Equal(t, expect, string(config))
-	})
+	config, err := ioutil.ReadFile(".chef-runner/sandbox/solo.rb")
+	assert.NoError(t, err)
+	assert.Equal(t, expect, string(config))
 }
 
 func TestPrepareFiles_CustomJSON(t *testing.T) {
-	util.InTestDir(func() {
-		os.MkdirAll(".chef-runner/sandbox", 0755)
+	defer util.TestTempDir(t)()
+	os.MkdirAll(".chef-runner/sandbox", 0755)
 
-		p := Provisioner{
-			Attributes:  `{"foo": "bar"}`,
-			SandboxPath: ".chef-runner/sandbox",
-			RootPath:    "/tmp/chef-runner",
-		}
-		assert.NoError(t, p.PrepareFiles())
+	p := Provisioner{
+		Attributes:  `{"foo": "bar"}`,
+		SandboxPath: ".chef-runner/sandbox",
+		RootPath:    "/tmp/chef-runner",
+	}
+	assert.NoError(t, p.PrepareFiles())
 
-		json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
-		assert.NoError(t, err)
-		assert.Equal(t, `{"foo": "bar"}`, string(json))
+	json, err := ioutil.ReadFile(".chef-runner/sandbox/dna.json")
+	assert.NoError(t, err)
+	assert.Equal(t, `{"foo": "bar"}`, string(json))
 
-		expect := "cookbook_path \"/tmp/chef-runner/cookbooks\"\n"
-		expect += "ssl_verify_mode :verify_peer\n"
+	expect := "cookbook_path \"/tmp/chef-runner/cookbooks\"\n"
+	expect += "ssl_verify_mode :verify_peer\n"
 
-		config, err := ioutil.ReadFile(".chef-runner/sandbox/solo.rb")
-		assert.NoError(t, err)
-		assert.Equal(t, expect, string(config))
-	})
+	config, err := ioutil.ReadFile(".chef-runner/sandbox/solo.rb")
+	assert.NoError(t, err)
+	assert.Equal(t, expect, string(config))
 }
 
 var commandTests = []struct {

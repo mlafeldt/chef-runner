@@ -27,79 +27,65 @@ func init() {
 func TestAutoResolve_Berkshelf(t *testing.T) {
 	lastCmd = []string{}
 
-	util.InTestDir(func() {
-		ioutil.WriteFile("Berksfile", []byte{}, 0644)
-		os.MkdirAll(CookbookPath, 0755)
-
-		AutoResolve(CookbookPath)
-	})
+	defer util.TestTempDir(t)()
+	ioutil.WriteFile("Berksfile", []byte{}, 0644)
+	os.MkdirAll(CookbookPath, 0755)
+	AutoResolve(CookbookPath)
 
 	assert.Equal(t, []string{"ruby", "-e"}, lastCmd[:2])
 	assert.True(t, strings.Contains(lastCmd[2], `require "berkshelf"`))
-	assert.True(t, strings.Contains(lastCmd[2],
-		fmt.Sprintf(`.vendor("%s")`, CookbookPath)))
+	assert.True(t, strings.Contains(lastCmd[2], fmt.Sprintf(`.vendor("%s")`, CookbookPath)))
 }
 
 func TestAutoResolve_Librarian(t *testing.T) {
 	lastCmd = []string{}
 
-	util.InTestDir(func() {
-		ioutil.WriteFile("Cheffile", []byte{}, 0644)
-		os.MkdirAll(CookbookPath, 0755)
+	defer util.TestTempDir(t)()
+	ioutil.WriteFile("Cheffile", []byte{}, 0644)
+	os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, AutoResolve(CookbookPath))
-	})
-
+	assert.NoError(t, AutoResolve(CookbookPath))
 	assert.Equal(t, []string{"librarian-chef", "install", "--path", CookbookPath}, lastCmd)
 }
 
 func TestAutoResolve_Dir(t *testing.T) {
 	lastCmd = []string{}
 
-	util.InTestDir(func() {
-		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
+	defer util.TestTempDir(t)()
+	ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
 
-		assert.NoError(t, AutoResolve(CookbookPath))
-	})
-
-	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
-		"metadata.rb", CookbookPath + "/cats"}, lastCmd)
+	assert.NoError(t, AutoResolve(CookbookPath))
+	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress", "metadata.rb", CookbookPath + "/cats"}, lastCmd)
 }
 
 func TestAutoResolve_DirUpdate(t *testing.T) {
 	lastCmd = []string{}
 
-	util.InTestDir(func() {
-		ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
-		ioutil.WriteFile("Berksfile", []byte{}, 0644)
-		os.MkdirAll(CookbookPath, 0755)
+	defer util.TestTempDir(t)()
+	ioutil.WriteFile("metadata.rb", []byte(`name "cats"`), 0644)
+	ioutil.WriteFile("Berksfile", []byte{}, 0644)
+	os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, AutoResolve(CookbookPath))
-	})
-
-	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress",
-		"metadata.rb", CookbookPath + "/cats"}, lastCmd)
+	assert.NoError(t, AutoResolve(CookbookPath))
+	assert.Equal(t, []string{"rsync", "--archive", "--delete", "--compress", "metadata.rb", CookbookPath + "/cats"}, lastCmd)
 }
 
 func TestAutoResolve_NoCookbooks(t *testing.T) {
 	lastCmd = []string{}
 
-	util.InTestDir(func() {
-		assert.EqualError(t, AutoResolve(CookbookPath),
-			"cookbooks could not be found")
-	})
+	defer util.TestTempDir(t)()
+	err := AutoResolve(CookbookPath)
 
+	assert.EqualError(t, err, "cookbooks could not be found")
 	assert.Equal(t, []string{}, lastCmd)
 }
 
 func TestResolve_Librarian(t *testing.T) {
 	lastCmd = []string{}
 
-	util.InTestDir(func() {
-		os.MkdirAll(CookbookPath, 0755)
+	defer util.TestTempDir(t)()
+	os.MkdirAll(CookbookPath, 0755)
 
-		assert.NoError(t, Resolve("librarian", CookbookPath))
-	})
-
+	assert.NoError(t, Resolve("librarian", CookbookPath))
 	assert.Equal(t, []string{"librarian-chef", "install", "--path", CookbookPath}, lastCmd)
 }

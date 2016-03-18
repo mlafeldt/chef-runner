@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"testing"
 )
 
 // FileExist reports whether a file or directory exists.
@@ -24,36 +25,22 @@ func BaseName(s, suffix string) string {
 	return base
 }
 
-// TempDir creates a new temporary directory to be used by chef-runner.
-func TempDir() (string, error) {
-	return ioutil.TempDir("", "chef-runner-")
-}
-
-// InDir runs a function inside a specific directory.
-func InDir(dir string, f func()) {
-	wd, err := os.Getwd()
+func TestChdir(t *testing.T, dir string) func() {
+	old, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		t.Fatalf("error: %s", err)
 	}
-
 	if err := os.Chdir(dir); err != nil {
-		panic(err)
+		t.Fatalf("error: %s", err)
 	}
-
-	f()
-
-	if err := os.Chdir(wd); err != nil {
-		panic(err)
-	}
+	return func() { os.Chdir(old) }
 }
 
-// InTestDir runs the passed function inside a temporary directory, which will
-// be removed afterwards. Use it for isolated testing.
-func InTestDir(f func()) {
-	testDir, err := TempDir()
+func TestTempDir(t *testing.T) func() {
+	tmp, err := ioutil.TempDir("", "chef-runner-")
 	if err != nil {
-		panic(err)
+		t.Fatalf("error: %s", err)
 	}
-	defer os.RemoveAll(testDir)
-	InDir(testDir, f)
+	f := TestChdir(t, tmp)
+	return func() { f(); os.RemoveAll(tmp) }
 }
