@@ -2,11 +2,5 @@
 # Check code style and correctness.
 # Usage: script/lint
 
-output=$(golint ./... | grep -v assets.go:)
-# Exit with a proper status code
-if test -n "$output"; then
-    echo "$output"
-    exit 1
-fi
-
+golint ./... | grep -v assets.go:
 go vet ./...
