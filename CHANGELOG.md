@@ -1,3 +1,10 @@
+## v0.9.1 (unreleased)
+
+* Update Omnibus installer to latest version.
+* Update to Go 1.7.
+* Fix build infrastructure.
+* Simplify cleanup of test helpers.
+
 ## v0.9.0 (Feb 10 2015)
 
 FEATURES:
