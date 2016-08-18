@@ -25,7 +25,8 @@ rm -rf "$build_dir"
 gox \
     -output="${build_dir}/{{.Dir}}_${version}_{{.OS}}_{{.Arch}}/{{.Dir}}" \
     -os="darwin linux windows freebsd openbsd" \
-    -ldflags "-X main.GitVersion $git_version" \
+    -arch="amd64" \
+    -ldflags "-X main.GitVersion=$git_version" \
     ./...
 ln -snf "$version" build/latest
 
