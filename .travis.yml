@@ -1,15 +1,20 @@
 language: go
 
-go:
-  - 1.5
-  - 1.6
-
 sudo: false
+
+go:
+  - 1.6
+  - 1.7
+  - tip
 
 install: make bootstrap
 
-script: make lint test
+script: make build
 
 branches:
   only:
     - master
+
+matrix:
+  allow_failures:
+    - go: tip
