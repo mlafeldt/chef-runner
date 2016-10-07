@@ -11,7 +11,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/mitchellh/colorstring"
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/mitchellh/colorstring"
 )
 
 // The Level type is the type of all log levels.

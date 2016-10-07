@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	"github.com/mlafeldt/chef-runner/resolver"
 	. "github.com/mlafeldt/chef-runner/resolver/berkshelf"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestResolverInterface(t *testing.T) {

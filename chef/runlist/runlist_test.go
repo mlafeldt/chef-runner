@@ -3,8 +3,8 @@ package runlist_test
 import (
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/chef/runlist"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestBuild(t *testing.T) {

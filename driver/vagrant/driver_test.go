@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	"github.com/mlafeldt/chef-runner/driver"
 	. "github.com/mlafeldt/chef-runner/driver/vagrant"
 	"github.com/mlafeldt/chef-runner/util"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDriverInterface(t *testing.T) {

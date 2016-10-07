@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/bundler"
-	"github.com/stretchr/testify/assert"
 )
 
 func withPath(path string, f func()) {

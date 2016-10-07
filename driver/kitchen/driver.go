@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/gopkg.in/yaml.v2"
 	"github.com/mlafeldt/chef-runner/log"
 	"github.com/mlafeldt/chef-runner/openssh"
 	"github.com/mlafeldt/chef-runner/rsync"
-	"gopkg.in/yaml.v2"
 )
 
 // Driver is a driver based on Test Kitchen.

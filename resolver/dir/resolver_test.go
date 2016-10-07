@@ -5,10 +5,10 @@ import (
 	"path"
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	"github.com/mlafeldt/chef-runner/resolver"
 	. "github.com/mlafeldt/chef-runner/resolver/dir"
 	"github.com/mlafeldt/chef-runner/util"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestResolverInterface(t *testing.T) {

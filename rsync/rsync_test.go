@@ -3,8 +3,8 @@ package rsync_test
 import (
 	"testing"
 
+	"github.com/mlafeldt/chef-runner/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	. "github.com/mlafeldt/chef-runner/rsync"
-	"github.com/stretchr/testify/assert"
 )
 
 var commandTests = []struct {
