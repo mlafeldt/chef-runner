@@ -19,7 +19,7 @@ generate_cover_data() {
     rm -rf "$workdir"
     mkdir "$workdir"
 
-    go test -i "$@" # compile depenencies first before serializing go test invocations   
+    go test -i "$@" # compile dependencies first before serializing go test invocations
     for pkg in "$@"; do
         f="$workdir/$(echo $pkg | tr / -).cover"
         go test -covermode="$mode" -coverprofile="$f" "$pkg"
