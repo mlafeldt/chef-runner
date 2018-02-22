@@ -16,9 +16,6 @@ lint:
 test:
 	@script/test
 
-coverage:
-	@script/coverage --html
-
 build:
 	@script/build
 
@@ -29,7 +26,7 @@ packages:
 	$(MAKE) -C packaging build
 
 clean:
-	$(RM) -r .cover build
+	$(RM) -r build
 
 .PHONY: all bootstrap generate update_omnibus \
-	lint test coverage build release packages clean
+	lint test build release packages clean

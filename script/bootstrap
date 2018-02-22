@@ -9,5 +9,4 @@ go get -v \
     github.com/golang/lint/golint \
     github.com/jteeuwen/go-bindata/... \
     github.com/mitchellh/gox \
-    github.com/mlafeldt/pkgcloud/... \
-    golang.org/x/tools/cmd/cover
+    github.com/mlafeldt/pkgcloud/...
