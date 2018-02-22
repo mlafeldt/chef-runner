@@ -115,7 +115,7 @@ capture_tmp_stderr() {
 # do_wget URL FILENAME
 do_wget() {
   echo "trying wget..."
-  wget -O "$2" "$1" 2>$tmp_dir/stderr
+  wget --user-agent="User-Agent: mixlib-install/3.9.0" -O "$2" "$1" 2>$tmp_dir/stderr
   rc=$?
   # check for 404
   grep "ERROR 404" $tmp_dir/stderr 2>&1 >/dev/null
@@ -136,7 +136,7 @@ do_wget() {
 # do_curl URL FILENAME
 do_curl() {
   echo "trying curl..."
-  curl --retry 5 -sL -D $tmp_dir/stderr "$1" > "$2"
+  curl -A "User-Agent: mixlib-install/3.9.0" --retry 5 -sL -D $tmp_dir/stderr "$1" > "$2"
   rc=$?
   # check for 404
   grep "404 Not Found" $tmp_dir/stderr 2>&1 >/dev/null
@@ -157,7 +157,7 @@ do_curl() {
 # do_fetch URL FILENAME
 do_fetch() {
   echo "trying fetch..."
-  fetch -o "$2" "$1" 2>$tmp_dir/stderr
+  fetch --user-agent="User-Agent: mixlib-install/3.9.0" -o "$2" "$1" 2>$tmp_dir/stderr
   # check for bad return status
   test $? -ne 0 && return 1
   return 0
@@ -187,7 +187,7 @@ do_perl() {
 # do_python URL FILENAME
 do_python() {
   echo "trying python..."
-  python -c "import sys,urllib2 ; sys.stdout.write(urllib2.urlopen(sys.argv[1]).read())" "$1" > "$2" 2>$tmp_dir/stderr
+  python -c "import sys,urllib2; sys.stdout.write(urllib2.urlopen(urllib2.Request(sys.argv[1], headers={ 'User-Agent': 'mixlib-install/3.9.0' })).read())" "$1" > "$2" 2>$tmp_dir/stderr
   rc=$?
   # check for 404
   grep "HTTP Error 404" $tmp_dir/stderr 2>&1 >/dev/null
@@ -304,6 +304,10 @@ install_file() {
       echo "installing with sh..."
       sh "$2"
       ;;
+    "p5p" )
+      echo "installing p5p package..."
+      pkg install -g "$2" $project
+      ;;
     *)
       echo "Unknown filetype: $1"
       report_bug
@@ -342,13 +346,16 @@ tmp_dir="$tmp/install.sh.$$"
 # $project: Project to be installed
 # $cmdline_filename: Name of the package downloaded on local disk.
 # $cmdline_dl_dir: Name of the directory downloaded package will be saved to on local disk.
+# $install_strategy: Method of package installations. default strategy is to always install upon exec. Set to "once" to skip if project is installed
+# $download_url_override: Install package downloaded from a direct URL.
+# $checksum: SHA256 for download_url_override file (optional)
 ############
 
 # Defaults
 channel="stable"
 project="chef"
 
-while getopts pnv:c:f:P:d: opt
+while getopts pnv:c:f:P:d:s:l:a opt
 do
   case "$opt" in
 
@@ -359,14 +366,25 @@ do
     f)  cmdline_filename="$OPTARG";;
     P)  project="$OPTARG";;
     d)  cmdline_dl_dir="$OPTARG";;
+    s)  install_strategy="$OPTARG";;
+    l)  download_url_override="$OPTARG";;
+    a)  checksum="$OPTARG";;
     \?)   # unknown flag
       echo >&2 \
-      "usage: $0 [-P project] [-c release_channel] [-v version] [-f filename | -d download_dir]"
+      "usage: $0 [-P project] [-c release_channel] [-v version] [-f filename | -d download_dir] [-s install_strategy] [-l download_url_override] [-a checksum]"
       exit 1;;
   esac
 done
 
 shift `expr $OPTIND - 1`
+
+
+if test -d "/opt/$project" && test "x$install_strategy" = "xonce"; then
+  echo "$project installation detected"
+  echo "install_strategy set to 'once'"
+  echo "Nothing to install"
+  exit
+fi
 
 
 # platform_detection.sh
@@ -399,9 +417,21 @@ os=`uname -s`
 if test -f "/etc/lsb-release" && grep -q DISTRIB_ID /etc/lsb-release && ! grep -q wrlinux /etc/lsb-release; then
   platform=`grep DISTRIB_ID /etc/lsb-release | cut -d "=" -f 2 | tr '[A-Z]' '[a-z]'`
   platform_version=`grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f 2`
+
+  if test "$platform" = "\"cumulus linux\""; then
+    platform="cumulus_linux"
+  elif test "$platform" = "\"cumulus networks\""; then
+    platform="cumulus_networks"
+  fi
+
 elif test -f "/etc/debian_version"; then
   platform="debian"
   platform_version=`cat /etc/debian_version`
+elif test -f "/etc/Eos-release"; then
+  # EOS may also contain /etc/redhat-release so this check must come first.
+  platform=arista_eos
+  platform_version=`awk '{print $4}' /etc/Eos-release`
+  machine="i386"
 elif test -f "/etc/redhat-release"; then
   platform=`sed 's/^\(.\+\) release.*/\1/' /etc/redhat-release | tr '[A-Z]' '[a-z]'`
   platform_version=`sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/redhat-release`
@@ -426,10 +456,14 @@ elif test -f "/etc/system-release"; then
   platform=`sed 's/^\(.\+\) release.\+/\1/' /etc/system-release | tr '[A-Z]' '[a-z]'`
   platform_version=`sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/system-release | tr '[A-Z]' '[a-z]'`
   # amazon is built off of fedora, so act like RHEL
+  # Version 1. Example: Amazon Linux AMI release 2017.09
   if test "$platform" = "amazon linux ami"; then
-    # FIXME: remove client side platform_version mangling and hard coded yolo, and remapping to deprecated "el"
     platform="el"
     platform_version="6.0"
+  # Version 2. Example: Amazon Linux release 2.0 (2017.12)
+  elif test "$platform" = "amazon linux"; then
+    platform="el"
+    platform_version="7.0"
   fi
 # Apple OS X
 elif test -f "/usr/bin/sw_vers"; then
@@ -553,6 +587,36 @@ echo "$platform $platform_version $machine"
 ############
 
 
+# All of the download utilities in this script load common proxy env vars.
+# If variables are set they will override any existing env vars.
+# Otherwise, default proxy env vars will be loaded by the respective
+# download utility.
+
+if test "x$https_proxy" != "x"; then
+  echo "setting https_proxy: $https_proxy"
+  export HTTPS_PROXY=$https_proxy
+  export https_proxy=$https_proxy
+fi
+
+if test "x$http_proxy" != "x"; then
+  echo "setting http_proxy: $http_proxy"
+  export HTTP_PROXY=$http_proxy
+  export http_proxy=$http_proxy
+fi
+
+if test "x$ftp_proxy" != "x"; then
+  echo "setting ftp_proxy: $ftp_proxy"
+  export FTP_PROXY=$ftp_proxy
+  export ftp_proxy=$ftp_proxy
+fi
+
+if test "x$no_proxy" != "x"; then
+  echo "setting no_proxy: $no_proxy"
+  export NO_PROXY=$no_proxy
+  export no_proxy=$no_proxy
+fi
+
+
 # fetch_metadata.sh
 ############
 # This section calls omnitruck to get the information about the build to be
@@ -572,29 +636,35 @@ echo "$platform $platform_version $machine"
 # $sha256:
 ############
 
-echo "Getting information for $project $channel $version for $platform..."
+if test "x$download_url_override" = "x"; then
+  echo "Getting information for $project $channel $version for $platform..."
 
-metadata_filename="$tmp_dir/metadata.txt"
-metadata_url="https://omnitruck-direct.chef.io/$channel/$project/metadata?v=$version&p=$platform&pv=$platform_version&m=$machine"
+  metadata_filename="$tmp_dir/metadata.txt"
+  metadata_url="https://omnitruck-direct.chef.io/$channel/$project/metadata?v=$version&p=$platform&pv=$platform_version&m=$machine"
 
-do_download "$metadata_url"  "$metadata_filename"
+  do_download "$metadata_url"  "$metadata_filename"
 
-cat "$metadata_filename"
+  cat "$metadata_filename"
 
-echo ""
-# check that all the mandatory fields in the downloaded metadata are there
-if grep '^url' $metadata_filename > /dev/null && grep '^sha256' $metadata_filename > /dev/null; then
-  echo "downloaded metadata file looks valid..."
+  echo ""
+  # check that all the mandatory fields in the downloaded metadata are there
+  if grep '^url' $metadata_filename > /dev/null && grep '^sha256' $metadata_filename > /dev/null; then
+    echo "downloaded metadata file looks valid..."
+  else
+    echo "downloaded metadata file is corrupted or an uncaught error was encountered in downloading the file..."
+    # this generally means one of the download methods downloaded a 404 or something like that and then reported a successful exit code,
+    # and this should be fixed in the function that was doing the download.
+    report_bug
+    exit 1
+  fi
+
+  download_url=`awk '$1 == "url" { print $2 }' "$metadata_filename"`
+  sha256=`awk '$1 == "sha256" { print $2 }' "$metadata_filename"`
 else
-  echo "downloaded metadata file is corrupted or an uncaught error was encountered in downloading the file..."
-  # this generally means one of the download methods downloaded a 404 or something like that and then reported a successful exit code,
-  # and this should be fixed in the function that was doing the download.
-  report_bug
-  exit 1
+  download_url=$download_url_override
+  # Set sha256 to empty string if checksum not set
+  sha256=${checksum=""}
 fi
-
-download_url=`awk '$1 == "url" { print $2 }' "$metadata_filename"`
-sha256=`awk '$1 == "sha256" { print $2 }' "$metadata_filename"`
 
 ############
 # end of fetch_metadata.sh
@@ -634,20 +704,54 @@ download_dir=`dirname $download_filename`
 (umask 077 && mkdir -p $download_dir) || exit 1
 
 # check if we have that file locally available and if so verify the checksum
+# Use cases
+# 1) metadata - new download
+# 2) metadata - cached download when cmdline_dl_dir set
+# 3) url override - no checksum new download
+# 4) url override - with checksum new download
+# 5) url override - with checksum cached download when cmdline_dl_dir set
+
 cached_file_available="false"
+verify_checksum="true"
+
 if test -f $download_filename; then
-  echo "$download_filename already exists, verifiying checksum..."
-  if do_checksum "$download_filename" "$sha256"; then
-    echo "checksum compare succeeded, using existing file!"
-    cached_file_available="true"
+  echo "$download_filename exists"
+  cached_file_available="true"
+fi
+
+if test "x$download_url_override" != "x"; then
+  echo "Download URL override specified"
+  if test "x$cached_file_available" = "xtrue"; then
+    echo "Verifying local file"
+    if test "x$sha256" = "x"; then
+      echo "Checksum not specified, ignoring existing file"
+      cached_file_available="false" # download new file
+      verify_checksum="false" # no checksum to compare after download
+    elif do_checksum "$download_filename" "$sha256"; then
+      echo "Checksum match, using existing file"
+      cached_file_available="true" # don't need to download file
+      verify_checksum="false" # don't need to checksum again
+    else
+      echo "Checksum mismatch, ignoring existing file"
+      cached_file_available="false" # download new file
+      verify_checksum="true" # checksum new downloaded file
+    fi
   else
-    echo "checksum mismatch, downloading latest version of the file"
+    echo "$download_filename not found"
+    cached_file_available="false" # download new file
+    if test "x$sha256" = "x"; then
+      verify_checksum="false" # no checksum to compare after download
+    else
+      verify_checksum="true" # checksum new downloaded file
+    fi
   fi
 fi
 
-# download if no local version of the file available
 if test "x$cached_file_available" != "xtrue"; then
-  do_download "$download_url"  "$download_filename"
+  do_download "$download_url" "$download_filename"
+fi
+
+if test "x$verify_checksum" = "xtrue"; then
   do_checksum "$download_filename" "$sha256" || checksum_mismatch
 fi
 
@@ -666,7 +770,7 @@ fi
 # $version: The version requested. Used only for warning user if not set.
 ############
 
-if test "x$version" = "x"; then
+if test "x$version" = "x" -a "x$CI" != "xtrue"; then
   echo
   echo "WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING"
   echo
