@@ -2,9 +2,7 @@ language: go
 
 sudo: false
 
-go:
-  - "1.10"
-  - "tip"
+go: "1.10"
 
 install: make bootstrap
 
@@ -13,7 +11,3 @@ script: make build
 branches:
   only:
     - master
-
-matrix:
-  allow_failures:
-    - go: tip
